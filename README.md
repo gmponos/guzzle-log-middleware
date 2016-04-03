@@ -8,7 +8,7 @@ PSRs you support to avoid any confusion with users and contributors.
 Via Composer
 
 ``` bash
-$ composer require league/:package_name
+$ composer require Gmponos\GuzzleHttpLogger
 ```
 
 ## Usage
@@ -26,7 +26,6 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 
 ``` bash
 $ composer test
-Test
 ```
 
 ## Contributing

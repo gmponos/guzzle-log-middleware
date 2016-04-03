@@ -2,10 +2,11 @@
     "name": "xm/guzzle_logger",
     "description": "A middleware for guzzle to log every request and response",
     "license": "MIT",
+    "homepage": "https://github.com/gmponos/Guzzle-logger",
     "authors": [
         {
-            "name": "George Bonos",
-            "email": "gbonos@xm.com"
+            "name": "George Mponos",
+            "email": "gmponos@gmail.com"
         }
     ],
     "autoload": {
@@ -28,5 +29,13 @@
         "mockery/mockery": "*",
         "squizlabs/php_codesniffer": "2.*"
     },
+    "scripts": {
+        "test": "phpunit"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    }
     "minimum-stability": "stable"
 }
