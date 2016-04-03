@@ -1,3 +1,6 @@
+[![codecov.io](https://codecov.io/github/gmponos/Guzzle-logger/coverage.svg?branch=master)](https://codecov.io/github/gmponos/Guzzle-logger?branch=master)
+[![Build Status](https://travis-ci.org/gmponos/Guzzle-logger.svg?branch=master)](https://travis-ci.org/gmponos/Guzzle-logger)
+
 # Gmponos\GuzzleHttpLogger
 
 This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what
