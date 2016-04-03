@@ -1,6 +1,6 @@
 # Changelog
 
-All Notable changes to `GuzzleHttp\LoggerMiddleware` will be documented in this file
+All Notable changes to `Gmponos\GuzzleHttpLogger` will be documented in this file
 
 ## 0.1.0 - 2015-10-18
 
