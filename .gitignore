@@ -1,0 +1,67 @@
+### Windows
+## Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+## Folder config file
+Desktop.ini
+
+## Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+## Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+## Windows shortcuts
+*.lnk
+
+### Linux
+*~
+
+## KDE directory preferences
+.directory
+
+## Linux trash folder which might appear on any partition or disk
+.Trash-*
+
+### iOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+
+### IDE Project files
+
+## IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+## NetBeans project files
+nbproject/*
+nbproject/private/
+nbbuild/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+.nb-gradle/
+
+### Composer
+composer.phar
+composer.lock
+vendor/
+
+### ApiGen
+apigen.phar
+docs
+
+### Custom
+tags
+build
+dist

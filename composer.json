@@ -1,0 +1,32 @@
+{
+    "name": "xm/guzzle_logger",
+    "description": "A middleware for guzzle to log every request and response",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "George Bonos",
+            "email": "gbonos@xm.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Gmponos\\GuzzleLogger\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Gmponos\\GuzzleLogger\\Test\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=5.5",
+        "guzzlehttp/guzzle": "^6.2",
+        "psr/log": "~1.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "*",
+        "mockery/mockery": "*",
+        "squizlabs/php_codesniffer": "2.*"
+    },
+    "minimum-stability": "stable"
+}
