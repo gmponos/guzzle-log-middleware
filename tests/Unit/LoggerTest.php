@@ -1,6 +1,6 @@
 <?php
 
-namespace Gmponos\GuzzleLogger\Test;
+namespace Gmponos\GuzzleLogger\Test\Unit;
 
 use GuzzleHttp\Exception\TransferException;
 use Mockery as m;
@@ -25,6 +25,9 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
      */
     private $logger;
 
+    /**
+     * @inheritdoc
+     */
     public function setUp()
     {
         parent::setUp();
@@ -262,7 +265,6 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Guzzle HTTP response', $this->logger->history[3]['message']);
     }
 
-
     /**
      * @test
      */
@@ -303,5 +305,98 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('Guzzle HTTP request', $this->logger->history[2]['message']);
         $this->assertEquals('debug', $this->logger->history[3]['level']);
         $this->assertEquals('Guzzle HTTP response', $this->logger->history[3]['message']);
+    }
+
+    /**
+     * @test
+     */
+    public function logTransactionWithStatistics()
+    {
+        $this->appendResponse(200)
+            ->getClient([
+                'log' => [
+                    'statistics' => true,
+                ],
+            ])
+            ->get("/");
+
+        $this->assertCount(3, $this->logger->history);
+        $this->assertEquals('debug', $this->logger->history[0]['level']);
+        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertEquals('debug', $this->logger->history[1]['level']);
+        $this->assertEquals('Guzzle HTTP statistics', $this->logger->history[1]['message']);
+        $this->assertEquals('debug', $this->logger->history[2]['level']);
+        $this->assertEquals('Guzzle HTTP response', $this->logger->history[2]['message']);
+    }
+
+    /**
+     * @test
+     */
+    public function logTransactionWithCustomLevel()
+    {
+        $this->appendResponse(300)
+            ->getClient([
+                'log' => [
+                    'levels' => [
+                        300 => 'warning',
+                        301 => 'warning',
+                        402 => 'warning',
+                        403 => 'warning',
+                        500 => 'warning',
+                    ],
+                ],
+            ])
+            ->get("/");
+
+        $this->assertCount(2, $this->logger->history);
+        $this->assertEquals('debug', $this->logger->history[0]['level']);
+        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertEquals('warning', $this->logger->history[1]['level']);
+        $this->assertEquals('Guzzle HTTP response', $this->logger->history[1]['message']);
+    }
+
+    /**
+     * @test
+     */
+    public function logTransactionWithHugeResponseBody()
+    {
+        $body =
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..';
+
+        $this->appendResponse(300, [], $body)
+            ->getClient()
+            ->get("/");
+
+        $this->assertCount(2, $this->logger->history);
+        $this->assertEquals('debug', $this->logger->history[0]['level']);
+        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertEquals('debug', $this->logger->history[1]['level']);
+        $this->assertEquals('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertEquals("Body was truncated because of it's size", $this->logger->history[1]['context']['response']['body']);
     }
 }

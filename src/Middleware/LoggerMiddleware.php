@@ -32,6 +32,11 @@ class LoggerMiddleware
     private $thresholds;
 
     /**
+     * @var array
+     */
+    private $logCodeLevel = [];
+
+    /**
      * Creates a callable middleware for logging requests and responses.
      *
      * @param LoggerInterface $logger
@@ -97,15 +102,20 @@ class LoggerMiddleware
         }
 
         if ($message instanceof ResponseInterface) {
-            if ($message->getStatusCode() === 0) {
+            $code = $message->getStatusCode();
+            if ($code === 0) {
                 return LogLevel::CRITICAL;
             }
 
-            if ($this->thresholds['error'] !== null && $message->getStatusCode() > $this->thresholds['error']) {
+            if (isset($this->logCodeLevel[$code])) {
+                return $this->logCodeLevel[$code];
+            }
+
+            if ($this->thresholds['error'] !== null && $code > $this->thresholds['error']) {
                 return LogLevel::CRITICAL;
             }
 
-            if ($this->thresholds['warning'] !== null && $message->getStatusCode() > $this->thresholds['warning']) {
+            if ($this->thresholds['warning'] !== null && $code > $this->thresholds['warning']) {
                 return LogLevel::ERROR;
             }
 
@@ -263,24 +273,23 @@ class LoggerMiddleware
      */
     private function setOptions(array $options)
     {
+        $defaults = [
+            'requests' => $this->logRequests,
+            'statistics' => $this->logStatistics,
+            'warning_threshold' => 399,
+            'error_threshold' => 499,
+            'levels' => [],
+        ];
+
         if (!isset($options['log'])) {
             return;
         }
 
-        if (array_key_exists('warning_threshold', $options['log'])) {
-            $this->thresholds['warning'] = $options['log']['warning_threshold'];
-        }
-
-        if (array_key_exists('error_threshold', $options['log'])) {
-            $this->thresholds['error'] = $options['log']['error_threshold'];
-        }
-
-        if (isset($options['log']['requests'])) {
-            $this->logRequests = $options['log']['requests'];
-        }
-
-        if (isset($options['log']['statistics'])) {
-            $this->logRequests = $options['log']['statistics'];
-        }
+        $options = array_merge($defaults, $options['log']);
+        $this->logCodeLevel = $options['levels'];
+        $this->thresholds['warning'] = $options['warning_threshold'];
+        $this->thresholds['error'] = $options['error_threshold'];
+        $this->logRequests = $options['requests'];
+        $this->logStatistics = $options['statistics'];
     }
 }
