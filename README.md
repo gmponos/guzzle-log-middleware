@@ -1,17 +1,16 @@
 [![codecov.io](https://codecov.io/github/gmponos/Guzzle-logger/coverage.svg?branch=master)](https://codecov.io/github/gmponos/Guzzle-logger?branch=master)
 [![Build Status](https://travis-ci.org/gmponos/Guzzle-logger.svg?branch=master)](https://travis-ci.org/gmponos/Guzzle-logger)
 
-# Gmponos\GuzzleHttpLogger
+# GuzzleHttpLogger Middleware
 
-This is where your description should go. Try and limit it to a paragraph or two, and maybe throw in a mention of what
-PSRs you support to avoid any confusion with users and contributors.
+This is a middleware for the guzzle that automatically logs every request and response using a PSR-3 logger.
 
 ## Install
 
 Via Composer
 
 ``` bash
-$ composer require Gmponos\GuzzleHttpLogger
+$ composer require gmponos/guzzle-http-logger
 ```
 
 ## Usage
@@ -43,12 +42,12 @@ The default levels that the middleware uses for logging are the following.
 
 The signature of the LoggerMiddleware class is the following:
 
-``new LoggerMiddleware(LoggerInterface $logger, $logRequests = true, $logStatistics = false, array $thresholds = [])``
+``LoggerMiddleware(LoggerInterface $logger, $logRequests = true, $logStatistics = false, array $thresholds = [])``
 
-- **Logger** - The PSR-3 logger to use for logging.
+- **logger** - The PSR-3 logger to use for logging.
 - **logRequests** - By default the middleware is set to log every request and response. If you wish that to log only the requests and responses that you retrieve a status code above 4xx set this as false.
 - **logRequests** - If you set logRequests as true and this as true then guzzle will also log statistics about the requests.
-- **thresholds** - This is an array that you may use to change the thresholds of logging the responses. 
+- **thresholds** - An array that you may use to change the thresholds of logging the responses. 
 
 ### Using options on each request
 
@@ -90,7 +89,7 @@ Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details
 
 ## Credits
 
-- [George Mponos][link-author]
+- [George Mponos](gmponos@gmail.com)
 
 ## License
 
