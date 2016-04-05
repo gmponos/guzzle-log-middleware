@@ -8,6 +8,7 @@ before_script:
 
 script:
     - vendor/bin/phpunit --coverage-clover=clover.xml
+    - vendor/bin/phpcs ./src --standard=PSR2 -n
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
