@@ -14,19 +14,19 @@ use Psr\Log\LogLevel;
 /**
  * A class to log HTTP Requests through Guzzle.
  */
-final class LoggerMiddleware
+class LoggerMiddleware
 {
     use LoggerAwareTrait;
 
     /**
      * @var bool Whether or not to log requests as they are made.
      */
-    private $logRequests;
+    protected $logRequests;
 
     /**
      * @var bool
      */
-    private $logStatistics;
+    protected $logStatistics;
 
     /**
      * @var array
