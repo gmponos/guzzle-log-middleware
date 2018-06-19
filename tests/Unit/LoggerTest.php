@@ -69,11 +69,11 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     {
         $this->appendResponse(200, [], 'test')->getClient()->get('/');
         $this->assertCount(2, $this->logger->history);
-        $this->assertEquals('debug', $this->logger->history[0]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertEquals('debug', $this->logger->history[1]['level']);
-        $this->assertEquals('Guzzle HTTP response', $this->logger->history[1]['message']);
-        $this->assertEquals('test', $this->logger->history[1]['context']['response']['body']);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('debug', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertSame('test', $this->logger->history[1]['context']['response']['body']);
     }
 
     /**
@@ -111,10 +111,10 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertCount(2, $this->logger->history);
-        $this->assertEquals('debug', $this->logger->history[0]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertEquals('critical', $this->logger->history[1]['level']);
-        $this->assertEquals('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('critical', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
     }
 
     /**
@@ -127,10 +127,10 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         } catch (RequestException $e) {
         }
         $this->assertCount(2, $this->logger->history);
-        $this->assertEquals('debug', $this->logger->history[0]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertEquals('error', $this->logger->history[1]['level']);
-        $this->assertEquals('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('error', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
     }
 
     /**
@@ -143,10 +143,10 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         } catch (RequestException $e) {
         }
         $this->assertCount(2, $this->logger->history);
-        $this->assertEquals('debug', $this->logger->history[0]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertEquals('critical', $this->logger->history[1]['level']);
-        $this->assertEquals('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('critical', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
     }
 
     /**
@@ -156,10 +156,10 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     {
         $this->appendResponse(404)->getClient(['exceptions' => false])->get('/');
         $this->assertCount(2, $this->logger->history);
-        $this->assertEquals('debug', $this->logger->history[0]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertEquals('error', $this->logger->history[1]['level']);
-        $this->assertEquals('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('error', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
     }
 
     /**
@@ -169,10 +169,10 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     {
         $this->appendResponse(500)->getClient(['exceptions' => false])->get('/');
         $this->assertCount(2, $this->logger->history);
-        $this->assertEquals('debug', $this->logger->history[0]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertEquals('critical', $this->logger->history[1]['level']);
-        $this->assertEquals('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('critical', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
     }
 
     /**
@@ -188,10 +188,10 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
             ->get('/');
 
         $this->assertCount(2, $this->logger->history);
-        $this->assertEquals('debug', $this->logger->history[0]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertEquals('debug', $this->logger->history[1]['level']);
-        $this->assertEquals('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('debug', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
         $this->assertContains(
             [
                 'status' => true,
@@ -215,10 +215,10 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertCount(2, $this->logger->history);
-        $this->assertEquals('debug', $this->logger->history[0]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertEquals('critical', $this->logger->history[1]['level']);
-        $this->assertEquals('Guzzle HTTP exception', $this->logger->history[1]['message']);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('critical', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP exception', $this->logger->history[1]['message']);
     }
 
     /**
@@ -249,15 +249,15 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertCount(4, $this->logger->history);
-        $this->assertEquals('debug', $this->logger->history[0]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertEquals('debug', $this->logger->history[1]['level']);
-        $this->assertEquals('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('debug', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
 
-        $this->assertEquals('debug', $this->logger->history[2]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[2]['message']);
-        $this->assertEquals('critical', $this->logger->history[3]['level']);
-        $this->assertEquals('Guzzle HTTP response', $this->logger->history[3]['message']);
+        $this->assertSame('debug', $this->logger->history[2]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[2]['message']);
+        $this->assertSame('critical', $this->logger->history[3]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[3]['message']);
     }
 
     /**
@@ -290,15 +290,15 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertCount(4, $this->logger->history);
-        $this->assertEquals('debug', $this->logger->history[0]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertEquals('debug', $this->logger->history[1]['level']);
-        $this->assertEquals('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('debug', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
 
-        $this->assertEquals('debug', $this->logger->history[2]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[2]['message']);
-        $this->assertEquals('debug', $this->logger->history[3]['level']);
-        $this->assertEquals('Guzzle HTTP response', $this->logger->history[3]['message']);
+        $this->assertSame('debug', $this->logger->history[2]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[2]['message']);
+        $this->assertSame('debug', $this->logger->history[3]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[3]['message']);
     }
 
     /**
@@ -315,12 +315,12 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
             ->get('/');
 
         $this->assertCount(3, $this->logger->history);
-        $this->assertEquals('debug', $this->logger->history[0]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertEquals('debug', $this->logger->history[1]['level']);
-        $this->assertEquals('Guzzle HTTP statistics', $this->logger->history[1]['message']);
-        $this->assertEquals('debug', $this->logger->history[2]['level']);
-        $this->assertEquals('Guzzle HTTP response', $this->logger->history[2]['message']);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('debug', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP statistics', $this->logger->history[1]['message']);
+        $this->assertSame('debug', $this->logger->history[2]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[2]['message']);
     }
 
     /**
@@ -343,10 +343,10 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
             ->get('/');
 
         $this->assertCount(2, $this->logger->history);
-        $this->assertEquals('debug', $this->logger->history[0]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertEquals('warning', $this->logger->history[1]['level']);
-        $this->assertEquals('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('warning', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
     }
 
     /**
@@ -387,10 +387,10 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
             ->get('/');
 
         $this->assertCount(2, $this->logger->history);
-        $this->assertEquals('debug', $this->logger->history[0]['level']);
-        $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertEquals('debug', $this->logger->history[1]['level']);
-        $this->assertEquals('Guzzle HTTP response', $this->logger->history[1]['message']);
-        $this->assertEquals("Body was truncated because of it's size", $this->logger->history[1]['context']['response']['body']);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('debug', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertSame("Body was truncated because of it's size", $this->logger->history[1]['context']['response']['body']);
     }
 }
