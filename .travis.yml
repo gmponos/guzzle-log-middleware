@@ -7,7 +7,7 @@ php:
     - 7.2
 
 before_script:
-    - composer install --prefer-dist --no-interaction --no-suggests
+    - composer install --prefer-dist --no-interaction
 
 script:
     - vendor/bin/phpunit --coverage-clover=clover.xml
