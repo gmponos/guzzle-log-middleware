@@ -2,19 +2,17 @@
 
 namespace Gmponos\GuzzleLogger\Test\Unit;
 
-use GuzzleHttp\Exception\TransferException;
-use Mockery as m;
+use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
+use Gmponos\GuzzleLogger\Test\TestApp\HistoryLogger;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
-use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
-use Gmponos\GuzzleLogger\Test\TestApp\HistoryLogger;
 
 class LoggerTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @var MockHandler
      */
@@ -36,11 +34,11 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param int    $code
-     * @param array  $headers
+     * @param int $code
+     * @param array $headers
      * @param string $body
      * @param string $version
-     * @param null   $reason
+     * @param null $reason
      * @return $this
      */
     public function appendResponse($code = 200, array $headers = [], $body = '', $version = '1.1', $reason = null)
@@ -69,7 +67,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
      */
     public function logSuccessfulTransaction()
     {
-        $this->appendResponse(200, [], 'test')->getClient()->get("/");
+        $this->appendResponse(200, [], 'test')->getClient()->get('/');
         $this->assertCount(2, $this->logger->history);
         $this->assertEquals('debug', $this->logger->history[0]['level']);
         $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
@@ -89,7 +87,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
                     'requests' => false,
                 ],
             ])
-            ->get("/");
+            ->get('/');
 
         $this->assertCount(0, $this->logger->history);
     }
@@ -107,10 +105,9 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
                     'requests' => false,
                 ],
             ]);
-            $client->get("/");
-            $client->get("/");
+            $client->get('/');
+            $client->get('/');
         } catch (\Exception $e) {
-
         }
 
         $this->assertCount(2, $this->logger->history);
@@ -126,9 +123,8 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     public function logTransactionWith4xxCode()
     {
         try {
-            $this->appendResponse(404)->getClient()->get("/");
+            $this->appendResponse(404)->getClient()->get('/');
         } catch (RequestException $e) {
-
         }
         $this->assertCount(2, $this->logger->history);
         $this->assertEquals('debug', $this->logger->history[0]['level']);
@@ -143,9 +139,8 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     public function logTransactionWith5xxCode()
     {
         try {
-            $this->appendResponse(500)->getClient()->get("/");
+            $this->appendResponse(500)->getClient()->get('/');
         } catch (RequestException $e) {
-
         }
         $this->assertCount(2, $this->logger->history);
         $this->assertEquals('debug', $this->logger->history[0]['level']);
@@ -159,7 +154,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
      */
     public function logTransactionWith4xxCodeWithoutExceptions()
     {
-        $this->appendResponse(404)->getClient(['exceptions' => false])->get("/");
+        $this->appendResponse(404)->getClient(['exceptions' => false])->get('/');
         $this->assertCount(2, $this->logger->history);
         $this->assertEquals('debug', $this->logger->history[0]['level']);
         $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
@@ -172,7 +167,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
      */
     public function logTransactionWith5xxCodeWithoutExceptions()
     {
-        $this->appendResponse(500)->getClient(['exceptions' => false])->get("/");
+        $this->appendResponse(500)->getClient(['exceptions' => false])->get('/');
         $this->assertCount(2, $this->logger->history);
         $this->assertEquals('debug', $this->logger->history[0]['level']);
         $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
@@ -190,17 +185,18 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         ];
         $this->appendResponse(200, $headers, '{"status": true, "client": 13000}')
             ->getClient(['exceptions' => false])
-            ->get("/");
+            ->get('/');
 
         $this->assertCount(2, $this->logger->history);
         $this->assertEquals('debug', $this->logger->history[0]['level']);
         $this->assertEquals('Guzzle HTTP request', $this->logger->history[0]['message']);
         $this->assertEquals('debug', $this->logger->history[1]['level']);
         $this->assertEquals('Guzzle HTTP response', $this->logger->history[1]['message']);
-        $this->assertContains([
-            'status' => true,
-            'client' => 13000,
-        ],
+        $this->assertContains(
+            [
+                'status' => true,
+                'client' => 13000,
+            ],
             $this->logger->history[1]['context']['response']['body']
         );
     }
@@ -214,7 +210,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
             $this->mockHandler->append(new TransferException());
 
             $this->getClient()
-                ->get("/");
+                ->get('/');
         } catch (\Exception $e) {
         }
 
@@ -237,9 +233,8 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
                         'warning_threshold' => null,
                     ],
                 ])
-                ->get("/");
+                ->get('/');
         } catch (\Exception $e) {
-
         }
 
         try {
@@ -249,7 +244,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
                         'warning_threshold' => null,
                     ],
                 ])
-                ->get("/");
+                ->get('/');
         } catch (\Exception $e) {
         }
 
@@ -278,9 +273,8 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
                         'error_threshold' => null,
                     ],
                 ])
-                ->get("/");
+                ->get('/');
         } catch (\Exception $e) {
-
         }
 
         try {
@@ -291,7 +285,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
                         'error_threshold' => null,
                     ],
                 ])
-                ->get("/");
+                ->get('/');
         } catch (\Exception $e) {
         }
 
@@ -318,7 +312,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
                     'statistics' => true,
                 ],
             ])
-            ->get("/");
+            ->get('/');
 
         $this->assertCount(3, $this->logger->history);
         $this->assertEquals('debug', $this->logger->history[0]['level']);
@@ -346,7 +340,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
                     ],
                 ],
             ])
-            ->get("/");
+            ->get('/');
 
         $this->assertCount(2, $this->logger->history);
         $this->assertEquals('debug', $this->logger->history[0]['level']);
@@ -361,36 +355,36 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     public function logTransactionWithHugeResponseBody()
     {
         $body =
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..'.
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
+            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
             'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..';
 
         $this->appendResponse(300, [], $body)
             ->getClient()
-            ->get("/");
+            ->get('/');
 
         $this->assertCount(2, $this->logger->history);
         $this->assertEquals('debug', $this->logger->history[0]['level']);

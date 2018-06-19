@@ -11,9 +11,11 @@ use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
+/**
+ * A class to log HTTP Requests through Guzzle.
+ */
 class LoggerMiddleware
 {
-
     use LoggerAwareTrait;
 
     /**
@@ -40,12 +42,16 @@ class LoggerMiddleware
      * Creates a callable middleware for logging requests and responses.
      *
      * @param LoggerInterface $logger
-     * @param bool            $logRequests
-     * @param bool            $logStatistics
-     * @param array           $thresholds
+     * @param bool $logRequests
+     * @param bool $logStatistics
+     * @param array $thresholds
      */
-    public function __construct(LoggerInterface $logger, $logRequests = true, $logStatistics = false, array $thresholds = [])
-    {
+    public function __construct(
+        LoggerInterface $logger,
+        $logRequests = true,
+        $logStatistics = false,
+        array $thresholds = []
+    ) {
         $this->setLogger($logger);
         $this->logRequests = $logRequests;
         $this->logStatistics = $logStatistics;
@@ -70,7 +76,7 @@ class LoggerMiddleware
                 $this->logRequest($request);
                 if ($this->logStatistics && !isset($options['on_stats'])) {
                     $options['on_stats'] = function (TransferStats $stats) {
-                        $this->logger->debug("Guzzle HTTP statistics", [
+                        $this->logger->debug('Guzzle HTTP statistics', [
                             'time' => $stats->getTransferTime(),
                             'uri' => $stats->getEffectiveUri(),
                         ]);
@@ -125,18 +131,20 @@ class LoggerMiddleware
 
     /**
      * @param RequestInterface $request
+     * @return void
      */
     private function logRequest(RequestInterface $request)
     {
         $this->logger->log(
             $this->getLogLevel($request),
-            "Guzzle HTTP request",
+            'Guzzle HTTP request',
             $this->withRequestContext($request)
         );
     }
 
     /**
      * @param ResponseInterface|null $response
+     * @return void
      */
     private function logResponse(ResponseInterface $response)
     {
@@ -156,7 +164,6 @@ class LoggerMiddleware
     protected function handleSuccess(RequestInterface $request)
     {
         return function (ResponseInterface $response) use ($request) {
-
             if ($this->logRequests === true) {
                 $this->logResponse($response);
                 return $response;
@@ -199,7 +206,7 @@ class LoggerMiddleware
      * Merges and return the response context
      *
      * @param \Exception $reason
-     * @param array      $context
+     * @param array $context
      * @return array
      */
     private function withReasonContext(\Exception $reason, array $context = [])
@@ -213,7 +220,7 @@ class LoggerMiddleware
      * Merges and return the request context
      *
      * @param RequestInterface $request
-     * @param array            $context
+     * @param array $context
      * @return array
      */
     private function withRequestContext(RequestInterface $request, array $context = [])
@@ -230,7 +237,7 @@ class LoggerMiddleware
      * Merges and return the response context
      *
      * @param ResponseInterface $response
-     * @param array             $context
+     * @param array $context
      * @return array
      */
     private function withResponseContext(ResponseInterface $response, array $context = [])
@@ -258,7 +265,7 @@ class LoggerMiddleware
             $result['body'] = "Body was truncated because of it's size";
         } else {
             $result['body'] = $message->getBody()->getContents();
-            $isJson = preg_grep('/application\/json/', $message->getHeader("Content-Type"));
+            $isJson = preg_grep('/application\/json/', $message->getHeader('Content-Type'));
             if (!empty($isJson)) {
                 $result['body'] = json_decode($result['body'], true);
             }
@@ -270,6 +277,7 @@ class LoggerMiddleware
 
     /**
      * @param array $options
+     * @return void
      */
     private function setOptions(array $options)
     {
