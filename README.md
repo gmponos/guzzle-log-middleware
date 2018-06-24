@@ -60,6 +60,7 @@ $client->get("/", [
         'statistics' => true,
         'error_threshold' => null,
         'warning_threshold' => null,
+        'sensitive' => true,
         'levels' => [
             400 => 'info'
             401 => 'warning'
@@ -69,6 +70,7 @@ $client->get("/", [
 ]);
 ```
 
+- ``sensitive`` if you set this to true then the body of request/response will not be logged as it will be considered that it contains sensitive information.
 - ``requests`` Do not log anything unless if the request is above the threshold or inside the levels.
 - ``statistics`` if the requests variable is true and this is also true the logger will log statistics about the request
 - ``levels`` set custom log levels for each response status code
