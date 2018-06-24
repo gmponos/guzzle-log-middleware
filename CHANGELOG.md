@@ -13,6 +13,7 @@ $guzzle->get('/test', ['log' => ['sensitive' => true]]);
 ```
 
 ### Changed
+- Changed the required version of guzzle from `^6.3` to `6.*`. Package should be able to work without constraints.  
 - For performance reasons when a body of a request/response is bigger than 3500 characters the body is truncated.
 Before a key with `summary` was added in the logs and also a key with `body`. The `body` contained the wording 
 "Body was truncated because of it's size". This is changed now and the `summary` key is removed therefore the `body` 
