@@ -1,6 +1,6 @@
 # Changelog
 
-All Notable changes to `Gmponos\GuzzleHttpLogger` will be documented in this file
+All Notable changes to `gmponos\guzzle_logger` will be documented in this file
 
 ## 0.2.0 - 2018-06-24
 
