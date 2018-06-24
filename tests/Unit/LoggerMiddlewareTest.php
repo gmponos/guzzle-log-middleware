@@ -10,8 +10,9 @@ use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\RequestOptions;
 
-class LoggerTest extends \PHPUnit_Framework_TestCase
+class LoggerMiddlewareTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var MockHandler
@@ -41,7 +42,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
      * @param null $reason
      * @return $this
      */
-    public function appendResponse($code = 200, array $headers = [], $body = '', $version = '1.1', $reason = null)
+    private function appendResponse($code = 200, array $headers = [], $body = '', $version = '1.1', $reason = null)
     {
         $this->mockHandler->append(new Response($code, $headers, $body, $version, $reason));
         return $this;
@@ -67,13 +68,17 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
      */
     public function logSuccessfulTransaction()
     {
-        $this->appendResponse(200, [], 'test')->getClient()->get('/');
+        $this->appendResponse(200, [], 'response_body')
+            ->getClient()
+            ->get('/', [RequestOptions::BODY => 'request_body']);
+
         $this->assertCount(2, $this->logger->history);
         $this->assertSame('debug', $this->logger->history[0]['level']);
         $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('request_body', $this->logger->history[0]['context']['request']['body']);
         $this->assertSame('debug', $this->logger->history[1]['level']);
         $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-        $this->assertSame('test', $this->logger->history[1]['context']['response']['body']);
+        $this->assertSame('response_body', $this->logger->history[1]['context']['response']['body']);
     }
 
     /**
@@ -98,7 +103,8 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     public function logOnlyUnsuccessfulTransaction()
     {
         try {
-            $this->appendResponse(200)
+            $this
+                ->appendResponse(200)
                 ->appendResponse(500);
             $client = $this->getClient([
                 'log' => [
@@ -347,6 +353,28 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
         $this->assertSame('warning', $this->logger->history[1]['level']);
         $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
+    }
+
+    /**
+     * @test
+     */
+    public function doNotRequestOrResponseBodyBecauseOfSensitiveData()
+    {
+        $this->appendResponse(200, [], 'sensitive_data')
+            ->getClient([
+                'log' => [
+                    'sensitive' => true,
+                ],
+            ])
+            ->get('/', [RequestOptions::BODY => 'sensitive_request_data']);
+
+        $this->assertCount(2, $this->logger->history);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('Body contains sensitive information therefore it is not included.', $this->logger->history[0]['context']['request']['body']);
+        $this->assertSame('debug', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertSame('Body contains sensitive information therefore it is not included.', $this->logger->history[1]['context']['response']['body']);
     }
 
     /**

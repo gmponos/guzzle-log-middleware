@@ -5,6 +5,7 @@ namespace Gmponos\GuzzleLogger\Middleware;
 use Closure;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\TransferStats;
+use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerAwareTrait;
@@ -37,6 +38,11 @@ class LoggerMiddleware
      * @var array
      */
     private $logCodeLevel = [];
+
+    /**
+     * @var bool
+     */
+    private $sensitive;
 
     /**
      * Creates a callable middleware for logging requests and responses.
@@ -75,12 +81,7 @@ class LoggerMiddleware
             if ($this->logRequests === true) {
                 $this->logRequest($request);
                 if ($this->logStatistics && !isset($options['on_stats'])) {
-                    $options['on_stats'] = function (TransferStats $stats) {
-                        $this->logger->debug('Guzzle HTTP statistics', [
-                            'time' => $stats->getTransferTime(),
-                            'uri' => $stats->getEffectiveUri(),
-                        ]);
-                    };
+                    $options['on_stats'] = $this->logStatistics();
                 }
             }
 
@@ -140,6 +141,19 @@ class LoggerMiddleware
             'Guzzle HTTP request',
             $this->withRequestContext($request)
         );
+    }
+
+    /**
+     * @return Closure
+     */
+    private function logStatistics()
+    {
+        return function (TransferStats $stats) {
+            $this->logger->debug('Guzzle HTTP statistics', [
+                'time' => $stats->getTransferTime(),
+                'uri' => $stats->getEffectiveUri(),
+            ]);
+        };
     }
 
     /**
@@ -229,7 +243,11 @@ class LoggerMiddleware
         $context['request']['headers'] = $request->getHeaders();
         $context['request']['uri'] = $request->getRequestTarget();
         $context['request']['version'] = 'HTTP/' . $request->getProtocolVersion();
-        $context['request'] = array_merge($context['request'], $this->getBodyContext($request));
+
+        if ($request->getBody()->getSize() !== 0) {
+            $context['request']['body'] = $this->getBody($request);
+        }
+
         return $context;
     }
 
@@ -246,33 +264,41 @@ class LoggerMiddleware
         $context['response']['statusCode'] = $response->getStatusCode();
         $context['response']['version'] = 'HTTP/' . $response->getProtocolVersion();
         $context['response']['message'] = $response->getReasonPhrase();
-        $context['response'] = array_merge($context['response'], $this->getBodyContext($response));
+
+        if ($response->getBody()->getSize() !== 0) {
+            $context['response']['body'] = $this->getBody($response);
+        }
+
         return $context;
     }
 
     /**
-     * @param RequestInterface|ResponseInterface $message
-     * @return array
+     * @param MessageInterface $message
+     * @return string
      */
-    public function getBodyContext($message)
+    public function getBody(MessageInterface $message)
     {
-        if ($message->getBody()->getSize() === 0) {
-            return [];
+        $stream = $message->getBody();
+        if ($stream->isSeekable() === false || $stream->isReadable() === false) {
+            return 'Body stream is not seekable/readable.';
         }
 
-        if ($message->getBody()->getSize() >= 3500) {
-            $result['summary'] = $message->getBody()->read(200) . ' (truncated...)';
-            $result['body'] = "Body was truncated because of it's size";
-        } else {
-            $result['body'] = $message->getBody()->getContents();
-            $isJson = preg_grep('/application\/json/', $message->getHeader('Content-Type'));
-            if (!empty($isJson)) {
-                $result['body'] = json_decode($result['body'], true);
-            }
+        if ($this->sensitive === true) {
+            return 'Body contains sensitive information therefore it is not included.';
         }
 
-        $message->getBody()->rewind();
-        return $result;
+        if ($stream->getSize() >= 3500) {
+            return $stream->read(200) . ' (truncated...)';
+        }
+
+        $body = $stream->getContents();
+        $isJson = preg_grep('/application\/json/', $message->getHeader('Content-Type'));
+        if (!empty($isJson)) {
+            $body = json_decode($body, true);
+        }
+
+        $stream->rewind();
+        return $body;
     }
 
     /**
@@ -281,17 +307,18 @@ class LoggerMiddleware
      */
     private function setOptions(array $options)
     {
+        if (!isset($options['log'])) {
+            return;
+        }
+
         $defaults = [
             'requests' => $this->logRequests,
             'statistics' => $this->logStatistics,
             'warning_threshold' => 399,
             'error_threshold' => 499,
             'levels' => [],
+            'sensitive' => false,
         ];
-
-        if (!isset($options['log'])) {
-            return;
-        }
 
         $options = array_merge($defaults, $options['log']);
         $this->logCodeLevel = $options['levels'];
@@ -299,5 +326,6 @@ class LoggerMiddleware
         $this->thresholds['error'] = $options['error_threshold'];
         $this->logRequests = $options['requests'];
         $this->logStatistics = $options['statistics'];
+        $this->sensitive = $options['sensitive'];
     }
 }
