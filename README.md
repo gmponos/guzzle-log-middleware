@@ -1,9 +1,12 @@
 [![codecov.io](https://codecov.io/github/gmponos/Guzzle-logger/coverage.svg?branch=master)](https://codecov.io/github/gmponos/Guzzle-logger?branch=master)
 [![Build Status](https://travis-ci.org/gmponos/Guzzle-logger.svg?branch=master)](https://travis-ci.org/gmponos/Guzzle-logger)
 
-# GuzzleHttpLogger Middleware
+# Guzzle Logger Middleware
 
-This is a middleware for the guzzle that automatically logs every request and response using a PSR-3 logger.
+This is a middleware for [guzzle](https://github.com/guzzle/guzzle) that will help yoy automatically log every request 
+and response using a PSR-3 logger.
+
+The middleware is functional with Guzzle 6.
 
 ## Install
 
@@ -29,14 +32,15 @@ $client = new GuzzleHttp\Client([
 ]);
 ```
 
-From now on each request you make and response that you receive using the ``$client`` will be logged.
+From now on each request and response you make that you receive using the ``$client`` will be logged.
 The default levels that the middleware uses for logging are the following.
 
-- Requests are logged with level debug.
-- Request statistics are logged with level debug.
-- Responses with http status code < 400 with level debug.
-- Responses with http status code < 500 with level error.
-- Responses with http status code >= 500 with level critical.
+- Requests are logged with level DEBUG.
+- Request statistics are logged with level DEBUG.
+- Responses with http status code < 400 with level DEBUG.
+- Responses with http status code > 400 & < 500 with level ERROR.
+- Responses with http status code >= 500 with level CRITICAL.
+- If no status code or response is returned the log level is CRITICAL.
 
 ### Advanced initialization
 
