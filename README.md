@@ -89,10 +89,6 @@ Please see [CHANGELOG](CHANGELOG.md) for more information what has changed recen
 $ composer test
 ```
 
-## Contributing
-
-Please see [CONTRIBUTING](CONTRIBUTING.md) and [CONDUCT](CONDUCT.md) for details.
-
 ## Credits
 
 - [George Mponos](gmponos@gmail.com)
