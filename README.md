@@ -10,7 +10,7 @@ This is a middleware for the guzzle that automatically logs every request and re
 Via Composer
 
 ``` bash
-$ composer require gmponos/guzzle-http-logger
+$ composer require gmponos/guzzle_logger
 ```
 
 ## Usage
@@ -46,7 +46,7 @@ The signature of the LoggerMiddleware class is the following:
 
 - **logger** - The PSR-3 logger to use for logging.
 - **logRequests** - By default the middleware is set to log every request and response. If you wish that to log only the requests and responses that you retrieve a status code above 4xx set this as false.
-- **logRequests** - If you set logRequests as true and this as true then guzzle will also log statistics about the requests.
+- **logStatistics** - If you set logStatistics as true and this as true then guzzle will also log statistics about the requests.
 - **thresholds** - An array that you may use to change the thresholds of logging the responses. 
 
 ### Using options on each request
