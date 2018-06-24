@@ -391,6 +391,6 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
         $this->assertSame('debug', $this->logger->history[1]['level']);
         $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-        $this->assertSame("Body was truncated because of it's size", $this->logger->history[1]['context']['response']['body']);
+        $this->assertStringEndsWith(' (truncated...)', $this->logger->history[1]['context']['response']['body']);
     }
 }
