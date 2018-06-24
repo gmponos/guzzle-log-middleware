@@ -3,7 +3,7 @@
 
 # Guzzle Logger Middleware
 
-This is a middleware for [guzzle](https://github.com/guzzle/guzzle) that will help yougi automatically log every request 
+This is a middleware for [guzzle](https://github.com/guzzle/guzzle) that will help you automatically log every request 
 and response using a PSR-3 logger.
 
 The middleware is functional with Guzzle 6.
