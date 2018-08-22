@@ -210,6 +210,32 @@ class LoggerMiddlewareTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function logTransactionWithJsonApiResponse()
+    {
+        $headers = [
+            'Content-Type' => 'application/vnd.api+json',
+        ];
+        $this->appendResponse(200, $headers, '{"status": true, "client": 13000}')
+            ->getClient(['exceptions' => false])
+            ->get('/');
+
+        $this->assertCount(2, $this->logger->history);
+        $this->assertSame('debug', $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame('debug', $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertContains(
+            [
+                'status' => true,
+                'client' => 13000,
+            ],
+            $this->logger->history[1]['context']['response']['body']
+        );
+    }
+
+    /**
+     * @test
+     */
     public function logTransactionWithTransferException()
     {
         try {
