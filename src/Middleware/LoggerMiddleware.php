@@ -292,7 +292,7 @@ class LoggerMiddleware
         }
 
         $body = $stream->getContents();
-        $isJson = preg_grep('/application\/json/', $message->getHeader('Content-Type'));
+        $isJson = preg_grep('/application\/[\w\.\+]*(json)/', $message->getHeader('Content-Type'));
         if (!empty($isJson)) {
             $body = json_decode($body, true);
         }
