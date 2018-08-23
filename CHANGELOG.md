@@ -2,6 +2,15 @@
 
 All Notable changes to `gmponos\guzzle_logger` will be documented in this file
 
+## 0.3.0 - 2018-08-23
+
+### Changed
+- The package was reading the headers of the Request/Response and if they contained `application/json` the body
+was parsed into an array in order to be better readable in the logger. This has changed to match a regular expression
+`/application\/[\w\.\+]*(json)/` in order to catch more cases. Thanks @eduarguzher [#4](https://github.com/gmponos/Guzzle-logger/pull/4)
+- According to PHPStorm indication the `ext-json` needs to be installed in order for the package to work. Therefore
+it was added as a requirement to `composer.json`
+
 ## 0.2.0 - 2018-06-24
 
 ### Added
@@ -13,10 +22,10 @@ $guzzle->get('/test', ['log' => ['sensitive' => true]]);
 ```
 
 ### Changed
-- Changed the required version of guzzle from `^6.3` to `6.*`. Package should be able to work without constraints.  
+- Changed the required version of guzzle from `^6.3` to `6.*`. Package should be able to work with any version `6.*` of `guzzle`.  
 - For performance reasons when a body of a request/response is bigger than 3500 characters the body is truncated.
-Before a key with `summary` was added in the logs and also a key with `body`. The `body` contained the wording 
-"Body was truncated because of it's size". This is changed now and the `summary` key is removed therefore the `body` 
+When it was truncated a key with `summary` was added in the logs and also a key with `body`. The `body` contained only 
+the wording "Body was truncated because of it's size". This is changed now and the `summary` key is removed and the `body` 
 key will contain the summary from now on.
 - If a Stream is not seekable or readable the body can not be logged. A wording is added instead in the key `body`.  
 
