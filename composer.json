@@ -2,7 +2,7 @@
     "name": "gmponos/guzzle_logger",
     "description": "A middleware for guzzle to log every request and response",
     "license": "MIT",
-    "homepage": "https://github.com/gmponos/Guzzle-logger",
+    "homepage": "https://github.com/gmponos/guzzle-log-middleware",
     "authors": [
         {
             "name": "George Mponos",
