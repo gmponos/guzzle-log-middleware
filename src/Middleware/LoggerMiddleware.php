@@ -8,7 +8,6 @@ use GuzzleHttp\TransferStats;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
@@ -17,8 +16,6 @@ use Psr\Log\LogLevel;
  */
 class LoggerMiddleware
 {
-    use LoggerAwareTrait;
-
     /**
      * @var bool Whether or not to log requests as they are made.
      */
@@ -45,6 +42,11 @@ class LoggerMiddleware
     private $sensitive;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * Creates a callable middleware for logging requests and responses.
      *
      * @param LoggerInterface $logger
@@ -58,7 +60,7 @@ class LoggerMiddleware
         $logStatistics = false,
         array $thresholds = []
     ) {
-        $this->setLogger($logger);
+        $this->logger = $logger;
         $this->logRequests = $logRequests;
         $this->logStatistics = $logStatistics;
         $this->thresholds = array_merge([
@@ -204,11 +206,9 @@ class LoggerMiddleware
                 $this->logRequest($request);
             }
 
-            if ($reason instanceof RequestException) {
-                if ($reason->hasResponse()) {
-                    $this->logResponse($reason->getResponse());
-                    return \GuzzleHttp\Promise\rejection_for($reason);
-                }
+            if ($reason instanceof RequestException && $reason->hasResponse()) {
+                $this->logResponse($reason->getResponse());
+                return \GuzzleHttp\Promise\rejection_for($reason);
             }
 
             $this->logger->log($this->getLogLevel($reason), 'Guzzle HTTP exception', $this->withReasonContext($reason));

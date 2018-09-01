@@ -1,6 +1,11 @@
 # Changelog
 
-All Notable changes to `gmponos\guzzle_logger` will be documented in this file
+All Notable changes to `gmponos/guzzle_logger` will be documented in this file
+
+## 0.4.0 - [NOT RELEASE YET]
+
+### Changed
+- Removed `LoggerAwareTrait`. Therefore the logger can not be set after the construction of the middleware.
 
 ## 0.3.0 - 2018-08-23
 
