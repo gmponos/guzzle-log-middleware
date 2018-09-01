@@ -1,5 +1,5 @@
 [![codecov.io](https://codecov.io/github/gmponos/Guzzle-logger/coverage.svg?branch=master)](https://codecov.io/github/gmponos/Guzzle-logger?branch=master)
-[![Build Status](https://travis-ci.org/gmponos/Guzzle-logger.svg?branch=master)](https://travis-ci.org/gmponos/Guzzle-logger)
+[![Build Status](https://travis-ci.org/gmponos/guzzle-log-middleware.svg?branch=master)](https://travis-ci.org/gmponos/guzzle-log-middleware)
 
 # Guzzle Logger Middleware
 
@@ -25,7 +25,7 @@ use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
 use GuzzleHttp\HandlerStack;
 
 $logger = new Logger();  //A new PSR-3 Logger like Monolog
-$stack = new HandlerStack();
+$stack = HandlerStack::create(); // will create a stack stack with middlewares of guzzle already pushed inside of him.
 $stack->push(new LoggerMiddleware($logger));
 $client = new GuzzleHttp\Client([
     'handler' => $stack,
