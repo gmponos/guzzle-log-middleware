@@ -29,7 +29,7 @@ use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
 use GuzzleHttp\HandlerStack;
 
 $logger = new Logger();  //A new PSR-3 Logger like Monolog
-$stack = HandlerStack::create(); // will create a stack stack with middlewares of guzzle already pushed inside of him.
+$stack = HandlerStack::create(); // will create a stack stack with middlewares of guzzle already pushed inside of it.
 $stack->push(new LoggerMiddleware($logger));
 $client = new GuzzleHttp\Client([
     'handler' => $stack,
