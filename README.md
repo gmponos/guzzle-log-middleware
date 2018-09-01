@@ -8,6 +8,10 @@ and response using a PSR-3 logger.
 
 The middleware is functional with Guzzle 6.
 
+**Note:** This package is still in version 0.x.x. According to [semantic versioning](https://semver.org/) major changes can occur while
+we are still on 0.x.x version. If you use the package for a project that is in production please lock this package in your composer
+to a specific version like `^0.2.0`.
+
 ## Install
 
 Via Composer
@@ -98,5 +102,5 @@ $ composer test
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
 ## Todo
- - Decouple the format of the record from the middleware.
+ - Move the formatting of the Request/Response into separate classes and not inside the middleware class.
  - More tests
