@@ -12,19 +12,19 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
 
 /**
- * A class to log HTTP Requests through Guzzle.
+ * A class to log HTTP Requests and Responses of Guzzle.
  */
 class LoggerMiddleware
 {
     /**
      * @var bool Whether or not to log requests as they are made.
      */
-    protected $logRequests;
+    private $logRequestOnExceptionOnly;
 
     /**
      * @var bool
      */
-    protected $logStatistics;
+    private $logStatistics;
 
     /**
      * @var array
@@ -50,18 +50,18 @@ class LoggerMiddleware
      * Creates a callable middleware for logging requests and responses.
      *
      * @param LoggerInterface $logger
-     * @param bool $logRequests
+     * @param bool $logRequestOnExceptionOnly
      * @param bool $logStatistics
      * @param array $thresholds
      */
     public function __construct(
         LoggerInterface $logger,
-        $logRequests = true,
+        $logRequestOnExceptionOnly = true,
         $logStatistics = false,
         array $thresholds = []
     ) {
         $this->logger = $logger;
-        $this->logRequests = $logRequests;
+        $this->logRequestOnExceptionOnly = $logRequestOnExceptionOnly;
         $this->logStatistics = $logStatistics;
         $this->thresholds = array_merge([
             'error' => 499,
@@ -80,24 +80,25 @@ class LoggerMiddleware
         return function (RequestInterface $request, array $options) use ($handler) {
             $this->setOptions($options);
 
-            if ($this->logRequests === true) {
+            if ($this->logRequestOnExceptionOnly === true) {
                 $this->logRequest($request);
                 if ($this->logStatistics && !isset($options['on_stats'])) {
                     $options['on_stats'] = $this->logStatistics();
                 }
             }
 
-            return $handler($request, $options)->then(
-                $this->handleSuccess($request),
-                $this->handleFailure($request)
-            );
+            return $handler($request, $options)
+                ->then(
+                    $this->handleSuccess($request),
+                    $this->handleFailure($request)
+                );
         };
     }
 
     /**
      * Returns the default log level for a response.
      *
-     * @param ResponseInterface|ResponseInterface $message
+     * @param RequestInterface|ResponseInterface|\Exception $message
      * @return string LogLevel
      */
     private function getLogLevel($message = null)
@@ -130,6 +131,8 @@ class LoggerMiddleware
 
             return LogLevel::DEBUG;
         }
+
+        throw new \InvalidArgumentException('Could not retrieve the log level because of unknown message class.');
     }
 
     /**
@@ -159,7 +162,7 @@ class LoggerMiddleware
     }
 
     /**
-     * @param ResponseInterface|null $response
+     * @param ResponseInterface $response
      * @return void
      */
     private function logResponse(ResponseInterface $response)
@@ -177,10 +180,10 @@ class LoggerMiddleware
      * @param RequestInterface $request
      * @return Closure
      */
-    protected function handleSuccess(RequestInterface $request)
+    private function handleSuccess(RequestInterface $request)
     {
         return function (ResponseInterface $response) use ($request) {
-            if ($this->logRequests === true) {
+            if ($this->logRequestOnExceptionOnly === true) {
                 $this->logResponse($response);
                 return $response;
             }
@@ -199,10 +202,10 @@ class LoggerMiddleware
      * @param RequestInterface $request
      * @return Closure
      */
-    protected function handleFailure(RequestInterface $request)
+    private function handleFailure(RequestInterface $request)
     {
         return function (\Exception $reason) use ($request) {
-            if ($this->logRequests === false) {
+            if ($this->logRequestOnExceptionOnly === false) {
                 $this->logRequest($request);
             }
 
@@ -276,7 +279,7 @@ class LoggerMiddleware
      * @param MessageInterface $message
      * @return string
      */
-    public function getBody(MessageInterface $message)
+    private function getBody(MessageInterface $message)
     {
         $stream = $message->getBody();
         if ($stream->isSeekable() === false || $stream->isReadable() === false) {
@@ -312,7 +315,7 @@ class LoggerMiddleware
         }
 
         $defaults = [
-            'requests' => $this->logRequests,
+            'requests' => $this->logRequestOnExceptionOnly,
             'statistics' => $this->logStatistics,
             'warning_threshold' => 399,
             'error_threshold' => 499,
@@ -324,7 +327,7 @@ class LoggerMiddleware
         $this->logCodeLevel = $options['levels'];
         $this->thresholds['warning'] = $options['warning_threshold'];
         $this->thresholds['error'] = $options['error_threshold'];
-        $this->logRequests = $options['requests'];
+        $this->logRequestOnExceptionOnly = $options['requests'];
         $this->logStatistics = $options['statistics'];
         $this->sensitive = $options['sensitive'];
     }

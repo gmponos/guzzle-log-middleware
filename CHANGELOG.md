@@ -2,10 +2,13 @@
 
 All Notable changes to `gmponos/guzzle_logger` will be documented in this file
 
-## 0.4.0 - [NOT RELEASE YET]
+## 0.4.0 - 2018-09-12
 
 ### Changed
 - Removed `LoggerAwareTrait`. Therefore the logger can not be set after the construction of the middleware.
+- Changed the variable name `$logRequests` of the constructor to `$logRequestOnExceptionOnly`.
+- In case a message is not an `\Exception` or a `MessageInterface` an Exception is thrown.
+- Changed all the functions except of `__construct` and `__invoke` to private. Same for the properties.
 
 ## 0.3.0 - 2018-08-23
 
