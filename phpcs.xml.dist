@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<ruleset name="GuzzleLoggerCodestyle">
+<ruleset name="guzzle-log-middleware-codestyle">
     <description>The coding standard of this package</description>
     <arg value="p" />
 
