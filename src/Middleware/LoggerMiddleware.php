@@ -19,7 +19,7 @@ class LoggerMiddleware
     /**
      * @var bool Whether or not to log requests as they are made.
      */
-    private $logRequestOnExceptionOnly;
+    private $onExceptionOnly;
 
     /**
      * @var bool
@@ -50,18 +50,18 @@ class LoggerMiddleware
      * Creates a callable middleware for logging requests and responses.
      *
      * @param LoggerInterface $logger
-     * @param bool $logRequestOnExceptionOnly
-     * @param bool $logStatistics
+     * @param bool $onExceptionOnly The request and the response will be logged only in cases there is an exception or if they status code exceeds the thresholds.
+     * @param bool $logStatistics If this is true an extra row will be added that will contain some HTTP statistics.
      * @param array $thresholds
      */
     public function __construct(
         LoggerInterface $logger,
-        $logRequestOnExceptionOnly = true,
+        $onExceptionOnly = false,
         $logStatistics = false,
         array $thresholds = []
     ) {
         $this->logger = $logger;
-        $this->logRequestOnExceptionOnly = $logRequestOnExceptionOnly;
+        $this->onExceptionOnly = $onExceptionOnly;
         $this->logStatistics = $logStatistics;
         $this->thresholds = array_merge([
             'error' => 499,
@@ -80,7 +80,7 @@ class LoggerMiddleware
         return function (RequestInterface $request, array $options) use ($handler) {
             $this->setOptions($options);
 
-            if ($this->logRequestOnExceptionOnly === true) {
+            if ($this->onExceptionOnly === false) {
                 $this->logRequest($request);
                 if ($this->logStatistics && !isset($options['on_stats'])) {
                     $options['on_stats'] = $this->logStatistics();
@@ -183,7 +183,7 @@ class LoggerMiddleware
     private function handleSuccess(RequestInterface $request)
     {
         return function (ResponseInterface $response) use ($request) {
-            if ($this->logRequestOnExceptionOnly === true) {
+            if ($this->onExceptionOnly === false) {
                 $this->logResponse($response);
                 return $response;
             }
@@ -205,7 +205,7 @@ class LoggerMiddleware
     private function handleFailure(RequestInterface $request)
     {
         return function (\Exception $reason) use ($request) {
-            if ($this->logRequestOnExceptionOnly === false) {
+            if ($this->onExceptionOnly === true) {
                 $this->logRequest($request);
             }
 
@@ -314,8 +314,16 @@ class LoggerMiddleware
             return;
         }
 
+        $options = $options['log'];
+        if (isset($options['requests'])) {
+            @trigger_error('Using option "requests" is deprecated and it will be removed on the next version. Use "on_exception_only"', E_USER_DEPRECATED);
+            if (!isset($options['on_exception_only'])) {
+                $options['on_exception_only'] = !$options['requests'];
+            }
+        }
+
         $defaults = [
-            'requests' => $this->logRequestOnExceptionOnly,
+            'on_exception_only' => $this->onExceptionOnly,
             'statistics' => $this->logStatistics,
             'warning_threshold' => 399,
             'error_threshold' => 499,
@@ -323,11 +331,11 @@ class LoggerMiddleware
             'sensitive' => false,
         ];
 
-        $options = array_merge($defaults, $options['log']);
+        $options = array_merge($defaults, $options);
         $this->logCodeLevel = $options['levels'];
         $this->thresholds['warning'] = $options['warning_threshold'];
         $this->thresholds['error'] = $options['error_threshold'];
-        $this->logRequestOnExceptionOnly = $options['requests'];
+        $this->onExceptionOnly = $options['on_exception_only'];
         $this->logStatistics = $options['statistics'];
         $this->sensitive = $options['sensitive'];
     }

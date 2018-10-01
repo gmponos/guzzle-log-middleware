@@ -6,7 +6,6 @@ use Psr\Log\LoggerInterface;
 
 class HistoryLogger implements LoggerInterface
 {
-
     /**
      * @var array
      */
@@ -16,7 +15,7 @@ class HistoryLogger implements LoggerInterface
      * System is unusable.
      *
      * @param string $message
-     * @param array  $context
+     * @param array $context
      * @return void
      */
     public function emergency($message, array $context = [])
@@ -35,7 +34,7 @@ class HistoryLogger implements LoggerInterface
      * trigger the SMS alerts and wake you up.
      *
      * @param string $message
-     * @param array  $context
+     * @param array $context
      * @return void
      */
     public function alert($message, array $context = [])
@@ -53,7 +52,7 @@ class HistoryLogger implements LoggerInterface
      * Example: Application component unavailable, unexpected exception.
      *
      * @param string $message
-     * @param array  $context
+     * @param array $context
      * @return void
      */
     public function critical($message, array $context = [])
@@ -70,7 +69,7 @@ class HistoryLogger implements LoggerInterface
      * be logged and monitored.
      *
      * @param string $message
-     * @param array  $context
+     * @param array $context
      * @return void
      */
     public function error($message, array $context = [])
@@ -89,7 +88,7 @@ class HistoryLogger implements LoggerInterface
      * that are not necessarily wrong.
      *
      * @param string $message
-     * @param array  $context
+     * @param array $context
      * @return void
      */
     public function warning($message, array $context = [])
@@ -105,7 +104,7 @@ class HistoryLogger implements LoggerInterface
      * Normal but significant events.
      *
      * @param string $message
-     * @param array  $context
+     * @param array $context
      * @return void
      */
     public function notice($message, array $context = [])
@@ -123,7 +122,7 @@ class HistoryLogger implements LoggerInterface
      * Example: User logs in, SQL logs.
      *
      * @param string $message
-     * @param array  $context
+     * @param array $context
      * @return void
      */
     public function info($message, array $context = [])
@@ -139,7 +138,7 @@ class HistoryLogger implements LoggerInterface
      * Detailed debug information.
      *
      * @param string $message
-     * @param array  $context
+     * @param array $context
      * @return void
      */
     public function debug($message, array $context = [])
@@ -154,9 +153,9 @@ class HistoryLogger implements LoggerInterface
     /**
      * Logs with an arbitrary level.
      *
-     * @param mixed  $level
+     * @param mixed $level
      * @param string $message
-     * @param array  $context
+     * @param array $context
      * @return void
      */
     public function log($level, $message, array $context = [])
@@ -166,5 +165,13 @@ class HistoryLogger implements LoggerInterface
             'message' => $message,
             'context' => $context,
         ];
+    }
+
+    /**
+     * Cleans the history of the logger.
+     */
+    public function clean()
+    {
+        $this->history = [];
     }
 }

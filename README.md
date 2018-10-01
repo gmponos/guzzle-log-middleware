@@ -55,7 +55,7 @@ The signature of the LoggerMiddleware class is the following:
 ``LoggerMiddleware(LoggerInterface $logger, $logRequests = true, $logStatistics = false, array $thresholds = [])``
 
 - **logger** - The PSR-3 logger to use for logging.
-- **logRequests** - By default the middleware is set to log every request and response. If you wish that to log only the requests and responses that you retrieve a status code above 4xx set this as false.
+- **$onExceptionOnly** - By default the middleware is set to log every request and response. If you wish that to log only the requests and responses that you retrieve a status code above 4xx set this as true.
 - **logStatistics** - If you set logStatistics as true and this as true then guzzle will also log statistics about the requests.
 - **thresholds** - An array that you may use to change the thresholds of logging the responses. 
 
@@ -66,7 +66,7 @@ You can set on each request options about your log.
 ```php
 $client->get("/", [
     'log' => [
-        'requests' => true,
+        'on_exception_only' => true,
         'statistics' => true,
         'error_threshold' => null,
         'warning_threshold' => null,
@@ -81,8 +81,8 @@ $client->get("/", [
 ```
 
 - ``sensitive`` if you set this to true then the body of request/response will not be logged as it will be considered that it contains sensitive information.
-- ``requests`` Do not log anything unless if the request is above the threshold or inside the levels.
-- ``statistics`` if the requests variable is true and this is also true the logger will log statistics about the request
+- ``on_exception_only`` Do not log anything unless if the response status code is above the threshold.
+- ``statistics`` if the `on_exception_only` option/variable is true and this is also true the middleware will log statistics about the HTTP call.
 - ``levels`` set custom log levels for each response status code
 
 ## Change log

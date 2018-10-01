@@ -85,7 +85,7 @@ final class LoggerMiddlewareTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function doNotLogSuccessfulTransaction()
+    public function logOnlyResponseWhenLogRequestsIsSetToFalse()
     {
         $this->appendResponse(200)
             ->createClient([
@@ -94,6 +94,17 @@ final class LoggerMiddlewareTest extends \PHPUnit_Framework_TestCase
                 ],
             ])
             ->get('/');
+
+        $this->assertCount(0, $this->logger->history);
+
+        $this->logger->clean();
+
+        $this->appendResponse(200)->createClient()
+            ->get('/', [
+                'log' => [
+                    'requests' => false,
+                ],
+            ]);
 
         $this->assertCount(0, $this->logger->history);
     }
