@@ -52,10 +52,10 @@ The default levels that the middleware uses for logging are the following.
 
 The signature of the LoggerMiddleware class is the following:
 
-``LoggerMiddleware(LoggerInterface $logger, $logRequests = true, $logStatistics = false, array $thresholds = [])``
+``LoggerMiddleware(LoggerInterface $logger, $onExceptionOnly = false, $logStatistics = false, array $thresholds = [])``
 
 - **logger** - The PSR-3 logger to use for logging.
-- **$onExceptionOnly** - By default the middleware is set to log every request and response. If you wish that to log only the requests and responses that you retrieve a status code above 4xx set this as true.
+- **onExceptionOnly** - By default the middleware is set to log every request and response. If you wish that to log only the requests and responses that you retrieve a status code above 4xx set this as true.
 - **logStatistics** - If you set logStatistics as true and this as true then guzzle will also log statistics about the requests.
 - **thresholds** - An array that you may use to change the thresholds of logging the responses. 
 
