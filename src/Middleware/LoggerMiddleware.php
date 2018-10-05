@@ -19,32 +19,32 @@ class LoggerMiddleware
     /**
      * @var bool Whether or not to log requests as they are made.
      */
-    private $onExceptionOnly;
+    protected $onExceptionOnly;
 
     /**
      * @var bool
      */
-    private $logStatistics;
+    protected $logStatistics;
 
     /**
      * @var array
      */
-    private $thresholds;
+    protected $thresholds;
 
     /**
      * @var array
      */
-    private $logCodeLevel = [];
+    protected $logCodeLevel = [];
 
     /**
      * @var bool
      */
-    private $sensitive;
+    protected $sensitive;
 
     /**
      * @var LoggerInterface
      */
-    private $logger;
+    protected $logger;
 
     /**
      * Creates a callable middleware for logging requests and responses.
@@ -101,7 +101,7 @@ class LoggerMiddleware
      * @param RequestInterface|ResponseInterface|\Exception $message
      * @return string LogLevel
      */
-    private function getLogLevel($message = null)
+    protected function getLogLevel($message = null)
     {
         if ($message === null || ($message instanceof \Exception)) {
             return LogLevel::CRITICAL;
@@ -139,7 +139,7 @@ class LoggerMiddleware
      * @param RequestInterface $request
      * @return void
      */
-    private function logRequest(RequestInterface $request)
+    protected function logRequest(RequestInterface $request)
     {
         $this->logger->log(
             $this->getLogLevel($request),
@@ -151,7 +151,7 @@ class LoggerMiddleware
     /**
      * @return Closure
      */
-    private function logStatistics()
+    protected function logStatistics()
     {
         return function (TransferStats $stats) {
             $this->logger->debug('Guzzle HTTP statistics', [
@@ -165,7 +165,7 @@ class LoggerMiddleware
      * @param ResponseInterface $response
      * @return void
      */
-    private function logResponse(ResponseInterface $response)
+    protected function logResponse(ResponseInterface $response)
     {
         $this->logger->log(
             $this->getLogLevel($response),
@@ -180,7 +180,7 @@ class LoggerMiddleware
      * @param RequestInterface $request
      * @return Closure
      */
-    private function handleSuccess(RequestInterface $request)
+    protected function handleSuccess(RequestInterface $request)
     {
         return function (ResponseInterface $response) use ($request) {
             if ($this->onExceptionOnly === false) {
@@ -202,7 +202,7 @@ class LoggerMiddleware
      * @param RequestInterface $request
      * @return Closure
      */
-    private function handleFailure(RequestInterface $request)
+    protected function handleFailure(RequestInterface $request)
     {
         return function (\Exception $reason) use ($request) {
             if ($this->onExceptionOnly === true) {
@@ -226,7 +226,7 @@ class LoggerMiddleware
      * @param array $context
      * @return array
      */
-    private function withReasonContext(\Exception $reason, array $context = [])
+    protected function withReasonContext(\Exception $reason, array $context = [])
     {
         $context['reason']['code'] = $reason->getCode();
         $context['reason']['message'] = $reason->getMessage();
@@ -240,7 +240,7 @@ class LoggerMiddleware
      * @param array $context
      * @return array
      */
-    private function withRequestContext(RequestInterface $request, array $context = [])
+    protected function withRequestContext(RequestInterface $request, array $context = [])
     {
         $context['request']['method'] = $request->getMethod();
         $context['request']['headers'] = $request->getHeaders();
@@ -261,7 +261,7 @@ class LoggerMiddleware
      * @param array $context
      * @return array
      */
-    private function withResponseContext(ResponseInterface $response, array $context = [])
+    protected function withResponseContext(ResponseInterface $response, array $context = [])
     {
         $context['response']['headers'] = $response->getHeaders();
         $context['response']['statusCode'] = $response->getStatusCode();
@@ -279,7 +279,7 @@ class LoggerMiddleware
      * @param MessageInterface $message
      * @return string
      */
-    private function getBody(MessageInterface $message)
+    protected function getBody(MessageInterface $message)
     {
         $stream = $message->getBody();
         if ($stream->isSeekable() === false || $stream->isReadable() === false) {
@@ -308,7 +308,7 @@ class LoggerMiddleware
      * @param array $options
      * @return void
      */
-    private function setOptions(array $options)
+    protected function setOptions(array $options)
     {
         if (!isset($options['log'])) {
             return;
