@@ -14,7 +14,7 @@ use Psr\Log\LogLevel;
 /**
  * A class to log HTTP Requests and Responses of Guzzle.
  */
-class LoggerMiddleware
+class LogMiddleware
 {
     /**
      * @var bool Whether or not to log requests as they are made.
