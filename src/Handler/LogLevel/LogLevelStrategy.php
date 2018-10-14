@@ -7,6 +7,11 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LogLevel;
 
+/**
+ * This class is the default one that will be used in Handlers to determine the log level.
+ *
+ * @author George Mponos <gmponos@gmail.com>
+ */
 class LogLevelStrategy implements LogLevelStrategyInterface
 {
     /**
@@ -41,24 +46,7 @@ class LogLevelStrategy implements LogLevelStrategyInterface
         }
 
         if ($value instanceof ResponseInterface) {
-            $code = $value->getStatusCode();
-            if ($code === 0) {
-                return LogLevel::CRITICAL;
-            }
-
-            if (isset($this->logCodeLevel[$code])) {
-                return $this->logCodeLevel[$code];
-            }
-
-            if ($this->thresholds['error'] !== null && $code > $this->thresholds['error']) {
-                return LogLevel::CRITICAL;
-            }
-
-            if ($this->thresholds['warning'] !== null && $code > $this->thresholds['warning']) {
-                return LogLevel::ERROR;
-            }
-
-            return LogLevel::DEBUG;
+            return $this->getResponseLevel($value);
         }
 
         if ($value instanceof TransferStats) {
@@ -68,6 +56,10 @@ class LogLevelStrategy implements LogLevelStrategyInterface
         throw new \InvalidArgumentException('Could not retrieve the log level because of unknown message class.');
     }
 
+    /**
+     * @param array $options
+     * @return void
+     */
     private function setOptions(array $options)
     {
         if (!isset($options['log'])) {
@@ -84,5 +76,31 @@ class LogLevelStrategy implements LogLevelStrategyInterface
         $this->logCodeLevel = $options['levels'];
         $this->thresholds['warning'] = $options['warning_threshold'];
         $this->thresholds['error'] = $options['error_threshold'];
+    }
+
+    /**
+     * @param ResponseInterface $response
+     * @return string
+     */
+    private function getResponseLevel(ResponseInterface $response)
+    {
+        $code = $response->getStatusCode();
+        if ($code === 0) {
+            return LogLevel::CRITICAL;
+        }
+
+        if (isset($this->logCodeLevel[$code])) {
+            return $this->logCodeLevel[$code];
+        }
+
+        if ($this->thresholds['error'] !== null && $code > $this->thresholds['error']) {
+            return LogLevel::CRITICAL;
+        }
+
+        if ($this->thresholds['warning'] !== null && $code > $this->thresholds['warning']) {
+            return LogLevel::ERROR;
+        }
+
+        return LogLevel::DEBUG;
     }
 }

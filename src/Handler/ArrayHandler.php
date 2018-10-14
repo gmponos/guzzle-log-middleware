@@ -11,6 +11,9 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @author George Mponos <gmponos@gmail.com>
+ */
 final class ArrayHandler implements HandlerInterface
 {
     /**
@@ -18,11 +21,20 @@ final class ArrayHandler implements HandlerInterface
      */
     private $logLevelStrategy;
 
+    /**
+     * @param LogLevelStrategyInterface|null $logLevelStrategy
+     */
     public function __construct(LogLevelStrategyInterface $logLevelStrategy = null)
     {
         $this->logLevelStrategy = $logLevelStrategy === null ? new LogLevelStrategy() : $logLevelStrategy;
     }
 
+    /**
+     * @param LoggerInterface $logger
+     * @param \Exception|TransferStats|MessageInterface $value
+     * @param array $options
+     * @return void
+     */
     public function log(LoggerInterface $logger, $value, array $options = [])
     {
         if ($value instanceof ResponseInterface) {
@@ -78,6 +90,11 @@ final class ArrayHandler implements HandlerInterface
         throw new UnsupportedException();
     }
 
+    /**
+     * @param MessageInterface $message
+     * @param array $options
+     * @return string|array
+     */
     private function formatBody(MessageInterface $message, array $options)
     {
         $stream = $message->getBody();

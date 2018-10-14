@@ -9,6 +9,9 @@ use GuzzleHttp\TransferStats;
 use Psr\Http\Message\MessageInterface;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @author George Mponos <gmponos@gmail.com>
+ */
 final class StringHandler implements HandlerInterface
 {
     /**
@@ -16,15 +19,30 @@ final class StringHandler implements HandlerInterface
      */
     private $logLevelStrategy;
 
+    /**
+     * @param LogLevelStrategyInterface|null $logLevelStrategy
+     */
     public function __construct(LogLevelStrategyInterface $logLevelStrategy = null)
     {
         $this->logLevelStrategy = $logLevelStrategy = null ? new LogLevelStrategy() : $logLevelStrategy;
     }
 
+    /**
+     * @param LoggerInterface $logger
+     * @param MessageInterface|\Exception|TransferStats $value
+     * @param array $options
+     * @return void
+     */
     public function log(LoggerInterface $logger, $value, array $options = [])
     {
         $level = $this->logLevelStrategy->getLevel($value, $options);
         if ($value instanceof MessageInterface) {
+            // we do not allow to record the message if the body is not seekable.
+            if ($value->getBody()->isSeekable() === false || $value->getBody()->isReadable() === false) {
+                $logger->warning('String handler can not log request/response because the body is not seekable/rewindable.');
+                return;
+            }
+
             $logger->log($level, 'Guzzle HTTP message', ['message' => \GuzzleHttp\Psr7\str($value)]);
             return;
         }
