@@ -31,7 +31,7 @@ class LoggerMiddleware
     /**
      * @var HandlerInterface
      */
-    private $normalizer;
+    private $handler;
 
     /**
      * @var LoggerInterface
@@ -42,20 +42,20 @@ class LoggerMiddleware
      * Creates a callable middleware for logging requests and responses.
      *
      * @param LoggerInterface $logger
-     * @param HandlerInterface $normalizer
+     * @param HandlerInterface $handler
      * @param bool $onExceptionOnly The request and the response will be logged only in cases there is an exception or if they status code exceeds the thresholds.
      * @param bool $logStatistics If this is true an extra row will be added that will contain some HTTP statistics.
      */
     public function __construct(
         LoggerInterface $logger,
-        HandlerInterface $normalizer = null,
+        HandlerInterface $handler = null,
         $onExceptionOnly = false,
         $logStatistics = false
     ) {
         $this->logger = $logger;
         $this->onExceptionOnly = $onExceptionOnly;
         $this->logStatistics = $logStatistics;
-        $this->normalizer = $normalizer === null ? new ArrayHandler() : $normalizer;
+        $this->handler = $handler === null ? new ArrayHandler() : $handler;
     }
 
     /**
@@ -70,10 +70,10 @@ class LoggerMiddleware
             $this->setOptions($options);
 
             if ($this->onExceptionOnly === false) {
-                $this->normalizer->log($this->logger, $request, $options);
+                $this->handler->log($this->logger, $request, $options);
                 if ($this->logStatistics && !isset($options['on_stats'])) {
                     $options['on_stats'] = function (TransferStats $stats) {
-                        $this->normalizer->log($this->logger, $stats);
+                        $this->handler->log($this->logger, $stats);
                     };
                 }
             }
@@ -97,7 +97,7 @@ class LoggerMiddleware
         return function (ResponseInterface $response) use ($request, $options) {
             // On exception only is true then it must not log the response since it was successful.
             if ($this->onExceptionOnly === false) {
-                $this->normalizer->log($this->logger, $response, $options);
+                $this->handler->log($this->logger, $response, $options);
             }
 
             return $response;
@@ -116,15 +116,15 @@ class LoggerMiddleware
         return function (\Exception $reason) use ($request, $options) {
             if ($this->onExceptionOnly === true) {
                 // This means that the request was not logged and since an exception happened we need to log the request too.
-                $this->normalizer->log($this->logger, $request, $options);
+                $this->handler->log($this->logger, $request, $options);
             }
 
             if ($reason instanceof RequestException && $reason->hasResponse()) {
-                $this->normalizer->log($this->logger, $reason->getResponse(), $options);
+                $this->handler->log($this->logger, $reason->getResponse(), $options);
                 return \GuzzleHttp\Promise\rejection_for($reason);
             }
 
-            $this->normalizer->log($this->logger, $reason, $options);
+            $this->handler->log($this->logger, $reason, $options);
             return \GuzzleHttp\Promise\rejection_for($reason);
         };
     }
