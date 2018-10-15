@@ -1,7 +1,8 @@
 <?php
 
-namespace Gmponos\GuzzleLogger\Test\Unit;
+namespace Gmponos\GuzzleLogger\Test\Unit\Middleware;
 
+use Gmponos\GuzzleLogger\Handler\ArrayHandler;
 use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
 use Gmponos\GuzzleLogger\Test\TestApp\HistoryLogger;
 use GuzzleHttp\Client;
@@ -56,7 +57,7 @@ final class LoggerMiddlewareTest extends \PHPUnit_Framework_TestCase
     private function createClient(array $options = [])
     {
         $stack = HandlerStack::create($this->mockHandler);
-        $stack->unshift(new LoggerMiddleware($this->logger));
+        $stack->unshift(new LoggerMiddleware($this->logger, new ArrayHandler()));
         return new Client(
             array_merge([
                 'handler' => $stack,
@@ -90,7 +91,7 @@ final class LoggerMiddlewareTest extends \PHPUnit_Framework_TestCase
         $this->appendResponse(200)
             ->createClient([
                 'log' => [
-                    'requests' => false,
+                    'on_exception_only' => true,
                 ],
             ])
             ->get('/');
@@ -102,7 +103,7 @@ final class LoggerMiddlewareTest extends \PHPUnit_Framework_TestCase
         $this->appendResponse(200)->createClient()
             ->get('/', [
                 'log' => [
-                    'requests' => false,
+                    'on_exception_only' => true,
                 ],
             ]);
 
@@ -120,7 +121,7 @@ final class LoggerMiddlewareTest extends \PHPUnit_Framework_TestCase
                 ->appendResponse(500);
             $client = $this->createClient([
                 'log' => [
-                    'requests' => false,
+                    'on_exception_only' => true,
                 ],
             ]);
             $client->get('/');
@@ -375,11 +376,11 @@ final class LoggerMiddlewareTest extends \PHPUnit_Framework_TestCase
             ->createClient([
                 'log' => [
                     'levels' => [
-                        300 => 'warning',
-                        301 => 'warning',
-                        402 => 'warning',
-                        403 => 'warning',
-                        500 => 'warning',
+                        300 => LogLevel::WARNING,
+                        301 => LogLevel::WARNING,
+                        402 => LogLevel::WARNING,
+                        403 => LogLevel::WARNING,
+                        500 => LogLevel::WARNING,
                     ],
                 ],
             ])

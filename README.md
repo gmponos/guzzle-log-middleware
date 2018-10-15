@@ -52,12 +52,58 @@ The default levels that the middleware uses for logging are the following.
 
 The signature of the LoggerMiddleware class is the following:
 
-``LoggerMiddleware(LoggerInterface $logger, $onExceptionOnly = false, $logStatistics = false, array $thresholds = [])``
+``LoggerMiddleware(LoggerInterface $logger, HandlerInterface $handler = null, $onExceptionsOnly = false, $logStatistics = false)``
 
 - **logger** - The PSR-3 logger to use for logging.
-- **onExceptionOnly** - By default the middleware is set to log every request and response. If you wish that to log only the requests and responses that you retrieve a status code above 4xx set this as true.
+- **handler** - A HandlerInterface class that will be responsible for logging your request/response. Check Handlers sections.
+- **onExceptionOnly** - By default the middleware is set to log every request and response. If you wish that to log 
+the requests and responses only when guzzle returns a rejection set this as true. Guzzle returns a rejection when 
+`http_errors` option is set to true, meaning that it will throw exception in cases a 4xx or 5xx response is received. 
 - **logStatistics** - If you set logStatistics as true and this as true then guzzle will also log statistics about the requests.
-- **thresholds** - An array that you may use to change the thresholds of logging the responses. 
+
+### Handlers
+
+In order to make the middleware more flexible we allow the developers to initialize the middleware and pass a handler 
+during the construction. This handler must implement a `HandlerInterface` and it will be responsible for logging. 
+
+So now let's say that we have the following handler.
+
+``` php
+<?php
+
+namespace Gmponos\GuzzleLogger\Handler;
+
+use Psr\Http\Message\MessageInterface;
+use Psr\Log\LoggerInterface;
+
+final class SimpleHandler implements HandlerInterface
+{
+    public function log(LoggerInterface $logger, $value, array $options = [])
+    {
+        if ($value instanceof MessageInterface) {
+            $logger->debug('Guzzle HTTP message' . \GuzzleHttp\Psr7\str($value));
+        }
+
+        return;
+    }
+}
+```
+
+We can pass the handler above during construction of the middleware.
+
+```
+use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
+use GuzzleHttp\HandlerStack;
+
+$logger = new Logger();  //A new PSR-3 Logger like Monolog
+$stack = HandlerStack::create(); // will create a stack stack with middlewares of guzzle already pushed inside of it.
+$stack->push(new LoggerMiddleware($logger, new SimpleHandler()));
+$client = new GuzzleHttp\Client([
+    'handler' => $stack,
+]);
+```
+
+If no handler is passed the middleware will initialize it's own handler. At the moment the default one is `ArrayHandler`
 
 ### Using options on each request
 
@@ -104,5 +150,5 @@ $ composer test
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
 ## Todo
- - Move the formatting of the Request/Response into separate classes and not inside the middleware class.
+ - Create more handlers to log request/responses
  - More tests
