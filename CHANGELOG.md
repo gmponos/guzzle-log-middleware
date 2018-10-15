@@ -2,6 +2,13 @@
 
 All Notable changes to `gmponos/guzzle_logger` will be documented in this file
 
+## 0.6.0 - 2018-10-15
+
+### Changed
+- **BREAKING CHANGE** Changed the constructor function of middleware.
+    - From now on you can pass a handler to it's constructor. Handlers are responsible for logging request/responses.
+    - Removed threshold argument.
+
 ## 0.5.0 - 2018-10-01
 
 ### Changed

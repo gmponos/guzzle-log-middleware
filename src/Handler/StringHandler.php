@@ -7,6 +7,8 @@ use Gmponos\GuzzleLogger\Handler\LogLevel\LogLevelStrategy;
 use Gmponos\GuzzleLogger\Handler\LogLevel\LogLevelStrategyInterface;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -39,12 +41,20 @@ final class StringHandler implements HandlerInterface
         if ($value instanceof MessageInterface) {
             // we do not allow to record the message if the body is not seekable.
             if ($value->getBody()->isSeekable() === false || $value->getBody()->isReadable() === false) {
-                $logger->warning('String handler can not log request/response because the body is not seekable/rewindable.');
+                $logger->warning('String handler can not log request/response because the body is not seekable/readable.');
                 return;
             }
 
-            $logger->log($level, 'Guzzle HTTP message', ['message' => \GuzzleHttp\Psr7\str($value)]);
-            return;
+            $str = \GuzzleHttp\Psr7\str($value);
+            if ($value instanceof RequestInterface) {
+                $logger->log($level, 'Guzzle HTTP request:' . "\n" . $str);
+                return;
+            }
+
+            if ($value instanceof ResponseInterface) {
+                $logger->log($level, 'Guzzle HTTP response:' . "\n" . $str);
+                return;
+            }
         }
 
         if ($value instanceof \Exception) {

@@ -37,8 +37,8 @@ final class StringHandlerTest extends \PHPUnit_Framework_TestCase
         $this->handler->log($this->logger, new Request('get', \GuzzleHttp\Psr7\uri_for('www.test.com')));
         $this->assertCount(1, $this->logger->history);
         $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP message', $this->logger->history[0]['message']);
-        $this->assertArrayHasKey('message', $this->logger->history[0]['context']);
+        $this->assertStringStartsWith('Guzzle HTTP request:', $this->logger->history[0]['message']);
+        $this->assertCount(0, $this->logger->history[0]['context']);
     }
 
     /**
