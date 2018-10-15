@@ -13,7 +13,7 @@ All Notable changes to `gmponos/guzzle_logger` will be documented in this file
 
 ### Changed
 - **BREAKING CHANGE** Renamed the variable `$logRequestOnExceptionOnly` to `$onExceptionOnly`. The purpose of this constructor argument was 
-to log request and responses only if an exceptgition occurs. If you were manually setting this argument as true now you must set it
+to log request and responses only if an exception occurs. If you were manually setting this argument as true now you must set it
 as false as the variables meaning is inverted.
 - Deprecated the option `requests`. It will be removed on my next version.
 
