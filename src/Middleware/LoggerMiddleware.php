@@ -19,11 +19,15 @@ use Psr\Log\LoggerInterface;
 class LoggerMiddleware
 {
     /**
-     * @var bool Whether or not to log requests as they are made.
+     * Whether or not to log requests as they are made.
+     *
+     * @var bool
      */
     private $onExceptionOnly;
 
     /**
+     * Whether or not to log statistics.
+     *
      * @var bool
      */
     private $logStatistics;
@@ -144,7 +148,6 @@ class LoggerMiddleware
         $options = array_merge([
             'on_exception_only' => $this->onExceptionOnly,
             'statistics' => $this->logStatistics,
-            'sensitive' => false,
         ], $options);
 
         $this->onExceptionOnly = $options['on_exception_only'];
