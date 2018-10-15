@@ -56,7 +56,9 @@ The signature of the LoggerMiddleware class is the following:
 
 - **logger** - The PSR-3 logger to use for logging.
 - **handler** - A HandlerInterface class that will be responsible for logging your request/response. Check Handlers sections.
-- **$onExceptionOnly** - By default the middleware is set to log every request and response. If you wish that to log only the requests and responses that you retrieve a status code above 4xx set this as true.
+- **onExceptionOnly** - By default the middleware is set to log every request and response. If you wish that to log 
+the requests and responses only when guzzle returns a rejection set this as true. Guzzle returns a rejection when 
+`http_errors` option is set to true, meaning that it will throw exception in cases a 4xx or 5xx response is received. 
 - **logStatistics** - If you set logStatistics as true and this as true then guzzle will also log statistics about the requests.
 
 ### Handlers
