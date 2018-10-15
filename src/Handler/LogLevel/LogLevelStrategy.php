@@ -34,7 +34,7 @@ class LogLevelStrategy implements LogLevelStrategyInterface
      * @param array $options
      * @return string LogLevel
      */
-    public function getLevel($value, array $options = [])
+    public function getLevel($value, array $options = []): string
     {
         $this->setOptions($options);
         if ($value instanceof \Exception) {
@@ -60,7 +60,7 @@ class LogLevelStrategy implements LogLevelStrategyInterface
      * @param array $options
      * @return void
      */
-    private function setOptions(array $options)
+    private function setOptions(array $options): void
     {
         if (!isset($options['log'])) {
             return;
@@ -82,7 +82,7 @@ class LogLevelStrategy implements LogLevelStrategyInterface
      * @param ResponseInterface $response
      * @return string
      */
-    private function getResponseLevel(ResponseInterface $response)
+    private function getResponseLevel(ResponseInterface $response): string
     {
         $code = $response->getStatusCode();
         if ($code === 0) {

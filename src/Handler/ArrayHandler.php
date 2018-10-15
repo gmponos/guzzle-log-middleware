@@ -35,7 +35,7 @@ final class ArrayHandler implements HandlerInterface
      * @param array $options
      * @return void
      */
-    public function log(LoggerInterface $logger, $value, array $options = [])
+    public function log(LoggerInterface $logger, $value, array $options = []): void
     {
         if ($value instanceof ResponseInterface) {
             $context['response']['headers'] = $value->getHeaders();
