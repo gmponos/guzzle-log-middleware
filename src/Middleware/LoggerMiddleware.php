@@ -19,14 +19,12 @@ use Psr\Log\LoggerInterface;
 class LoggerMiddleware
 {
     /**
-     * Whether or not to log requests as they are made.
-     *
      * @var bool
      */
     private $onExceptionOnly;
 
     /**
-     * Whether or not to log statistics.
+     * Decides if you need to log statistics or not.
      *
      * @var bool
      */
