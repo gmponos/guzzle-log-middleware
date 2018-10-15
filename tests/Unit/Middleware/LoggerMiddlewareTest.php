@@ -1,6 +1,6 @@
 <?php
 
-namespace Gmponos\GuzzleLogger\Test\Unit;
+namespace Gmponos\GuzzleLogger\Test\Unit\Middleware;
 
 use Gmponos\GuzzleLogger\Handler\ArrayHandler;
 use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;

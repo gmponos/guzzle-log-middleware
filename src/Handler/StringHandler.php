@@ -24,7 +24,7 @@ final class StringHandler implements HandlerInterface
      */
     public function __construct(LogLevelStrategyInterface $logLevelStrategy = null)
     {
-        $this->logLevelStrategy = $logLevelStrategy = null ? new LogLevelStrategy() : $logLevelStrategy;
+        $this->logLevelStrategy = $logLevelStrategy === null ? new LogLevelStrategy() : $logLevelStrategy;
     }
 
     /**

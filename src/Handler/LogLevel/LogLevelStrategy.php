@@ -2,6 +2,7 @@
 
 namespace Gmponos\GuzzleLogger\Handler\LogLevel;
 
+use Gmponos\GuzzleLogger\Handler\Exception\UnsupportedException;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -53,7 +54,7 @@ class LogLevelStrategy implements LogLevelStrategyInterface
             return LogLevel::DEBUG;
         }
 
-        throw new \InvalidArgumentException('Could not retrieve the log level because of unknown message class.');
+        throw new UnsupportedException('Could not retrieve the log level because of unknown message class.');
     }
 
     /**
