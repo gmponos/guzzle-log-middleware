@@ -2,7 +2,7 @@
 
 All Notable changes to `gmponos/guzzle_logger` will be documented in this file
 
-## 0.6.0 - 2018-10-15
+## 0.6.0 - 2018-10-19
 
 ### Changed
 - **BREAKING CHANGE** Changed the constructor function of middleware.
