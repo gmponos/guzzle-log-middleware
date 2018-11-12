@@ -18,5 +18,5 @@ interface HandlerInterface
      * @param array $options
      * @return void
      */
-    public function log(LoggerInterface $logger, $value, array $options = []);
+    public function log(LoggerInterface $logger, $value, array $options = []): void;
 }

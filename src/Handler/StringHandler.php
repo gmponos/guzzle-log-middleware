@@ -35,7 +35,7 @@ final class StringHandler implements HandlerInterface
      * @param array $options
      * @return void
      */
-    public function log(LoggerInterface $logger, $value, array $options = [])
+    public function log(LoggerInterface $logger, $value, array $options = []): void
     {
         $level = $this->logLevelStrategy->getLevel($value, $options);
         if ($value instanceof MessageInterface) {

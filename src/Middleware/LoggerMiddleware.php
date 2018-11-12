@@ -51,8 +51,8 @@ class LoggerMiddleware
     public function __construct(
         LoggerInterface $logger,
         HandlerInterface $handler = null,
-        $onExceptionOnly = false,
-        $logStatistics = false
+        bool $onExceptionOnly = false,
+        bool $logStatistics = false
     ) {
         $this->logger = $logger;
         $this->onExceptionOnly = $onExceptionOnly;
@@ -64,9 +64,9 @@ class LoggerMiddleware
      * Called when the middleware is handled by the client.
      *
      * @param callable $handler
-     * @return Closure
+     * @return callable
      */
-    public function __invoke(callable $handler)
+    public function __invoke(callable $handler): callable
     {
         return function (RequestInterface $request, array $options) use ($handler) {
             $this->setOptions($options);
@@ -94,7 +94,7 @@ class LoggerMiddleware
      * @param array $options
      * @return Closure
      */
-    private function handleSuccess(RequestInterface $request, array $options)
+    private function handleSuccess(RequestInterface $request, array $options): callable
     {
         return function (ResponseInterface $response) use ($request, $options) {
             // On exception only is true then it must not log the response since it was successful.
@@ -113,7 +113,7 @@ class LoggerMiddleware
      * @param array $options
      * @return Closure
      */
-    private function handleFailure(RequestInterface $request, array $options)
+    private function handleFailure(RequestInterface $request, array $options): callable
     {
         return function (\Exception $reason) use ($request, $options) {
             if ($this->onExceptionOnly === true) {
@@ -135,7 +135,7 @@ class LoggerMiddleware
      * @param array $options
      * @return void
      */
-    private function setOptions(array $options)
+    private function setOptions(array $options): void
     {
         if (!isset($options['log'])) {
             return;

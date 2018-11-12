@@ -8,9 +8,10 @@ use Gmponos\GuzzleLogger\Test\TestApp\HistoryLogger;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\TransferStats;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
-final class StringHandlerTest extends \PHPUnit_Framework_TestCase
+final class StringHandlerTest extends TestCase
 {
     /**
      * @var HandlerInterface

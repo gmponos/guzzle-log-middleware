@@ -12,9 +12,10 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
+use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
-final class LoggerMiddlewareTest extends \PHPUnit_Framework_TestCase
+final class LoggerMiddlewareTest extends TestCase
 {
     /**
      * @var MockHandler

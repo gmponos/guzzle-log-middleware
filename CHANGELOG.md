@@ -7,7 +7,7 @@ All Notable changes to `gmponos/guzzle_logger` will be documented in this file
 ### Changed
 - **BREAKING CHANGE** Dropped support for PHP 5 and require PHP 7.2 as minimum version.
 
-## 0.6.0 - 2018-10-15
+## 0.6.0 - 2018-10-19
 
 ### Changed
 - **BREAKING CHANGE** Changed the constructor function of middleware.
