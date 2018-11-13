@@ -12,20 +12,35 @@ use Psr\Log\LogLevel;
  *
  * @author George Mponos <gmponos@gmail.com>
  */
-class LogLevelStrategy implements LogLevelStrategyInterface
+final class ThresholdLevelStrategy implements LogLevelStrategyInterface
 {
-    /**
-     * @var array
-     */
-    private $thresholds = [
-        LogLevel::WARNING => 399,
-        LogLevel::ERROR => 499,
+    private $matchingStatusCodes = [
+        '4xx' => 4,
+        '5xx' => 5,
     ];
 
     /**
      * @var array
      */
-    private $logCodeLevel = [];
+    private $thresholds = [
+        '4xx' => LogLevel::ERROR,
+        '5xx' => LogLevel::CRITICAL,
+    ];
+
+    private $exceptionLevel;
+
+    public function __construct(array $thresholds, string $exceptionLevel = null)
+    {
+        if(!in_array($exceptionLevel, LogLevel::$levels, true)){
+            throw new \Exception();
+        }
+        $this->thresholds = array_merge([
+            '4xx' => LogLevel::ERROR,
+            '5xx' => LogLevel::CRITICAL,
+        ], $thresholds);
+
+        $this->exceptionLevel = $exceptionLevel === null ? LogLevel::CRITICAL : $exceptionLevel;
+    }
 
     /**
      * Returns the log level for a response.
@@ -34,23 +49,15 @@ class LogLevelStrategy implements LogLevelStrategyInterface
      * @param array $options
      * @return string LogLevel
      */
-    public function getLevel($value, array $options = []): string
+    public function getLevel($value, array $options): string
     {
         $this->setOptions($options);
         if ($value instanceof \Exception) {
             return LogLevel::CRITICAL;
         }
 
-        if ($value instanceof RequestInterface) {
-            return LogLevel::DEBUG;
-        }
-
         if ($value instanceof ResponseInterface) {
             return $this->getResponseLevel($value);
-        }
-
-        if ($value instanceof TransferStats) {
-            return LogLevel::DEBUG;
         }
 
         return LogLevel::DEBUG;
@@ -68,14 +75,12 @@ class LogLevelStrategy implements LogLevelStrategyInterface
         $options = $options['log'];
 
         $options = array_merge([
-            'warning_threshold' => 399,
-            'error_threshold' => 499,
-            'levels' => [],
+            '4xx' => LogLevel::ERROR,
+            '5xx' => LogLevel::CRITICAL,
         ], $options);
 
-        $this->logCodeLevel = $options['levels'];
-        $this->thresholds['warning'] = $options['warning_threshold'];
-        $this->thresholds['error'] = $options['error_threshold'];
+        $this->thresholds['4xx'] = $options['4xx'];
+        $this->thresholds['5xx'] = $options['5xx'];
     }
 
     /**
@@ -89,16 +94,12 @@ class LogLevelStrategy implements LogLevelStrategyInterface
             return LogLevel::CRITICAL;
         }
 
-        if (isset($this->logCodeLevel[$code])) {
-            return $this->logCodeLevel[$code];
-        }
-
         if ($this->thresholds['error'] !== null && $code > $this->thresholds['error']) {
-            return LogLevel::CRITICAL;
+            return LogLevel::ERROR;
         }
 
         if ($this->thresholds['warning'] !== null && $code > $this->thresholds['warning']) {
-            return LogLevel::ERROR;
+            return LogLevel::WARNING;
         }
 
         return LogLevel::DEBUG;

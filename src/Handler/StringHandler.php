@@ -3,7 +3,7 @@
 namespace Gmponos\GuzzleLogger\Handler;
 
 use Gmponos\GuzzleLogger\Handler\Exception\UnsupportedException;
-use Gmponos\GuzzleLogger\Handler\LogLevel\LogLevelStrategy;
+use Gmponos\GuzzleLogger\Handler\LogLevel\ThresholdLevelStrategy;
 use Gmponos\GuzzleLogger\Handler\LogLevel\LogLevelStrategyInterface;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\MessageInterface;
@@ -26,7 +26,7 @@ final class StringHandler implements HandlerInterface
      */
     public function __construct(LogLevelStrategyInterface $logLevelStrategy = null)
     {
-        $this->logLevelStrategy = $logLevelStrategy === null ? new LogLevelStrategy() : $logLevelStrategy;
+        $this->logLevelStrategy = $logLevelStrategy === null ? new ThresholdLevelStrategy() : $logLevelStrategy;
     }
 
     /**
