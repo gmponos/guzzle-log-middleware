@@ -14,8 +14,6 @@ The middleware is functional with Guzzle 6.
 we are still on 0.x.x version. If you use the package for a project that is in production please lock this package in your composer
 to a specific version like `^0.3.0`.
 
-**Important note-2**: Next version will drop support for PHP5.
-
 ## Install
 
 Via Composer
@@ -54,11 +52,11 @@ The default levels that the middleware uses for logging are the following.
 
 The signature of the LoggerMiddleware class is the following:
 
-``LoggerMiddleware(LoggerInterface $logger, HandlerInterface $handler = null, $onExceptionsOnly = false, $logStatistics = false)``
+``LoggerMiddleware(LoggerInterface $logger, HandlerInterface $handler = null, $onFailureOnly = false, $logStatistics = false)``
 
 - **logger** - The PSR-3 logger to use for logging.
 - **handler** - A HandlerInterface class that will be responsible for logging your request/response. Check Handlers sections.
-- **onExceptionOnly** - By default the middleware is set to log every request and response. If you wish that to log 
+- **onFailureOnly** - By default the middleware is set to log every request and response. If you wish that to log 
 the requests and responses only when guzzle returns a rejection set this as true. Guzzle returns a rejection when 
 `http_errors` option is set to true, meaning that it will throw exception in cases a 4xx or 5xx response is received. 
 - **logStatistics** - If you set logStatistics as true and this as true then guzzle will also log statistics about the requests.
