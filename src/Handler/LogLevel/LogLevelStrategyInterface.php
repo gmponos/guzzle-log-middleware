@@ -11,7 +11,7 @@ use Psr\Log\LogLevel;
  */
 interface LogLevelStrategyInterface
 {
-    protected const LEVELS = [
+    public const LEVELS = [
         LogLevel::EMERGENCY => LogLevel::EMERGENCY,
         LogLevel::ALERT => LogLevel::ALERT,
         LogLevel::CRITICAL => LogLevel::CRITICAL,

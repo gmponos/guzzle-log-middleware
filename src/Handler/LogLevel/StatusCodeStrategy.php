@@ -8,8 +8,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LogLevel;
 
 /**
- * This class is the default one that will be used in Handlers to determine the log level.
- *
  * @author George Mponos <gmponos@gmail.com>
  */
 final class StatusCodeStrategy implements LogLevelStrategyInterface
@@ -17,10 +15,26 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
     /**
      * @var array
      */
-    private $logCodeLevel = [];
+    private $logCodeLevels;
 
-    public function __construct($min)
-    {
+    /**
+     * @var string
+     */
+    private $exceptionLevel;
+
+    /**
+     * @var string
+     */
+    private $defaultLevel;
+
+    public function __construct(
+        array $logCodeLevels,
+        $defaultLevel = LogLevel::DEBUG,
+        $exceptionLevel = LogLevel::CRITICAL
+    ) {
+        $this->logCodeLevels = $logCodeLevels;
+        $this->exceptionLevel = $exceptionLevel;
+        $this->defaultLevel = $defaultLevel;
     }
 
     /**
@@ -30,18 +44,18 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
      * @param array $options
      * @return string LogLevel
      */
-    public function getLevel($value, array $options = []): string
+    public function getLevel($value, array $options): string
     {
         $this->setOptions($options);
         if ($value instanceof \Exception) {
-            return LogLevel::ERROR;
+            return $this->exceptionLevel;
         }
 
         if ($value instanceof ResponseInterface) {
             return $this->getResponseLevel($value);
         }
 
-        return LogLevel::DEBUG;
+        return $this->defaultLevel;
     }
 
     /**
@@ -60,7 +74,7 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
             'levels' => [],
         ], $options);
 
-        $this->logCodeLevel = $options['levels'];
+        $this->logCodeLevels = $options['levels'];
     }
 
     /**
@@ -71,13 +85,13 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
     {
         $code = $response->getStatusCode();
         if ($code === 0) {
-            return LogLevel::ERROR;
+            return $this->exceptionLevel;
         }
 
         if (isset($this->logCodeLevel[$code])) {
-            return $this->logCodeLevel[$code];
+            return $this->logCodeLevels[$code];
         }
 
-        return LogLevel::DEBUG;
+        return $this->defaultLevel;
     }
 }

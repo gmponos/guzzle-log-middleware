@@ -5,11 +5,10 @@ namespace Gmponos\GuzzleLogger\Handler\LogLevel;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Psr\Log\InvalidArgumentException;
 use Psr\Log\LogLevel;
 
 /**
- * This class is the default one that will be used in Handlers to determine the log level.
- *
  * @author George Mponos <gmponos@gmail.com>
  */
 final class ThresholdLevelStrategy implements LogLevelStrategyInterface
@@ -29,17 +28,27 @@ final class ThresholdLevelStrategy implements LogLevelStrategyInterface
 
     private $exceptionLevel;
 
-    public function __construct(array $thresholds, string $exceptionLevel = null)
-    {
-        if(!in_array($exceptionLevel, LogLevel::$levels, true)){
-            throw new \Exception();
+    private $defaultLevel;
+
+    public function __construct(
+        array $thresholds = [],
+        string $defaultLevel = LogLevel::DEBUG,
+        string $exceptionLevel = LogLevel::CRITICAL
+    ) {
+        if (!in_array($exceptionLevel, self::LEVELS, true)) {
+            throw new InvalidArgumentException(sprintf('Log level %s does not exist', $exceptionLevel));
         }
+
+        if (!in_array($defaultLevel, self::LEVELS, true)) {
+            throw new InvalidArgumentException(sprintf('Log level %s does not exist', $defaultLevel));
+        }
+
+        $this->exceptionLevel = $exceptionLevel;
+        $this->defaultLevel = $defaultLevel;
         $this->thresholds = array_merge([
             '4xx' => LogLevel::ERROR,
             '5xx' => LogLevel::CRITICAL,
         ], $thresholds);
-
-        $this->exceptionLevel = $exceptionLevel === null ? LogLevel::CRITICAL : $exceptionLevel;
     }
 
     /**
@@ -53,14 +62,14 @@ final class ThresholdLevelStrategy implements LogLevelStrategyInterface
     {
         $this->setOptions($options);
         if ($value instanceof \Exception) {
-            return LogLevel::CRITICAL;
+            return $this->exceptionLevel;
         }
 
         if ($value instanceof ResponseInterface) {
             return $this->getResponseLevel($value);
         }
 
-        return LogLevel::DEBUG;
+        return $this->defaultLevel;
     }
 
     /**
@@ -91,17 +100,15 @@ final class ThresholdLevelStrategy implements LogLevelStrategyInterface
     {
         $code = $response->getStatusCode();
         if ($code === 0) {
-            return LogLevel::CRITICAL;
+            return $this->exceptionLevel;
         }
 
-        if ($this->thresholds['error'] !== null && $code > $this->thresholds['error']) {
-            return LogLevel::ERROR;
+        $codeLevel = (int)($code / 100);
+        $key = array_search($codeLevel, $this->matchingStatusCodes, true);
+        if ($key === false) {
+            return $this->exceptionLevel;
         }
 
-        if ($this->thresholds['warning'] !== null && $code > $this->thresholds['warning']) {
-            return LogLevel::WARNING;
-        }
-
-        return LogLevel::DEBUG;
+        return $this->thresholds[$key];
     }
 }
