@@ -387,7 +387,7 @@ final class LoggerMiddlewareTest extends TestCase
     /**
      * @test
      */
-    public function doNotRequestOrResponseBodyBecauseOfSensitiveData()
+    public function doNotLogRequestOrResponseBodyBecauseOfSensitiveData()
     {
         $this->appendResponse(200, [], 'sensitive_data')
             ->createClient([
