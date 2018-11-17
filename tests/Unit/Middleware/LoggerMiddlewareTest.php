@@ -50,7 +50,7 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logOnlyResponseWhenLogRequestsIsSetToFalse()
+    public function doNotLogOnSuccessfulTransactionWhenOnFailureOnlyIsTrue()
     {
         $this->appendResponse(200)
             ->createClient([
@@ -59,17 +59,6 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
                 ],
             ])
             ->get('/');
-
-        $this->assertCount(0, $this->logger->history);
-
-        $this->logger->clean();
-
-        $this->appendResponse(200)->createClient()
-            ->get('/', [
-                'log' => [
-                    'on_exception_only' => true,
-                ],
-            ]);
 
         $this->assertCount(0, $this->logger->history);
     }
@@ -107,7 +96,8 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
     {
         try {
             $this->appendResponse(404)->createClient()->get('/');
-        } catch (RequestException $e) {
+        } catch (\Exception $e) {
+            // The goal is not to assert the exception.
         }
         $this->assertCount(2, $this->logger->history);
         $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
@@ -207,7 +197,7 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logTransactionWithTransferException()
+    public function logTransactionWhenTransferExceptionOccurs()
     {
         try {
             $this->mockHandler->append(new TransferException());
@@ -354,7 +344,7 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function doNotRequestOrResponseBodyBecauseOfSensitiveData()
+    public function doNotLogRequestOrResponseBodyBecauseOfSensitiveData()
     {
         $this->appendResponse(200, [], 'sensitive_data')
             ->createClient([
