@@ -2,10 +2,14 @@
 
 namespace Gmponos\GuzzleLogger\Test\Unit;
 
+use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
 use Gmponos\GuzzleLogger\Test\TestApp\HistoryLogger;
+use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
+use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Response;
 
-class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
+abstract class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var MockHandler
@@ -45,4 +49,21 @@ class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
         $this->mockHandler->append(new Response($code, $headers, $body, $version, $reason));
         return $this;
     }
+
+    /**
+     * @param array $options
+     * @return Client
+     */
+    protected function createClient(array $options = [])
+    {
+        $stack = HandlerStack::create($this->mockHandler);
+        $stack->unshift($this->createMiddleware());
+        return new Client(
+            array_merge([
+                'handler' => $stack,
+            ], $options)
+        );
+    }
+
+    abstract protected function createMiddleware(): LoggerMiddleware;
 }

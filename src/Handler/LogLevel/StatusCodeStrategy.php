@@ -15,7 +15,7 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
     /**
      * @var array
      */
-    private $logCodeLevels;
+    private $statusCodeLevels;
 
     /**
      * @var string
@@ -27,14 +27,22 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
      */
     private $defaultLevel;
 
-    public function __construct(
-        array $logCodeLevels,
-        $defaultLevel = LogLevel::DEBUG,
-        $exceptionLevel = LogLevel::CRITICAL
-    ) {
-        $this->logCodeLevels = $logCodeLevels;
+    public function __construct($defaultLevel = LogLevel::DEBUG, $exceptionLevel = LogLevel::CRITICAL)
+    {
         $this->exceptionLevel = $exceptionLevel;
         $this->defaultLevel = $defaultLevel;
+    }
+
+    /**
+     * Sets a logging level per status code.
+     *
+     * @param int $statusCode
+     * @param string $level
+     */
+    public function setLevel(int $statusCode, string $level): void
+    {
+        // todo validate the level and status code.
+        $this->statusCodeLevels[$statusCode] = $level;
     }
 
     /**
@@ -70,11 +78,11 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
 
         $options = $options['log'];
 
-        $options = array_merge([
-            'levels' => [],
-        ], $options);
+        if (!isset($options['levels'])) {
+            return;
+        }
 
-        $this->logCodeLevels = $options['levels'];
+        $this->statusCodeLevels = $this->statusCodeLevels + $options['levels'];
     }
 
     /**
@@ -88,8 +96,8 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
             return $this->exceptionLevel;
         }
 
-        if (isset($this->logCodeLevel[$code])) {
-            return $this->logCodeLevels[$code];
+        if (isset($this->statusCodeLevels[$code])) {
+            return $this->statusCodeLevels[$code];
         }
 
         return $this->defaultLevel;

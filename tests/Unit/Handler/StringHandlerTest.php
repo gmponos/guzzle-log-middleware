@@ -2,31 +2,24 @@
 
 namespace Gmponos\GuzzleLogger\Test\Unit\Handler;
 
-use Gmponos\GuzzleLogger\Handler\HandlerInterface;
 use Gmponos\GuzzleLogger\Handler\StringHandler;
-use Gmponos\GuzzleLogger\Test\TestApp\HistoryLogger;
+use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
+use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\TransferStats;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
-final class StringHandlerTest extends TestCase
+final class StringHandlerTest extends AbstractLoggerMiddlewareTest
 {
     /**
-     * @var HandlerInterface
+     * @var StringHandler
      */
     private $handler;
-
-    /**
-     * @var HistoryLogger
-     */
-    private $logger;
 
     public function setUp()
     {
         parent::setUp();
-        $this->logger = new HistoryLogger();
         $this->handler = new StringHandler();
     }
 
@@ -49,7 +42,7 @@ final class StringHandlerTest extends TestCase
     {
         $this->handler->log($this->logger, new \Exception());
         $this->assertCount(1, $this->logger->history);
-        $this->assertSame(LogLevel::CRITICAL, $this->logger->history[0]['level']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
         $this->assertSame('Guzzle HTTP exception', $this->logger->history[0]['message']);
     }
 
@@ -75,5 +68,10 @@ final class StringHandlerTest extends TestCase
     public function handlerWithValueThatDoesNotMatchMustThrowException()
     {
         $this->handler->log($this->logger, new \stdClass());
+    }
+
+    protected function createMiddleware(): LoggerMiddleware
+    {
+        return new LoggerMiddleware($this->logger, $this->handler);
     }
 }

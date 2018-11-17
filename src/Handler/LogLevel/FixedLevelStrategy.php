@@ -4,6 +4,7 @@ namespace Gmponos\GuzzleLogger\Handler\LogLevel;
 
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\MessageInterface;
+use Psr\Log\LogLevel;
 
 final class FixedLevelStrategy implements LogLevelStrategyInterface
 {
@@ -13,8 +14,11 @@ final class FixedLevelStrategy implements LogLevelStrategyInterface
 
     private $statsLevel;
 
-    public function __construct(string $defaultLevel, string $exceptionLevel = null, string $statsLevel = null)
-    {
+    public function __construct(
+        string $defaultLevel = LogLevel::DEBUG,
+        string $exceptionLevel = null,
+        string $statsLevel = null
+    ) {
         $this->defaultLevel = $defaultLevel;
         $this->exceptionLevel = $exceptionLevel ?? $defaultLevel;
         $this->statsLevel = $statsLevel ?? $defaultLevel;
