@@ -21,7 +21,7 @@ class LoggerMiddleware
     /**
      * @var bool
      */
-    private $onExceptionOnly;
+    private $onFailureOnly;
 
     /**
      * Decides if you need to log statistics or not.
@@ -45,17 +45,17 @@ class LoggerMiddleware
      *
      * @param LoggerInterface $logger
      * @param HandlerInterface $handler
-     * @param bool $onExceptionOnly The request and the response will be logged only in cases there is an exception or if they status code exceeds the thresholds.
+     * @param bool $onFailureOnly The request and the response will be logged only in cases there is considered a failure.
      * @param bool $logStatistics If this is true an extra row will be added that will contain some HTTP statistics.
      */
     public function __construct(
         LoggerInterface $logger,
         HandlerInterface $handler = null,
-        bool $onExceptionOnly = false,
+        bool $onFailureOnly = false,
         bool $logStatistics = false
     ) {
         $this->logger = $logger;
-        $this->onExceptionOnly = $onExceptionOnly;
+        $this->onFailureOnly = $onFailureOnly;
         $this->logStatistics = $logStatistics;
         $this->handler = $handler === null ? new ArrayHandler() : $handler;
     }
@@ -71,7 +71,7 @@ class LoggerMiddleware
         return function (RequestInterface $request, array $options) use ($handler) {
             $this->setOptions($options);
 
-            if ($this->onExceptionOnly === false) {
+            if ($this->onFailureOnly === false) {
                 $this->handler->log($this->logger, $request, $options);
                 if ($this->logStatistics && !isset($options['on_stats'])) {
                     $options['on_stats'] = function (TransferStats $stats) use ($options) {
@@ -98,7 +98,7 @@ class LoggerMiddleware
     {
         return function (ResponseInterface $response) use ($request, $options) {
             // On exception only is true then it must not log the response since it was successful.
-            if ($this->onExceptionOnly === false) {
+            if ($this->onFailureOnly === false) {
                 $this->handler->log($this->logger, $response, $options);
             }
 
@@ -116,7 +116,7 @@ class LoggerMiddleware
     private function handleFailure(RequestInterface $request, array $options): callable
     {
         return function (\Exception $reason) use ($request, $options) {
-            if ($this->onExceptionOnly === true) {
+            if ($this->onFailureOnly === true) {
                 // This means that the request was not logged and since an exception happened we need to log the request too.
                 $this->handler->log($this->logger, $request, $options);
             }
@@ -144,11 +144,11 @@ class LoggerMiddleware
         $options = $options['log'];
 
         $options = array_merge([
-            'on_exception_only' => $this->onExceptionOnly,
+            'on_exception_only' => $this->onFailureOnly,
             'statistics' => $this->logStatistics,
         ], $options);
 
-        $this->onExceptionOnly = $options['on_exception_only'];
+        $this->onFailureOnly = $options['on_exception_only'];
         $this->logStatistics = $options['statistics'];
     }
 }

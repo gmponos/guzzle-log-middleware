@@ -1,9 +1,9 @@
+# Guzzle Logger Middleware
 
 [![codecov](https://codecov.io/gh/gmponos/guzzle-log-middleware/branch/master/graph/badge.svg)](https://codecov.io/gh/gmponos/guzzle-log-middleware)
+[![Total Downloads](https://img.shields.io/packagist/dt/gmponos/guzzle_logger.svg)](https://packagist.org/packages/phpcy/gross-net-salary-calculator)
 [![Build Status](https://travis-ci.org/gmponos/guzzle-log-middleware.svg?branch=master)](https://travis-ci.org/gmponos/guzzle-log-middleware)
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/gmponos/monolog-slack/blob/master/LICENSE.md)
-
-# Guzzle Logger Middleware
 
 This is a middleware for [guzzle](https://github.com/guzzle/guzzle) that will help you automatically log every request 
 and response using a PSR-3 logger.
@@ -13,8 +13,6 @@ The middleware is functional with Guzzle 6.
 **Important note**: This package is still in version 0.x.x. According to [semantic versioning](https://semver.org/) major changes can occur while
 we are still on 0.x.x version. If you use the package for a project that is in production please lock this package in your composer
 to a specific version like `^0.3.0`.
-
-**Important note-2**: Next version will drop support for PHP5.
 
 ## Install
 
@@ -54,11 +52,11 @@ The default levels that the middleware uses for logging are the following.
 
 The signature of the LoggerMiddleware class is the following:
 
-``LoggerMiddleware(LoggerInterface $logger, HandlerInterface $handler = null, $onExceptionsOnly = false, $logStatistics = false)``
+``LoggerMiddleware(LoggerInterface $logger, HandlerInterface $handler = null, $onFailureOnly = false, $logStatistics = false)``
 
 - **logger** - The PSR-3 logger to use for logging.
 - **handler** - A HandlerInterface class that will be responsible for logging your request/response. Check Handlers sections.
-- **onExceptionOnly** - By default the middleware is set to log every request and response. If you wish that to log 
+- **onFailureOnly** - By default the middleware is set to log every request and response. If you wish that to log 
 the requests and responses only when guzzle returns a rejection set this as true. Guzzle returns a rejection when 
 `http_errors` option is set to true, meaning that it will throw exception in cases a 4xx or 5xx response is received. 
 - **logStatistics** - If you set logStatistics as true and this as true then guzzle will also log statistics about the requests.
