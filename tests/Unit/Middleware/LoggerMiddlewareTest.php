@@ -4,53 +4,16 @@ namespace Gmponos\GuzzleLogger\Test\Unit\Middleware;
 
 use Gmponos\GuzzleLogger\Handler\ArrayHandler;
 use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
-use Gmponos\GuzzleLogger\Test\TestApp\HistoryLogger;
+use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TransferException;
-use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
-final class LoggerMiddlewareTest extends TestCase
+final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
 {
-    /**
-     * @var MockHandler
-     */
-    private $mockHandler;
-
-    /**
-     * @var HistoryLogger
-     */
-    private $logger;
-
-    /**
-     * @inheritdoc
-     */
-    public function setUp()
-    {
-        parent::setUp();
-        $this->mockHandler = new MockHandler();
-        $this->logger = new HistoryLogger();
-    }
-
-    /**
-     * @param int $code
-     * @param array $headers
-     * @param string $body
-     * @param string $version
-     * @param null $reason
-     * @return $this
-     */
-    private function appendResponse($code = 200, array $headers = [], $body = '', $version = '1.1', $reason = null)
-    {
-        $this->mockHandler->append(new Response($code, $headers, $body, $version, $reason));
-        return $this;
-    }
-
     /**
      * @param array $options
      * @return Client
@@ -200,10 +163,7 @@ final class LoggerMiddlewareTest extends TestCase
      */
     public function logTransactionWithJsonResponse()
     {
-        $headers = [
-            'Content-Type' => 'application/json',
-        ];
-        $this->appendResponse(200, $headers, '{"status": true, "client": 13000}')
+        $this->appendResponse(200, ['Content-Type' => 'application/json'], '{"status": true, "client": 13000}')
             ->createClient(['exceptions' => false])
             ->get('/');
 
@@ -226,10 +186,7 @@ final class LoggerMiddlewareTest extends TestCase
      */
     public function logTransactionWithJsonApiResponse()
     {
-        $headers = [
-            'Content-Type' => 'application/vnd.api+json',
-        ];
-        $this->appendResponse(200, $headers, '{"status": true, "client": 13000}')
+        $this->appendResponse(200, ['Content-Type' => 'application/vnd.api+json'], '{"status": true, "client": 13000}')
             ->createClient(['exceptions' => false])
             ->get('/');
 
