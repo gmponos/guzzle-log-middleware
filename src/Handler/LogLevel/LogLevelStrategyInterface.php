@@ -11,6 +11,9 @@ use Psr\Log\LogLevel;
  */
 interface LogLevelStrategyInterface
 {
+    /**
+     * A mapping of LogLevels that exist. This mapping can be used for validation.
+     */
     public const LEVELS = [
         LogLevel::EMERGENCY => LogLevel::EMERGENCY,
         LogLevel::ALERT => LogLevel::ALERT,

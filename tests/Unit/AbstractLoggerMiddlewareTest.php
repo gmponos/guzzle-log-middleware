@@ -2,6 +2,7 @@
 
 namespace Gmponos\GuzzleLogger\Test\Unit;
 
+use Exception;
 use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
 use Gmponos\GuzzleLogger\Test\TestApp\HistoryLogger;
 use GuzzleHttp\Client;
@@ -36,7 +37,7 @@ abstract class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
      * @param array $headers
      * @param string $body
      * @param string $version
-     * @param \Exception|null $reason
+     * @param Exception|null $reason
      * @return $this
      */
     protected function appendResponse(
@@ -44,7 +45,7 @@ abstract class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
         array $headers = [],
         string $body = '',
         string $version = '1.1',
-        ?\Exception $reason = null
+        ?Exception $reason = null
     ) {
         $this->mockHandler->append(new Response($code, $headers, $body, $version, $reason));
         return $this;

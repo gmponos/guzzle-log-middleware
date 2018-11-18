@@ -27,6 +27,10 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
      */
     private $defaultLevel;
 
+    /**
+     * @param string $defaultLevel
+     * @param string $exceptionLevel
+     */
     public function __construct($defaultLevel = LogLevel::DEBUG, $exceptionLevel = LogLevel::CRITICAL)
     {
         $this->exceptionLevel = $exceptionLevel;
@@ -38,6 +42,7 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
      *
      * @param int $statusCode
      * @param string $level
+     * @return void
      */
     public function setLevel(int $statusCode, string $level): void
     {

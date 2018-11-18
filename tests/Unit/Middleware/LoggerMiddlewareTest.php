@@ -96,7 +96,6 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
                 ])
                 ->get('/');
         } catch (\Exception $e) {
-
         }
 
         $this->assertCount(2, $this->logger->history);

@@ -30,6 +30,11 @@ final class ThresholdLevelStrategy implements LogLevelStrategyInterface
 
     private $defaultLevel;
 
+    /**
+     * @param array $thresholds
+     * @param string $defaultLevel
+     * @param string $exceptionLevel
+     */
     public function __construct(
         array $thresholds = [],
         string $defaultLevel = LogLevel::DEBUG,

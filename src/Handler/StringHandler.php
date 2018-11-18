@@ -35,7 +35,7 @@ final class StringHandler extends AbstractHandler
         if ($value instanceof MessageInterface) {
             // we do not allow to record the message if the body is not seekable.
             if ($value->getBody()->isSeekable() === false || $value->getBody()->isReadable() === false) {
-                $logger->warning('String handler can not log request/response because the body is not seekable/readable.');
+                $logger->warning('StringHandler can not log request/response because the body is not seekable/readable.');
                 return;
             }
 

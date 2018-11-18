@@ -6,14 +6,37 @@ use GuzzleHttp\TransferStats;
 use Psr\Http\Message\MessageInterface;
 use Psr\Log\LogLevel;
 
+/**
+ * @author George Mponos <gmponos@gmail.com>
+ */
 final class FixedLevelStrategy implements LogLevelStrategyInterface
 {
+    /**
+     * The default LogLevel that it will used for the non-exceptions.
+     *
+     * @var string
+     */
     private $defaultLevel;
 
+    /**
+     * The log Level in cases of exceptions.
+     *
+     * @var string
+     */
     private $exceptionLevel;
 
+    /**
+     * The log level of the statistics
+     *
+     * @var string
+     */
     private $statsLevel;
 
+    /**
+     * @param string $defaultLevel
+     * @param string|null $exceptionLevel
+     * @param string|null $statsLevel
+     */
     public function __construct(
         string $defaultLevel = LogLevel::DEBUG,
         string $exceptionLevel = null,
