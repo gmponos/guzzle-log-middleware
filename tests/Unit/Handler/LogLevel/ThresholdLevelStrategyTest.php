@@ -6,13 +6,42 @@ use Gmponos\GuzzleLogger\Handler\ArrayHandler;
 use Gmponos\GuzzleLogger\Handler\LogLevel\ThresholdLevelStrategy;
 use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
 use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use Psr\Log\LogLevel;
 
 final class ThresholdLevelStrategyTest extends AbstractLoggerMiddlewareTest
 {
-    protected function createMiddleware(): LoggerMiddleware
+    /**
+     * @test
+     * @dataProvider valueProvider
+     * @param mixed $value
+     * @param string $expected
+     */
+    public function fixedDebugLevelForAllValues($value, string $expected)
     {
-        return new LoggerMiddleware($this->logger, new ArrayHandler(new ThresholdLevelStrategy()));
+        $strategy = new ThresholdLevelStrategy([
+            '4xx' => LogLevel::INFO,
+            '5xx' => LogLevel::ERROR,
+        ]);
+        $this->assertSame($expected, $strategy->getLevel($value, []));
+    }
+
+    public function valueProvider(): array
+    {
+        return [
+            [new Request('get', 'www.test.com'), LogLevel::DEBUG],
+            [new Response(200), LogLevel::DEBUG],
+            [new Response(301), LogLevel::DEBUG],
+            [new Response(400), LogLevel::INFO],
+            [new Response(401), LogLevel::INFO],
+            [new Response(404), LogLevel::INFO],
+            [new Response(500), LogLevel::ERROR],
+            [new Response(503), LogLevel::ERROR],
+            [new \Exception(), LogLevel::CRITICAL],
+            [new RequestException('Not Found', new Request('get', 'www.test.com')), LogLevel::CRITICAL],
+        ];
     }
 
     /**
@@ -72,5 +101,10 @@ final class ThresholdLevelStrategyTest extends AbstractLoggerMiddlewareTest
         $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
         $this->assertSame('critical', $this->logger->history[1]['level']);
         $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
+    }
+
+    protected function createMiddleware(): LoggerMiddleware
+    {
+        return new LoggerMiddleware($this->logger, new ArrayHandler(new ThresholdLevelStrategy()));
     }
 }

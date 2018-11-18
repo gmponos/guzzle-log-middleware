@@ -40,14 +40,6 @@ final class ThresholdLevelStrategy implements LogLevelStrategyInterface
         string $defaultLevel = LogLevel::DEBUG,
         string $exceptionLevel = LogLevel::CRITICAL
     ) {
-        if (!in_array($exceptionLevel, self::LEVELS, true)) {
-            throw new InvalidArgumentException(sprintf('Log level %s does not exist', $exceptionLevel));
-        }
-
-        if (!in_array($defaultLevel, self::LEVELS, true)) {
-            throw new InvalidArgumentException(sprintf('Log level %s does not exist', $defaultLevel));
-        }
-
         $this->exceptionLevel = $exceptionLevel;
         $this->defaultLevel = $defaultLevel;
         $this->thresholds = array_merge([
@@ -111,7 +103,7 @@ final class ThresholdLevelStrategy implements LogLevelStrategyInterface
         $codeLevel = (int)($code / 100);
         $key = array_search($codeLevel, $this->matchingStatusCodes, true);
         if ($key === false) {
-            return $this->exceptionLevel;
+            return $this->defaultLevel;
         }
 
         return $this->thresholds[$key];

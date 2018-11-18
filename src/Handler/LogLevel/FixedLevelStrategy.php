@@ -2,6 +2,7 @@
 
 namespace Gmponos\GuzzleLogger\Handler\LogLevel;
 
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\MessageInterface;
 use Psr\Log\LogLevel;
@@ -56,6 +57,10 @@ final class FixedLevelStrategy implements LogLevelStrategyInterface
      */
     public function getLevel($value, array $options): string
     {
+        if ($value instanceof RequestException) {
+            return $this->defaultLevel;
+        }
+
         if ($value instanceof \Exception) {
             return $this->exceptionLevel;
         }

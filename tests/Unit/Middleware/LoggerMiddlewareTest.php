@@ -105,6 +105,31 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
         $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
     }
 
+    /**
+     * @test
+     * @dataProvider statusCodeProvider
+     * @param int $statusCode
+     */
+    public function logTransactionWithStatistics(int $statusCode)
+    {
+        $this->appendResponse($statusCode)
+            ->createClient([
+                'log' => [
+                    'statistics' => true,
+                ],
+                RequestOptions::HTTP_ERRORS => false,
+            ])
+            ->get('/');
+
+        $this->assertCount(3, $this->logger->history);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP statistics', $this->logger->history[1]['message']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->history[2]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[2]['message']);
+    }
+
     public function statusCodeProvider()
     {
         return [
@@ -135,28 +160,6 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
         $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
         $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
         $this->assertSame('Guzzle HTTP exception', $this->logger->history[1]['message']);
-    }
-
-    /**
-     * @test
-     */
-    public function logTransactionWithStatistics()
-    {
-        $this->appendResponse(200)
-            ->createClient([
-                'log' => [
-                    'statistics' => true,
-                ],
-            ])
-            ->get('/');
-
-        $this->assertCount(3, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP statistics', $this->logger->history[1]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[2]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[2]['message']);
     }
 
     protected function createMiddleware(): LoggerMiddleware
