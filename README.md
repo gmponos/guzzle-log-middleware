@@ -38,15 +38,8 @@ $client = new GuzzleHttp\Client([
 ]);
 ```
 
-From now on each request and response you make that you receive using the ``$client`` will be logged.
-The default levels that the middleware uses for logging are the following.
-
-- Requests are logged with level DEBUG.
-- Request statistics are logged with level DEBUG.
-- Responses with http status code < 400 with level DEBUG.
-- Responses with http status code > 400 & < 500 with level ERROR.
-- Responses with http status code >= 500 with level CRITICAL.
-- If no status code or response is returned the log level is CRITICAL.
+From now on each request and response you execute using the ``$client`` object will be logged.
+By default the Middleware logs every activity with `DEBUG` level.
 
 ### Advanced initialization
 
@@ -110,26 +103,16 @@ If no handler is passed the middleware will initialize it's own handler. At the 
 You can set on each request options about your log.
 
 ```php
-$client->get("/", [
+$client->get('/', [
     'log' => [
         'on_exception_only' => true,
         'statistics' => true,
-        'error_threshold' => null,
-        'warning_threshold' => null,
-        'sensitive' => true,
-        'levels' => [
-            400 => 'info'
-            401 => 'warning'
-            ...
-        ]
     ]
 ]);
 ```
 
-- ``sensitive`` if you set this to true then the body of request/response will not be logged as it will be considered that it contains sensitive information.
 - ``on_exception_only`` Do not log anything unless if the response status code is above the threshold.
 - ``statistics`` if the `on_exception_only` option/variable is true and this is also true the middleware will log statistics about the HTTP call.
-- ``levels`` set custom log levels for each response status code
 
 ## Change log
 

@@ -2,6 +2,21 @@
 
 All Notable changes to `gmponos/guzzle_logger` will be documented in this file
 
+## [UNRELEASED]
+
+### BREAKING CHANGES
+- `LogLevelStrategy` class is removed and it has been separated to smaller classes.
+Check the added classes below.
+- Moved namespace `Gmponos\GuzzleLogger\Handler\LogLevel` to `Gmponos\GuzzleLogger\Handler\LogLevelStrategy`
+
+### Added
+- `FixedStrategy` a strategy that you are able to set one level for all your logs.
+- `ThresholdLevelStrategy` a strategy that works with thresholds depending on the status code. 
+- `StatusCodeStrategy` a strategy that you are able to set a specific log level per status code.
+
+### Changed
+- Set as the default strategy in all handlers the `FixedStrategy`
+
 ## 0.7.0 - 2018-11-15
 
 ### Changed

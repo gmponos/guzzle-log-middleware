@@ -1,6 +1,6 @@
 <?php
 
-namespace Gmponos\GuzzleLogger\Handler\LogLevel;
+namespace Gmponos\GuzzleLogger\Handler\LogLevelStrategy;
 
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\RequestInterface;
@@ -10,44 +10,44 @@ use Psr\Log\LogLevel;
 /**
  * @author George Mponos <gmponos@gmail.com>
  */
-final class StatusCodeStrategy implements LogLevelStrategyInterface
+final class ThresholdLevelStrategy implements LogLevelStrategyInterface
 {
+    public const CLIENT_ERRORS = '4xx';
+    public const SERVER_ERRORS = '5xx';
+
+    private $matchingStatusCodes = [
+        self::CLIENT_ERRORS => 4,
+        self::SERVER_ERRORS => 5,
+    ];
+
     /**
      * @var array
      */
-    private $statusCodeLevels;
+    private $thresholds = [
+        self::CLIENT_ERRORS => LogLevel::ERROR,
+        self::SERVER_ERRORS => LogLevel::CRITICAL,
+    ];
 
-    /**
-     * @var string
-     */
     private $exceptionLevel;
 
-    /**
-     * @var string
-     */
     private $defaultLevel;
 
     /**
+     * @param array $thresholds
      * @param string $defaultLevel
      * @param string $exceptionLevel
      */
-    public function __construct($defaultLevel = LogLevel::DEBUG, $exceptionLevel = LogLevel::CRITICAL)
-    {
+    public function __construct(
+        array $thresholds = [],
+        string $defaultLevel = LogLevel::DEBUG,
+        string $exceptionLevel = LogLevel::CRITICAL
+    ) {
         $this->exceptionLevel = $exceptionLevel;
         $this->defaultLevel = $defaultLevel;
-    }
-
-    /**
-     * Sets a logging level per status code.
-     *
-     * @param int $statusCode
-     * @param string $level
-     * @return void
-     */
-    public function setLevel(int $statusCode, string $level): void
-    {
-        // todo validate the level and status code.
-        $this->statusCodeLevels[$statusCode] = $level;
+        $this->thresholds = array_merge([
+            '4xx' => LogLevel::ERROR,
+            '5xx' => LogLevel::CRITICAL,
+        ], $thresholds);
     }
 
     /**
@@ -80,14 +80,15 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
         if (!isset($options['log'])) {
             return;
         }
-
         $options = $options['log'];
 
-        if (!isset($options['levels'])) {
-            return;
-        }
+        $options = array_merge([
+            '4xx' => LogLevel::ERROR,
+            '5xx' => LogLevel::CRITICAL,
+        ], $options);
 
-        $this->statusCodeLevels = $this->statusCodeLevels + $options['levels'];
+        $this->thresholds['4xx'] = $options['4xx'];
+        $this->thresholds['5xx'] = $options['5xx'];
     }
 
     /**
@@ -101,10 +102,12 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
             return $this->exceptionLevel;
         }
 
-        if (isset($this->statusCodeLevels[$code])) {
-            return $this->statusCodeLevels[$code];
+        $codeLevel = (int)($code / 100);
+        $key = array_search($codeLevel, $this->matchingStatusCodes, true);
+        if ($key === false) {
+            return $this->defaultLevel;
         }
 
-        return $this->defaultLevel;
+        return $this->thresholds[$key];
     }
 }

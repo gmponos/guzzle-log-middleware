@@ -1,9 +1,9 @@
 <?php
 
-namespace Gmponos\GuzzleLogger\Test\Unit\Handler\LogLevel;
+namespace Gmponos\GuzzleLogger\Test\Unit\Handler\LogLevelStrategy;
 
 use Gmponos\GuzzleLogger\Handler\ArrayHandler;
-use Gmponos\GuzzleLogger\Handler\LogLevel\ThresholdLevelStrategy;
+use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\ThresholdLevelStrategy;
 use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
 use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\RequestException;

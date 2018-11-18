@@ -2,8 +2,8 @@
 
 namespace Gmponos\GuzzleLogger\Handler;
 
-use Gmponos\GuzzleLogger\Handler\LogLevel\FixedLevelStrategy;
-use Gmponos\GuzzleLogger\Handler\LogLevel\LogLevelStrategyInterface;
+use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\FixedStrategy;
+use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\LogLevelStrategyInterface;
 
 /**
  * @author George Mponos <gmponos@gmail.com>
@@ -20,6 +20,6 @@ abstract class AbstractHandler implements HandlerInterface
      */
     protected function getDefaultStrategy(): LogLevelStrategyInterface
     {
-        return new FixedLevelStrategy();
+        return new FixedStrategy();
     }
 }

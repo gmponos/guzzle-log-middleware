@@ -3,7 +3,7 @@
 namespace Gmponos\GuzzleLogger\Handler;
 
 use Gmponos\GuzzleLogger\Handler\Exception\UnsupportedException;
-use Gmponos\GuzzleLogger\Handler\LogLevel\LogLevelStrategyInterface;
+use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\LogLevelStrategyInterface;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;

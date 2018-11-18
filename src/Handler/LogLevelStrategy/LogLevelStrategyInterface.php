@@ -1,6 +1,6 @@
 <?php
 
-namespace Gmponos\GuzzleLogger\Handler\LogLevel;
+namespace Gmponos\GuzzleLogger\Handler\LogLevelStrategy;
 
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\MessageInterface;

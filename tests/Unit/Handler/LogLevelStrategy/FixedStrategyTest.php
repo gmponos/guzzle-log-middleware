@@ -1,9 +1,9 @@
 <?php
 
-namespace Gmponos\GuzzleLogger\Test\Unit\Handler\LogLevel;
+namespace Gmponos\GuzzleLogger\Test\Unit\Handler\LogLevelStrategy;
 
 use Gmponos\GuzzleLogger\Handler\ArrayHandler;
-use Gmponos\GuzzleLogger\Handler\LogLevel\FixedLevelStrategy;
+use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\FixedStrategy;
 use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
 use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\RequestException;
@@ -13,7 +13,7 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
 use Psr\Log\LogLevel;
 
-final class FixedLevelStrategyTest extends AbstractLoggerMiddlewareTest
+final class FixedStrategyTest extends AbstractLoggerMiddlewareTest
 {
     /**
      * @test
@@ -22,7 +22,7 @@ final class FixedLevelStrategyTest extends AbstractLoggerMiddlewareTest
      */
     public function fixedDebugLevelForAllValues($value)
     {
-        $strategy = new FixedLevelStrategy();
+        $strategy = new FixedStrategy();
         $this->assertSame('debug', $strategy->getLevel($value, []));
     }
 
@@ -110,7 +110,7 @@ final class FixedLevelStrategyTest extends AbstractLoggerMiddlewareTest
 
     protected function createMiddleware(): LoggerMiddleware
     {
-        $strategy = new FixedLevelStrategy(LogLevel::INFO, LogLevel::CRITICAL, LogLevel::DEBUG);
+        $strategy = new FixedStrategy(LogLevel::INFO, LogLevel::CRITICAL, LogLevel::DEBUG);
         return new LoggerMiddleware($this->logger, new ArrayHandler($strategy));
     }
 }

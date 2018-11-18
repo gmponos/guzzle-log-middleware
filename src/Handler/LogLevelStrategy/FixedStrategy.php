@@ -1,6 +1,6 @@
 <?php
 
-namespace Gmponos\GuzzleLogger\Handler\LogLevel;
+namespace Gmponos\GuzzleLogger\Handler\LogLevelStrategy;
 
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\TransferStats;
@@ -10,7 +10,7 @@ use Psr\Log\LogLevel;
 /**
  * @author George Mponos <gmponos@gmail.com>
  */
-final class FixedLevelStrategy implements LogLevelStrategyInterface
+final class FixedStrategy implements LogLevelStrategyInterface
 {
     /**
      * The default LogLevel that it will used for the non-exceptions.
