@@ -29,6 +29,9 @@
         "phpunit/phpunit": "7.*",
         "webthink/codesniffer": "1.*"
     },
+    "suggest": {
+        "monolog/monolog": "A PSR-3 logger to send your logs to files, sockets and various web services"
+    },
     "scripts": {
         "test": "php vendor/bin/phpunit",
         "phpcs": "php vendor/bin/phpcs ./src ./tests",
