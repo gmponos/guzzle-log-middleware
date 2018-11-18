@@ -3,8 +3,7 @@
 namespace Gmponos\GuzzleLogger\Handler;
 
 use Gmponos\GuzzleLogger\Handler\Exception\UnsupportedException;
-use Gmponos\GuzzleLogger\Handler\LogLevel\LogLevelStrategy;
-use Gmponos\GuzzleLogger\Handler\LogLevel\LogLevelStrategyInterface;
+use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\LogLevelStrategyInterface;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
@@ -14,19 +13,14 @@ use Psr\Log\LoggerInterface;
 /**
  * @author George Mponos <gmponos@gmail.com>
  */
-final class StringHandler implements HandlerInterface
+final class StringHandler extends AbstractHandler
 {
-    /**
-     * @var LogLevelStrategyInterface
-     */
-    private $logLevelStrategy;
-
     /**
      * @param LogLevelStrategyInterface|null $logLevelStrategy
      */
     public function __construct(LogLevelStrategyInterface $logLevelStrategy = null)
     {
-        $this->logLevelStrategy = $logLevelStrategy === null ? new LogLevelStrategy() : $logLevelStrategy;
+        $this->logLevelStrategy = $logLevelStrategy === null ? $this->getDefaultStrategy() : $logLevelStrategy;
     }
 
     /**
@@ -41,7 +35,7 @@ final class StringHandler implements HandlerInterface
         if ($value instanceof MessageInterface) {
             // we do not allow to record the message if the body is not seekable.
             if ($value->getBody()->isSeekable() === false || $value->getBody()->isReadable() === false) {
-                $logger->warning('String handler can not log request/response because the body is not seekable/readable.');
+                $logger->warning('StringHandler can not log request/response because the body is not seekable/readable.');
                 return;
             }
 

@@ -2,70 +2,14 @@
 
 namespace Gmponos\GuzzleLogger\Test\Unit\Middleware;
 
-use Gmponos\GuzzleLogger\Handler\ArrayHandler;
 use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
-use Gmponos\GuzzleLogger\Test\TestApp\HistoryLogger;
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
+use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\TransferException;
-use GuzzleHttp\Handler\MockHandler;
-use GuzzleHttp\HandlerStack;
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
-use PHPUnit\Framework\TestCase;
 use Psr\Log\LogLevel;
 
-final class LoggerMiddlewareTest extends TestCase
+final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
 {
-    /**
-     * @var MockHandler
-     */
-    private $mockHandler;
-
-    /**
-     * @var HistoryLogger
-     */
-    private $logger;
-
-    /**
-     * @inheritdoc
-     */
-    public function setUp()
-    {
-        parent::setUp();
-        $this->mockHandler = new MockHandler();
-        $this->logger = new HistoryLogger();
-    }
-
-    /**
-     * @param int $code
-     * @param array $headers
-     * @param string $body
-     * @param string $version
-     * @param null $reason
-     * @return $this
-     */
-    private function appendResponse($code = 200, array $headers = [], $body = '', $version = '1.1', $reason = null)
-    {
-        $this->mockHandler->append(new Response($code, $headers, $body, $version, $reason));
-        return $this;
-    }
-
-    /**
-     * @param array $options
-     * @return Client
-     */
-    private function createClient(array $options = [])
-    {
-        $stack = HandlerStack::create($this->mockHandler);
-        $stack->unshift(new LoggerMiddleware($this->logger, new ArrayHandler()));
-        return new Client(
-            array_merge([
-                'handler' => $stack,
-            ], $options)
-        );
-    }
-
     /**
      * @test
      */
@@ -89,112 +33,46 @@ final class LoggerMiddlewareTest extends TestCase
      */
     public function doNotLogOnSuccessfulTransactionWhenOnFailureOnlyIsTrue()
     {
-        $this->appendResponse(200)
-            ->createClient([
-                'log' => [
-                    'on_exception_only' => true,
-                ],
-            ])
-            ->get('/');
+        $this
+            ->appendResponse(200)
+            ->appendResponse(500);
+        $client = $this->createClient([
+            'log' => [
+                'on_exception_only' => true,
+            ],
+        ]);
+        $client->get('/');
+        $this->assertCount(0, $this->logger->history);
 
+        try {
+            $client->get('/');
+        } catch (\Exception $e) {
+        }
+
+        $this->assertCount(2, $this->logger->history);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->logger->clean();
+
+        $this->appendResponse(200);
+
+        $client->get('/');
         $this->assertCount(0, $this->logger->history);
     }
 
     /**
      * @test
+     * @dataProvider statusCodeProvider
+     * @param int $statusCode
      */
-    public function logOnlyUnsuccessfulTransaction()
+    public function logTransactionWithWhenHttpErrorsIsFalse(int $statusCode)
     {
-        try {
-            $this
-                ->appendResponse(200)
-                ->appendResponse(500);
-            $client = $this->createClient([
-                'log' => [
-                    'on_exception_only' => true,
-                ],
-            ]);
-            $client->get('/');
-            $client->get('/');
-        } catch (\Exception $e) {
-        }
-
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::CRITICAL, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-    }
-
-    /**
-     * @test
-     */
-    public function logTransactionWith4xxCode()
-    {
-        try {
-            $this->appendResponse(404)->createClient()->get('/');
-        } catch (\Exception $e) {
-            // The goal is not to assert the exception.
-        }
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::ERROR, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-    }
-
-    /**
-     * @test
-     */
-    public function logTransactionWith5xxCode()
-    {
-        try {
-            $this->appendResponse(500)->createClient()->get('/');
-        } catch (RequestException $e) {
-        }
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame('debug', $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame('critical', $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-    }
-
-    /**
-     * @test
-     */
-    public function logTransactionWith4xxCodeWithoutExceptions()
-    {
-        $this->appendResponse(404)->createClient(['exceptions' => false])->get('/');
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::ERROR, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-    }
-
-    /**
-     * @test
-     */
-    public function logTransactionWith5xxCodeWithoutExceptions()
-    {
-        $this->appendResponse(500)->createClient(['exceptions' => false])->get('/');
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::CRITICAL, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-    }
-
-    /**
-     * @test
-     */
-    public function logTransactionWithJsonResponse()
-    {
-        $headers = [
-            'Content-Type' => 'application/json',
-        ];
-        $this->appendResponse(200, $headers, '{"status": true, "client": 13000}')
-            ->createClient(['exceptions' => false])
+        $this->appendResponse($statusCode)
+            ->createClient([
+                RequestOptions::HTTP_ERRORS => false,
+            ])
             ->get('/');
 
         $this->assertCount(2, $this->logger->history);
@@ -202,150 +80,44 @@ final class LoggerMiddlewareTest extends TestCase
         $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
         $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
         $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-        $this->assertContains(
-            [
-                'status' => true,
-                'client' => 13000,
-            ],
-            $this->logger->history[1]['context']['response']['body']
-        );
     }
 
     /**
      * @test
+     * @dataProvider statusCodeProvider
+     * @param int $statusCode
      */
-    public function logTransactionWithJsonApiResponse()
+    public function logTransactionWithWhenHttpErrorsIsTrue(int $statusCode)
     {
-        $headers = [
-            'Content-Type' => 'application/vnd.api+json',
-        ];
-        $this->appendResponse(200, $headers, '{"status": true, "client": 13000}')
-            ->createClient(['exceptions' => false])
-            ->get('/');
+        try {
+            $this->appendResponse($statusCode)
+                ->createClient([
+                    RequestOptions::HTTP_ERRORS => true,
+                ])
+                ->get('/');
+        } catch (\Exception $e) {
+        }
 
         $this->assertCount(2, $this->logger->history);
         $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
         $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
         $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
         $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-        $this->assertContains(
-            [
-                'status' => true,
-                'client' => 13000,
-            ],
-            $this->logger->history[1]['context']['response']['body']
-        );
     }
 
     /**
      * @test
+     * @dataProvider statusCodeProvider
+     * @param int $statusCode
      */
-    public function logTransactionWhenTransferExceptionOccurs()
+    public function logTransactionWithStatistics(int $statusCode)
     {
-        try {
-            $this->mockHandler->append(new TransferException());
-
-            $this->createClient()->get('/');
-        } catch (\Exception $e) {
-        }
-
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::CRITICAL, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP exception', $this->logger->history[1]['message']);
-    }
-
-    /**
-     * @test
-     */
-    public function logTransactionChangedTheWarningThreshold()
-    {
-        try {
-            $this->appendResponse(404)
-                ->createClient([
-                    'log' => [
-                        'warning_threshold' => null,
-                    ],
-                ])
-                ->get('/');
-        } catch (\Exception $e) {
-        }
-
-        try {
-            $this->appendResponse(500)
-                ->createClient([
-                    'log' => [
-                        'warning_threshold' => null,
-                    ],
-                ])
-                ->get('/');
-        } catch (\Exception $e) {
-        }
-
-        $this->assertCount(4, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[2]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[2]['message']);
-        $this->assertSame(LogLevel::CRITICAL, $this->logger->history[3]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[3]['message']);
-    }
-
-    /**
-     * @test
-     */
-    public function logTransactionChangedTheErrorThreshold()
-    {
-        try {
-            $this->appendResponse(404)
-                ->createClient([
-                    'log' => [
-                        'warning_threshold' => null,
-                        'error_threshold' => null,
-                    ],
-                ])
-                ->get('/');
-        } catch (\Exception $e) {
-        }
-
-        try {
-            $this->appendResponse(500)
-                ->createClient([
-                    'log' => [
-                        'warning_threshold' => null,
-                        'error_threshold' => null,
-                    ],
-                ])
-                ->get('/');
-        } catch (\Exception $e) {
-        }
-
-        $this->assertCount(4, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[2]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[2]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[3]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[3]['message']);
-    }
-
-    /**
-     * @test
-     */
-    public function logTransactionWithStatistics()
-    {
-        $this->appendResponse(200)
+        $this->appendResponse($statusCode)
             ->createClient([
                 'log' => [
                     'statistics' => true,
                 ],
+                RequestOptions::HTTP_ERRORS => false,
             ])
             ->get('/');
 
@@ -358,96 +130,40 @@ final class LoggerMiddlewareTest extends TestCase
         $this->assertSame('Guzzle HTTP response', $this->logger->history[2]['message']);
     }
 
-    /**
-     * @test
-     */
-    public function logTransactionWithCustomLevel()
+    public function statusCodeProvider()
     {
-        $this->appendResponse(300)
-            ->createClient([
-                'log' => [
-                    'levels' => [
-                        300 => LogLevel::WARNING,
-                        301 => LogLevel::WARNING,
-                        402 => LogLevel::WARNING,
-                        403 => LogLevel::WARNING,
-                        500 => LogLevel::WARNING,
-                    ],
-                ],
-            ])
-            ->get('/');
-
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::WARNING, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
+        return [
+            [200],
+            [201],
+            [204],
+            [400],
+            [401],
+            [404],
+            [500],
+            [503],
+        ];
     }
 
     /**
      * @test
      */
-    public function doNotLogRequestOrResponseBodyBecauseOfSensitiveData()
+    public function logTransactionWhenTransferExceptionOccurs()
     {
-        $this->appendResponse(200, [], 'sensitive_data')
-            ->createClient([
-                'log' => [
-                    'sensitive' => true,
-                ],
-            ])
-            ->get('/', [RequestOptions::BODY => 'sensitive_request_data']);
+        try {
+            $this->mockHandler->append(new TransferException());
+            $this->createClient()->get('/');
+        } catch (\Exception $e) {
+        }
 
         $this->assertCount(2, $this->logger->history);
         $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
         $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame('Body contains sensitive information therefore it is not included.', $this->logger->history[0]['context']['request']['body']);
         $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-        $this->assertSame('Body contains sensitive information therefore it is not included.', $this->logger->history[1]['context']['response']['body']);
+        $this->assertSame('Guzzle HTTP exception', $this->logger->history[1]['message']);
     }
 
-    /**
-     * @test
-     */
-    public function logTransactionWithHugeResponseBody()
+    protected function createMiddleware(): LoggerMiddleware
     {
-        $body =
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
-            'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..';
-
-        $this->appendResponse(300, [], $body)
-            ->createClient()
-            ->get('/');
-
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-        $this->assertStringEndsWith(' (truncated...)', $this->logger->history[1]['context']['response']['body']);
+        return new LoggerMiddleware($this->logger);
     }
 }

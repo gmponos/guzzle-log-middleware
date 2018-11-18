@@ -74,8 +74,8 @@ class LoggerMiddleware
             if ($this->onFailureOnly === false) {
                 $this->handler->log($this->logger, $request, $options);
                 if ($this->logStatistics && !isset($options['on_stats'])) {
-                    $options['on_stats'] = function (TransferStats $stats) {
-                        $this->handler->log($this->logger, $stats);
+                    $options['on_stats'] = function (TransferStats $stats) use ($options) {
+                        $this->handler->log($this->logger, $stats, $options);
                     };
                 }
             }

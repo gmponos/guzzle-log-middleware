@@ -3,8 +3,7 @@
 namespace Gmponos\GuzzleLogger\Handler;
 
 use Gmponos\GuzzleLogger\Handler\Exception\UnsupportedException;
-use Gmponos\GuzzleLogger\Handler\LogLevel\LogLevelStrategy;
-use Gmponos\GuzzleLogger\Handler\LogLevel\LogLevelStrategyInterface;
+use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\LogLevelStrategyInterface;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
@@ -14,19 +13,14 @@ use Psr\Log\LoggerInterface;
 /**
  * @author George Mponos <gmponos@gmail.com>
  */
-final class ArrayHandler implements HandlerInterface
+final class ArrayHandler extends AbstractHandler
 {
-    /**
-     * @var LogLevelStrategyInterface
-     */
-    private $logLevelStrategy;
-
     /**
      * @param LogLevelStrategyInterface|null $logLevelStrategy
      */
     public function __construct(LogLevelStrategyInterface $logLevelStrategy = null)
     {
-        $this->logLevelStrategy = $logLevelStrategy === null ? new LogLevelStrategy() : $logLevelStrategy;
+        $this->logLevelStrategy = $logLevelStrategy === null ? $this->getDefaultStrategy() : $logLevelStrategy;
     }
 
     /**
@@ -39,7 +33,7 @@ final class ArrayHandler implements HandlerInterface
     {
         if ($value instanceof ResponseInterface) {
             $context['response']['headers'] = $value->getHeaders();
-            $context['response']['statusCode'] = $value->getStatusCode();
+            $context['response']['status_code'] = $value->getStatusCode();
             $context['response']['version'] = 'HTTP/' . $value->getProtocolVersion();
             $context['response']['message'] = $value->getReasonPhrase();
 
