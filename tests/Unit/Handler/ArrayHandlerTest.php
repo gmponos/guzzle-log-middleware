@@ -5,14 +5,48 @@ namespace Gmponos\GuzzleLogger\Test\Unit\Handler;
 use Gmponos\GuzzleLogger\Handler\ArrayHandler;
 use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
 use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Psr7\Request;
+use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
+use GuzzleHttp\TransferStats;
 use Psr\Log\LogLevel;
 
 final class ArrayHandlerTest extends AbstractLoggerMiddlewareTest
 {
-    protected function createMiddleware(): LoggerMiddleware
+    /**
+     * @var ArrayHandler
+     */
+    private $handler;
+
+    public function setUp()
     {
-        return new LoggerMiddleware($this->logger, new ArrayHandler());
+        parent::setUp();
+        $this->handler = new ArrayHandler();
+    }
+
+    /**
+     * @test
+     * @dataProvider valueProvider
+     * @param mixed $value
+     */
+    public function handlerWorksNormalForAllPossibleValues($value)
+    {
+        $handler = new ArrayHandler();
+        $handler->log($this->logger, $value, []);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
+        $this->logger->clean();
+    }
+
+    public function valueProvider(): array
+    {
+        return [
+            [new Request('get', 'www.test.com')],
+            [new Response()],
+            [new \Exception()],
+            [new RequestException('Not Found', new Request('get', 'www.test.com'))],
+            [new TransferStats(new Request('get', 'www.test.com'))],
+        ];
     }
 
     /**
@@ -126,5 +160,10 @@ final class ArrayHandlerTest extends AbstractLoggerMiddlewareTest
         $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
         $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
         $this->assertStringEndsWith(' (truncated...)', $this->logger->history[1]['context']['response']['body']);
+    }
+
+    protected function createMiddleware(): LoggerMiddleware
+    {
+        return new LoggerMiddleware($this->logger, $this->handler);
     }
 }

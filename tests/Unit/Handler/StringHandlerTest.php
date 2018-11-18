@@ -5,6 +5,7 @@ namespace Gmponos\GuzzleLogger\Test\Unit\Handler;
 use Gmponos\GuzzleLogger\Handler\StringHandler;
 use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
 use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\TransferStats;
@@ -21,6 +22,29 @@ final class StringHandlerTest extends AbstractLoggerMiddlewareTest
     {
         parent::setUp();
         $this->handler = new StringHandler();
+    }
+
+    /**
+     * @test
+     * @dataProvider valueProvider
+     * @param mixed $value
+     */
+    public function handlerWorksNormalForAllPossibleValues($value)
+    {
+        $this->handler->log($this->logger, $value);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
+        $this->logger->clean();
+    }
+
+    public function valueProvider(): array
+    {
+        return [
+            [new Request('get', 'www.test.com')],
+            [new Response()],
+            [new \Exception()],
+            [new RequestException('Not Found', new Request('get', 'www.test.com'))],
+            [new TransferStats(new Request('get', 'www.test.com'))],
+        ];
     }
 
     /**
