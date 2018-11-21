@@ -1,6 +1,6 @@
 {
     "name": "gmponos/guzzle_logger",
-    "description": "A middleware for guzzle to log every request and response",
+    "description": "A Guzzle middleware to log request and responses automatically",
     "license": "MIT",
     "homepage": "https://github.com/gmponos/guzzle-log-middleware",
     "authors": [
