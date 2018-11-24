@@ -21,13 +21,13 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
             ->createClient()
             ->get('/', [RequestOptions::BODY => 'request_body']);
 
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame('request_body', $this->logger->history[0]['context']['request']['body']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-        $this->assertSame('response_body', $this->logger->history[1]['context']['response']['body']);
+        $this->assertCount(2, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->records[0]['message']);
+        $this->assertSame('request_body', $this->logger->records[0]['context']['request']['body']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->records[1]['message']);
+        $this->assertSame('response_body', $this->logger->records[1]['context']['response']['body']);
     }
 
     /**
@@ -44,24 +44,24 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
             ],
         ]);
         $client->get('/');
-        $this->assertCount(0, $this->logger->history);
+        $this->assertCount(0, $this->logger->records);
 
         try {
             $client->get('/');
         } catch (\Exception $e) {
         }
 
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-        $this->logger->clean();
+        $this->assertCount(2, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->records[0]['message']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->records[1]['message']);
+        $this->logger->reset();
 
         $this->appendResponse(200);
 
         $client->get('/');
-        $this->assertCount(0, $this->logger->history);
+        $this->assertCount(0, $this->logger->records);
     }
 
     /**
@@ -77,11 +77,11 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
             ])
             ->get('/');
 
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertCount(2, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->records[0]['message']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->records[1]['message']);
     }
 
     /**
@@ -100,11 +100,11 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
         } catch (\Exception $e) {
         }
 
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertCount(2, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->records[0]['message']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->records[1]['message']);
     }
 
     /**
@@ -123,13 +123,13 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
             ])
             ->get('/');
 
-        $this->assertCount(3, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP statistics', $this->logger->history[1]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[2]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[2]['message']);
+        $this->assertCount(3, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->records[0]['message']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertSame('Guzzle HTTP statistics', $this->logger->records[1]['message']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[2]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->records[2]['message']);
     }
 
     public function statusCodeProvider()
@@ -157,11 +157,11 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
         } catch (\Exception $e) {
         }
 
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP exception', $this->logger->history[1]['message']);
+        $this->assertCount(2, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->records[0]['message']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertSame('Guzzle HTTP exception', $this->logger->records[1]['message']);
     }
 
     protected function createMiddleware(): LoggerMiddleware

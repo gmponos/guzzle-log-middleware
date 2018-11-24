@@ -11,6 +11,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
+use Psr\Log\Test\TestLogger;
 
 abstract class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
 {
@@ -20,7 +21,7 @@ abstract class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
     protected $mockHandler;
 
     /**
-     * @var HistoryLogger
+     * @var TestLogger
      */
     protected $logger;
 
@@ -31,7 +32,7 @@ abstract class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
     {
         parent::setUp();
         $this->mockHandler = new MockHandler();
-        $this->logger = new HistoryLogger();
+        $this->logger = new TestLogger();
     }
 
     /**
