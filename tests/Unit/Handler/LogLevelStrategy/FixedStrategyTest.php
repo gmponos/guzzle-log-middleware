@@ -6,7 +6,7 @@ namespace Gmponos\GuzzleLogger\Test\Unit\Handler\LogLevelStrategy;
 
 use Gmponos\GuzzleLogger\Handler\ArrayHandler;
 use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\FixedStrategy;
-use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
+use Gmponos\GuzzleLogger\LogMiddleware;
 use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TransferException;
@@ -110,9 +110,9 @@ final class FixedStrategyTest extends AbstractLoggerMiddlewareTest
         $this->assertSame('Guzzle HTTP exception', $this->logger->records[1]['message']);
     }
 
-    protected function createMiddleware(): LoggerMiddleware
+    protected function createMiddleware(): LogMiddleware
     {
         $strategy = new FixedStrategy(LogLevel::INFO, LogLevel::CRITICAL, LogLevel::DEBUG);
-        return new LoggerMiddleware($this->logger, new ArrayHandler($strategy));
+        return new LogMiddleware($this->logger, new ArrayHandler($strategy));
     }
 }

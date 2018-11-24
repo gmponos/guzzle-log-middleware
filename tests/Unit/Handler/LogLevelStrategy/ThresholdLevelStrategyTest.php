@@ -6,7 +6,7 @@ namespace Gmponos\GuzzleLogger\Test\Unit\Handler\LogLevelStrategy;
 
 use Gmponos\GuzzleLogger\Handler\ArrayHandler;
 use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\ThresholdLevelStrategy;
-use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
+use Gmponos\GuzzleLogger\LogMiddleware;
 use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
@@ -105,8 +105,8 @@ final class ThresholdLevelStrategyTest extends AbstractLoggerMiddlewareTest
         $this->assertSame('Guzzle HTTP response', $this->logger->records[1]['message']);
     }
 
-    protected function createMiddleware(): LoggerMiddleware
+    protected function createMiddleware(): LogMiddleware
     {
-        return new LoggerMiddleware($this->logger, new ArrayHandler(new ThresholdLevelStrategy()));
+        return new LogMiddleware($this->logger, new ArrayHandler(new ThresholdLevelStrategy()));
     }
 }

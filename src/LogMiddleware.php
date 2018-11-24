@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Middleware;
+namespace Gmponos\GuzzleLogger;
 
 use Closure;
 use Gmponos\GuzzleLogger\Handler\ArrayHandler;
@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
  *
  * @author George Mponos <gmponos@gmail.com>
  */
-class LoggerMiddleware
+final class LogMiddleware
 {
     /**
      * @var bool
@@ -46,7 +46,7 @@ class LoggerMiddleware
      * Creates a callable middleware for logging requests and responses.
      *
      * @param LoggerInterface $logger
-     * @param HandlerInterface $handler
+     * @param HandlerInterface|null $handler
      * @param bool $onFailureOnly The request and the response will be logged only in cases there is considered a failure.
      * @param bool $logStatistics If this is true an extra row will be added that will contain some HTTP statistics.
      */

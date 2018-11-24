@@ -9,7 +9,8 @@ use Psr\Http\Message\MessageInterface;
 use Psr\Log\LoggerInterface;
 
 /**
- * Classes that will implement this interface are responsible to log the MessageInterface|\Exception|TransferStats
+ * Classes that will implement this interface are responsible
+ * to log the MessageInterface|\Exception|TransferStats that are
  * passed as value.
  */
 interface HandlerInterface

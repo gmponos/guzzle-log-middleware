@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Gmponos\GuzzleLogger\Test\Unit\Handler;
 
 use Gmponos\GuzzleLogger\Handler\ArrayHandler;
-use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
+use Gmponos\GuzzleLogger\LogMiddleware;
 use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
@@ -164,8 +164,8 @@ final class ArrayHandlerTest extends AbstractLoggerMiddlewareTest
         $this->assertStringEndsWith(' (truncated...)', $this->logger->records[1]['context']['response']['body']);
     }
 
-    protected function createMiddleware(): LoggerMiddleware
+    protected function createMiddleware(): LogMiddleware
     {
-        return new LoggerMiddleware($this->logger, $this->handler);
+        return new LogMiddleware($this->logger, $this->handler);
     }
 }

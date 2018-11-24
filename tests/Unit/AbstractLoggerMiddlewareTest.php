@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Gmponos\GuzzleLogger\Test\Unit;
 
 use Exception;
-use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
+use Gmponos\GuzzleLogger\LogMiddleware;
 use Gmponos\GuzzleLogger\Test\TestApp\HistoryLogger;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
@@ -69,5 +69,5 @@ abstract class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
         );
     }
 
-    abstract protected function createMiddleware(): LoggerMiddleware;
+    abstract protected function createMiddleware(): LogMiddleware;
 }

@@ -30,8 +30,14 @@ final class ThresholdLevelStrategy implements LogLevelStrategyInterface
         self::SERVER_ERRORS => LogLevel::CRITICAL,
     ];
 
+    /**
+     * @var string
+     */
     private $exceptionLevel;
 
+    /**
+     * @var string
+     */
     private $defaultLevel;
 
     /**
