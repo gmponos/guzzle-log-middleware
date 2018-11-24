@@ -7,7 +7,8 @@ All Notable changes to `gmponos/guzzle_logger` will be documented in this file
 ### BREAKING CHANGES
 - `LogLevelStrategy` class is removed and it has been separated to smaller classes.
 Check the added classes below.
-- Moved namespace `Gmponos\GuzzleLogger\Handler\LogLevel` to `Gmponos\GuzzleLogger\Handler\LogLevelStrategy`
+- Changed the namespaces completely. The new Namespace is `GuzzleLogMiddleware` instead of `Gmponos\GuzzleLogger`.
+Check the README file for instructions. 
 
 ### Added
 - `FixedStrategy` a strategy that you are able to set one level for all your logs.

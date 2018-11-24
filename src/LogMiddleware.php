@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace GuzzleLogMiddleware;
 
 use Closure;
-use GuzzleLogMiddleware\Handler\ArrayHandler;
-use GuzzleLogMiddleware\Handler\HandlerInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\TransferStats;
+use GuzzleLogMiddleware\Handler\ArrayHandler;
+use GuzzleLogMiddleware\Handler\HandlerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -52,7 +52,7 @@ final class LogMiddleware
      */
     public function __construct(
         LoggerInterface $logger,
-        HandlerInterface $handler = null,
+        ?HandlerInterface $handler = null,
         bool $onFailureOnly = false,
         bool $logStatistics = false
     ) {

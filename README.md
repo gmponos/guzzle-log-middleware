@@ -27,26 +27,33 @@ $ composer require gmponos/guzzle_logger
 
 ### Simple usage
 
-``` php
-use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
+```php
+use GuzzleLogMiddleware\LogMiddleware;
 use GuzzleHttp\HandlerStack;
 
 $logger = new Logger();  //A new PSR-3 Logger like Monolog
 $stack = HandlerStack::create(); // will create a stack stack with middlewares of guzzle already pushed inside of it.
-$stack->push(new LoggerMiddleware($logger));
+$stack->push(new LogMiddleware($logger));
 $client = new GuzzleHttp\Client([
     'handler' => $stack,
 ]);
 ```
 
-From now on each request and response you execute using the ``$client`` object will be logged.
+From now on each request and response you execute using the `$client` object will be logged.
 By default the Middleware logs every activity with `DEBUG` level.
 
 ### Advanced initialization
 
-The signature of the LoggerMiddleware class is the following:
+The signature of the `LogMiddleware` class is the following:
 
-``LoggerMiddleware(LoggerInterface $logger, HandlerInterface $handler = null, $onFailureOnly = false, $logStatistics = false)``
+```php
+\GuzzleLogMiddleware\LogMiddleware(
+    Psr\Log\LoggerInterface $logger, 
+    GuzzleLogMiddleware\HandlerInterface $handler = null, 
+    bool $onFailureOnly = false, 
+    bool $logStatistics = false
+);
+```
 
 - **logger** - The PSR-3 logger to use for logging.
 - **handler** - A HandlerInterface class that will be responsible for logging your request/response. Check Handlers sections.
@@ -65,7 +72,7 @@ So now let's say that we have the following handler.
 ``` php
 <?php
 
-namespace Gmponos\GuzzleLogger\Handler;
+namespace GuzzleLogMiddleware\Handler;
 
 use Psr\Http\Message\MessageInterface;
 use Psr\Log\LoggerInterface;
@@ -85,13 +92,13 @@ final class SimpleHandler implements HandlerInterface
 
 We can pass the handler above during construction of the middleware.
 
-```
-use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
+```php
+use GuzzleLogMiddleware\LogMiddleware;
 use GuzzleHttp\HandlerStack;
 
 $logger = new Logger();  //A new PSR-3 Logger like Monolog
 $stack = HandlerStack::create(); // will create a stack stack with middlewares of guzzle already pushed inside of it.
-$stack->push(new LoggerMiddleware($logger, new SimpleHandler()));
+$stack->push(new LogMiddleware($logger, new SimpleHandler()));
 $client = new GuzzleHttp\Client([
     'handler' => $stack,
 ]);
@@ -135,4 +142,3 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 ## Todo
  - Create more handlers to log request/responses
- - More tests
