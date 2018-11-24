@@ -36,8 +36,8 @@ final class ArrayHandlerTest extends AbstractLoggerMiddlewareTest
     {
         $handler = new ArrayHandler();
         $handler->log($this->logger, $value, []);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->logger->clean();
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->logger->reset();
     }
 
     public function valueProvider(): array
@@ -64,13 +64,13 @@ final class ArrayHandlerTest extends AbstractLoggerMiddlewareTest
             ])
             ->get('/', [RequestOptions::BODY => 'sensitive_request_data']);
 
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame('Body contains sensitive information therefore it is not included.', $this->logger->history[0]['context']['request']['body']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-        $this->assertSame('Body contains sensitive information therefore it is not included.', $this->logger->history[1]['context']['response']['body']);
+        $this->assertCount(2, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->records[0]['message']);
+        $this->assertSame('Body contains sensitive information therefore it is not included.', $this->logger->records[0]['context']['request']['body']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->records[1]['message']);
+        $this->assertSame('Body contains sensitive information therefore it is not included.', $this->logger->records[1]['context']['response']['body']);
     }
 
     /**
@@ -82,17 +82,17 @@ final class ArrayHandlerTest extends AbstractLoggerMiddlewareTest
             ->createClient(['exceptions' => false])
             ->get('/');
 
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertCount(2, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->records[0]['message']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->records[1]['message']);
         $this->assertContains(
             [
                 'status' => true,
                 'client' => 13000,
             ],
-            $this->logger->history[1]['context']['response']['body']
+            $this->logger->records[1]['context']['response']['body']
         );
     }
 
@@ -105,17 +105,17 @@ final class ArrayHandlerTest extends AbstractLoggerMiddlewareTest
             ->createClient(['exceptions' => false])
             ->get('/');
 
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
+        $this->assertCount(2, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->records[0]['message']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->records[1]['message']);
         $this->assertContains(
             [
                 'status' => true,
                 'client' => 13000,
             ],
-            $this->logger->history[1]['context']['response']['body']
+            $this->logger->records[1]['context']['response']['body']
         );
     }
 
@@ -156,12 +156,12 @@ final class ArrayHandlerTest extends AbstractLoggerMiddlewareTest
             ->createClient()
             ->get('/');
 
-        $this->assertCount(2, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP request', $this->logger->history[0]['message']);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[1]['level']);
-        $this->assertSame('Guzzle HTTP response', $this->logger->history[1]['message']);
-        $this->assertStringEndsWith(' (truncated...)', $this->logger->history[1]['context']['response']['body']);
+        $this->assertCount(2, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->records[0]['message']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->records[1]['message']);
+        $this->assertStringEndsWith(' (truncated...)', $this->logger->records[1]['context']['response']['body']);
     }
 
     protected function createMiddleware(): LoggerMiddleware

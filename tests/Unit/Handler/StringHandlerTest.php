@@ -34,8 +34,8 @@ final class StringHandlerTest extends AbstractLoggerMiddlewareTest
     public function handlerWorksNormalForAllPossibleValues($value)
     {
         $this->handler->log($this->logger, $value);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->logger->clean();
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->logger->reset();
     }
 
     public function valueProvider(): array
@@ -55,10 +55,10 @@ final class StringHandlerTest extends AbstractLoggerMiddlewareTest
     public function handlerWithValueAsRequest()
     {
         $this->handler->log($this->logger, new Request('get', \GuzzleHttp\Psr7\uri_for('www.test.com')));
-        $this->assertCount(1, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertStringStartsWith('Guzzle HTTP request:', $this->logger->history[0]['message']);
-        $this->assertCount(0, $this->logger->history[0]['context']);
+        $this->assertCount(1, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertStringStartsWith('Guzzle HTTP request:', $this->logger->records[0]['message']);
+        $this->assertCount(0, $this->logger->records[0]['context']);
     }
 
     /**
@@ -67,9 +67,9 @@ final class StringHandlerTest extends AbstractLoggerMiddlewareTest
     public function handlerWithValueException()
     {
         $this->handler->log($this->logger, new \Exception());
-        $this->assertCount(1, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP exception', $this->logger->history[0]['message']);
+        $this->assertCount(1, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame('Guzzle HTTP exception', $this->logger->records[0]['message']);
     }
 
     /**
@@ -82,9 +82,9 @@ final class StringHandlerTest extends AbstractLoggerMiddlewareTest
             new Response(),
             0.01
         ));
-        $this->assertCount(1, $this->logger->history);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->history[0]['level']);
-        $this->assertSame('Guzzle HTTP transfer time: 0.01 for uri: www.test.com', $this->logger->history[0]['message']);
+        $this->assertCount(1, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame('Guzzle HTTP transfer time: 0.01 for uri: www.test.com', $this->logger->records[0]['message']);
     }
 
     /**
