@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Handler;
+namespace GuzzleLogMiddleware\Handler;
 
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\MessageInterface;

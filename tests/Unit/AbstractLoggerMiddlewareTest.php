@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Test\Unit;
+namespace GuzzleLogMiddleware\Test\Unit;
 
 use Exception;
-use Gmponos\GuzzleLogger\LogMiddleware;
-use Gmponos\GuzzleLogger\Test\TestApp\HistoryLogger;
+use GuzzleLogMiddleware\LogMiddleware;
+use GuzzleLogMiddleware\Test\TestApp\HistoryLogger;
 use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;

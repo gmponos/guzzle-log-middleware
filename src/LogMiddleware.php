@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger;
+namespace GuzzleLogMiddleware;
 
 use Closure;
-use Gmponos\GuzzleLogger\Handler\ArrayHandler;
-use Gmponos\GuzzleLogger\Handler\HandlerInterface;
+use GuzzleLogMiddleware\Handler\ArrayHandler;
+use GuzzleLogMiddleware\Handler\HandlerInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\RequestInterface;

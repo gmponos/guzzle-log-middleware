@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Test\Unit\Handler;
+namespace GuzzleLogMiddleware\Test\Unit\Handler;
 
-use Gmponos\GuzzleLogger\Handler\StringHandler;
-use Gmponos\GuzzleLogger\LogMiddleware;
-use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
+use GuzzleLogMiddleware\Handler\StringHandler;
+use GuzzleLogMiddleware\LogMiddleware;
+use GuzzleLogMiddleware\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -89,7 +89,7 @@ final class StringHandlerTest extends AbstractLoggerMiddlewareTest
 
     /**
      * @test
-     * @expectedException \Gmponos\GuzzleLogger\Handler\Exception\UnsupportedException
+     * @expectedException \GuzzleLogMiddleware\Handler\Exception\UnsupportedException
      */
     public function handlerWithValueThatDoesNotMatchMustThrowException()
     {

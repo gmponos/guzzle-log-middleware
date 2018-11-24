@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Test\Unit\Handler\LogLevelStrategy;
+namespace GuzzleLogMiddleware\Test\Unit\Handler\LogLevelStrategy;
 
-use Gmponos\GuzzleLogger\Handler\ArrayHandler;
-use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\StatusCodeStrategy;
-use Gmponos\GuzzleLogger\LogMiddleware;
-use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
+use GuzzleLogMiddleware\Handler\ArrayHandler;
+use GuzzleLogMiddleware\Handler\LogLevelStrategy\StatusCodeStrategy;
+use GuzzleLogMiddleware\LogMiddleware;
+use GuzzleLogMiddleware\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\RequestOptions;
 use Psr\Log\LogLevel;

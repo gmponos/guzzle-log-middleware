@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Test\Unit\Middleware;
+namespace GuzzleLogMiddleware\Test\Unit\Middleware;
 
-use Gmponos\GuzzleLogger\LogMiddleware;
-use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
+use GuzzleLogMiddleware\LogMiddleware;
+use GuzzleLogMiddleware\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\RequestOptions;
 use Psr\Log\LogLevel;
 
-final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
+final class LogMiddlewareTest extends AbstractLoggerMiddlewareTest
 {
     /**
      * @test

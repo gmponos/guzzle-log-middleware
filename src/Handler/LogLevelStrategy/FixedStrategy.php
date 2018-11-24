@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Handler\LogLevelStrategy;
+namespace GuzzleLogMiddleware\Handler\LogLevelStrategy;
 
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\TransferStats;

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Handler;
+namespace GuzzleLogMiddleware\Handler;
 
-use Gmponos\GuzzleLogger\Handler\Exception\UnsupportedException;
-use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\LogLevelStrategyInterface;
+use GuzzleLogMiddleware\Handler\Exception\UnsupportedException;
+use GuzzleLogMiddleware\Handler\LogLevelStrategy\LogLevelStrategyInterface;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;

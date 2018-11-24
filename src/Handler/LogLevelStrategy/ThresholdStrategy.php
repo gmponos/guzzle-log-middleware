@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Handler\LogLevelStrategy;
+namespace GuzzleLogMiddleware\Handler\LogLevelStrategy;
 
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\RequestInterface;
@@ -12,7 +12,7 @@ use Psr\Log\LogLevel;
 /**
  * @author George Mponos <gmponos@gmail.com>
  */
-final class ThresholdLevelStrategy implements LogLevelStrategyInterface
+final class ThresholdStrategy implements LogLevelStrategyInterface
 {
     public const CLIENT_ERRORS = '4xx';
     public const SERVER_ERRORS = '5xx';
