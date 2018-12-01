@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Test\Unit\Middleware;
+namespace GuzzleLogMiddleware\Test\Unit\Middleware;
 
-use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
-use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
+use GuzzleLogMiddleware\LogMiddleware;
+use GuzzleLogMiddleware\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\RequestOptions;
 use Psr\Log\LogLevel;
 
-final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
+final class LogMiddlewareTest extends AbstractLoggerMiddlewareTest
 {
     /**
      * @test
@@ -164,8 +164,8 @@ final class LoggerMiddlewareTest extends AbstractLoggerMiddlewareTest
         $this->assertSame('Guzzle HTTP exception', $this->logger->records[1]['message']);
     }
 
-    protected function createMiddleware(): LoggerMiddleware
+    protected function createMiddleware(): LogMiddleware
     {
-        return new LoggerMiddleware($this->logger);
+        return new LogMiddleware($this->logger);
     }
 }

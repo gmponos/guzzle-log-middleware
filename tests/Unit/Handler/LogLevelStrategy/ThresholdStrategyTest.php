@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Test\Unit\Handler\LogLevelStrategy;
+namespace GuzzleLogMiddleware\Test\Unit\Handler\LogLevelStrategy;
 
-use Gmponos\GuzzleLogger\Handler\ArrayHandler;
-use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\ThresholdLevelStrategy;
-use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
-use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
+use GuzzleLogMiddleware\Handler\ArrayHandler;
+use GuzzleLogMiddleware\Handler\LogLevelStrategy\ThresholdStrategy;
+use GuzzleLogMiddleware\LogMiddleware;
+use GuzzleLogMiddleware\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Psr\Log\LogLevel;
 
-final class ThresholdLevelStrategyTest extends AbstractLoggerMiddlewareTest
+final class ThresholdStrategyTest extends AbstractLoggerMiddlewareTest
 {
     /**
      * @test
@@ -23,7 +23,7 @@ final class ThresholdLevelStrategyTest extends AbstractLoggerMiddlewareTest
      */
     public function fixedDebugLevelForAllValues($value, string $expected)
     {
-        $strategy = new ThresholdLevelStrategy([
+        $strategy = new ThresholdStrategy([
             '4xx' => LogLevel::INFO,
             '5xx' => LogLevel::ERROR,
         ]);
@@ -105,8 +105,8 @@ final class ThresholdLevelStrategyTest extends AbstractLoggerMiddlewareTest
         $this->assertSame('Guzzle HTTP response', $this->logger->records[1]['message']);
     }
 
-    protected function createMiddleware(): LoggerMiddleware
+    protected function createMiddleware(): LogMiddleware
     {
-        return new LoggerMiddleware($this->logger, new ArrayHandler(new ThresholdLevelStrategy()));
+        return new LogMiddleware($this->logger, new ArrayHandler(new ThresholdStrategy()));
     }
 }

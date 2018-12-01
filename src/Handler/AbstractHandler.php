@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Handler;
+namespace GuzzleLogMiddleware\Handler;
 
-use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\FixedStrategy;
-use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\LogLevelStrategyInterface;
+use GuzzleLogMiddleware\Handler\LogLevelStrategy\FixedStrategy;
+use GuzzleLogMiddleware\Handler\LogLevelStrategy\LogLevelStrategyInterface;
 
 /**
  * @author George Mponos <gmponos@gmail.com>

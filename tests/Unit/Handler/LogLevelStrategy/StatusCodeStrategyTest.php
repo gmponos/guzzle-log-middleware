@@ -2,19 +2,19 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Test\Unit\Handler\LogLevelStrategy;
+namespace GuzzleLogMiddleware\Test\Unit\Handler\LogLevelStrategy;
 
-use Gmponos\GuzzleLogger\Handler\ArrayHandler;
-use Gmponos\GuzzleLogger\Handler\LogLevelStrategy\StatusCodeStrategy;
-use Gmponos\GuzzleLogger\Middleware\LoggerMiddleware;
-use Gmponos\GuzzleLogger\Test\Unit\AbstractLoggerMiddlewareTest;
+use GuzzleLogMiddleware\Handler\ArrayHandler;
+use GuzzleLogMiddleware\Handler\LogLevelStrategy\StatusCodeStrategy;
+use GuzzleLogMiddleware\LogMiddleware;
+use GuzzleLogMiddleware\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\RequestOptions;
 use Psr\Log\LogLevel;
 
 final class StatusCodeStrategyTest extends AbstractLoggerMiddlewareTest
 {
-    protected function createMiddleware(): LoggerMiddleware
+    protected function createMiddleware(): LogMiddleware
     {
         $strategy = new StatusCodeStrategy();
         $strategy->setLevel(300, LogLevel::WARNING);
@@ -22,7 +22,7 @@ final class StatusCodeStrategyTest extends AbstractLoggerMiddlewareTest
         $strategy->setLevel(400, LogLevel::WARNING);
         $strategy->setLevel(403, LogLevel::WARNING);
         $strategy->setLevel(500, LogLevel::WARNING);
-        return new LoggerMiddleware($this->logger, new ArrayHandler($strategy));
+        return new LogMiddleware($this->logger, new ArrayHandler($strategy));
     }
 
     /**

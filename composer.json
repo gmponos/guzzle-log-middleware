@@ -11,12 +11,12 @@
     ],
     "autoload": {
         "psr-4": {
-            "Gmponos\\GuzzleLogger\\": "src/"
+            "GuzzleLogMiddleware\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Gmponos\\GuzzleLogger\\Test\\": "tests/"
+            "GuzzleLogMiddleware\\Test\\": "tests/"
         }
     },
     "require": {
@@ -42,5 +42,8 @@
             "dev-master": "0.7-dev"
         }
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "stable",
+    "config": {
+        "sort-packages": true
+    }
 }

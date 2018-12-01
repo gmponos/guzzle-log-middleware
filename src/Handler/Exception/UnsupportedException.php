@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Handler\Exception;
+namespace GuzzleLogMiddleware\Handler\Exception;
 
 /**
  * @author George Mponos <gmponos@gmail.com>

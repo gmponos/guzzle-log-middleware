@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Gmponos\GuzzleLogger\Middleware;
+namespace GuzzleLogMiddleware;
 
 use Closure;
-use Gmponos\GuzzleLogger\Handler\ArrayHandler;
-use Gmponos\GuzzleLogger\Handler\HandlerInterface;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\TransferStats;
+use GuzzleLogMiddleware\Handler\ArrayHandler;
+use GuzzleLogMiddleware\Handler\HandlerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -18,7 +18,7 @@ use Psr\Log\LoggerInterface;
  *
  * @author George Mponos <gmponos@gmail.com>
  */
-class LoggerMiddleware
+final class LogMiddleware
 {
     /**
      * @var bool
@@ -46,13 +46,13 @@ class LoggerMiddleware
      * Creates a callable middleware for logging requests and responses.
      *
      * @param LoggerInterface $logger
-     * @param HandlerInterface $handler
+     * @param HandlerInterface|null $handler
      * @param bool $onFailureOnly The request and the response will be logged only in cases there is considered a failure.
      * @param bool $logStatistics If this is true an extra row will be added that will contain some HTTP statistics.
      */
     public function __construct(
         LoggerInterface $logger,
-        HandlerInterface $handler = null,
+        ?HandlerInterface $handler = null,
         bool $onFailureOnly = false,
         bool $logStatistics = false
     ) {
