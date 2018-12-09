@@ -5,11 +5,16 @@ declare(strict_types=1);
 namespace GuzzleLogMiddleware\Test;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\TransferStats;
 use GuzzleLogMiddleware\LogMiddleware;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\Test\TestLogger;
 
 abstract class AbstractLoggerMiddlewareTest extends TestCase
@@ -25,6 +30,26 @@ abstract class AbstractLoggerMiddlewareTest extends TestCase
     protected $logger;
 
     /**
+     * @var RequestInterface
+     */
+    protected $request;
+
+    /**
+     * @var ResponseInterface
+     */
+    protected $response;
+
+    /**
+     * @var RequestException
+     */
+    protected $reason;
+
+    /**
+     * @var TransferStats
+     */
+    protected $stats;
+
+    /**
      * @inheritdoc
      */
     public function setUp()
@@ -32,6 +57,10 @@ abstract class AbstractLoggerMiddlewareTest extends TestCase
         parent::setUp();
         $this->mockHandler = new MockHandler();
         $this->logger = new TestLogger();
+        $this->request = new Request('get', 'http://www.test.com/');
+        $this->response = new Response(404);
+        $this->reason = new RequestException('Not Found', $this->request, $this->response);
+        $this->stats = new TransferStats($this->request, $this->response, 0.01);
     }
 
     /**

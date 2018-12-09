@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware\Handler;
 
+use Exception;
 use GuzzleHttp\TransferStats;
 use GuzzleLogMiddleware\Handler\LogLevelStrategy\LogLevelStrategyInterface;
 use Psr\Http\Message\RequestInterface;
@@ -27,7 +28,7 @@ final class StringHandler extends AbstractHandler
      * @param LoggerInterface $logger
      * @param RequestInterface $request
      * @param ResponseInterface $response
-     * @param \Exception $exception
+     * @param Exception $exception
      * @param TransferStats $stats
      * @param array $options
      * @return void
@@ -36,14 +37,21 @@ final class StringHandler extends AbstractHandler
         LoggerInterface $logger,
         RequestInterface $request,
         ?ResponseInterface $response,
-        ?\Exception $exception,
+        ?Exception $exception,
         ?TransferStats $stats,
         array $options
     ): void {
         $this->logRequest($logger, $request, $options);
-        $this->logResponse($logger, $response, $options);
-        $this->logReason($logger, $exception, $options);
-        $this->logStats($logger, $stats, $options);
+
+        if ($stats !== null) {
+            $this->logStats($logger, $stats, $options);
+        }
+
+        if ($response !== null) {
+            $this->logResponse($logger, $response, $options);
+        } else {
+            $this->logReason($logger, $exception, $options);
+        }
     }
 
     /**
@@ -54,7 +62,6 @@ final class StringHandler extends AbstractHandler
      */
     private function logRequest(LoggerInterface $logger, RequestInterface $value, array $options): void
     {
-        $level = $this->logLevelStrategy->getLevel($value, $options);
         // we do not allow to record the message if the body is not seekable.
         if ($value->getBody()->isSeekable() === false || $value->getBody()->isReadable() === false) {
             $logger->warning('StringHandler can not log request/response because the body is not seekable/readable.');
@@ -62,6 +69,8 @@ final class StringHandler extends AbstractHandler
         }
 
         $str = \GuzzleHttp\Psr7\str($value);
+
+        $level = $this->logLevelStrategy->getLevel($value, $options);
         $logger->log($level, 'Guzzle HTTP request:' . "\n" . $str);
     }
 
@@ -73,10 +82,6 @@ final class StringHandler extends AbstractHandler
      */
     private function logResponse(LoggerInterface $logger, ?ResponseInterface $value, array $options): void
     {
-        if ($value === null) {
-            return;
-        }
-
         // we do not allow to record the message if the body is not seekable.
         if ($value->getBody()->isSeekable() === false || $value->getBody()->isReadable() === false) {
             $logger->warning('StringHandler can not log request/response because the body is not seekable/readable.');
@@ -91,11 +96,11 @@ final class StringHandler extends AbstractHandler
 
     /**
      * @param LoggerInterface $logger
-     * @param \Exception|null $value
+     * @param Exception|null $value
      * @param array $options
      * @return void
      */
-    private function logReason(LoggerInterface $logger, ?\Exception $value, array $options): void
+    private function logReason(LoggerInterface $logger, ?Exception $value, array $options): void
     {
         if ($value === null) {
             return;
@@ -113,10 +118,6 @@ final class StringHandler extends AbstractHandler
      */
     private function logStats(LoggerInterface $logger, ?TransferStats $value, array $options): void
     {
-        if ($value === null) {
-            return;
-        }
-
         $level = $this->logLevelStrategy->getLevel($value, $options);
         $logger->log($level, sprintf(
             'Guzzle HTTP transfer time: %s for uri: %s',

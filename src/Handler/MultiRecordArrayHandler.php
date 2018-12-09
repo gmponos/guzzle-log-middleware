@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware\Handler;
 
+use Exception;
 use GuzzleHttp\TransferStats;
 use GuzzleLogMiddleware\Handler\LogLevelStrategy\LogLevelStrategyInterface;
 use Psr\Http\Message\MessageInterface;
@@ -28,7 +29,7 @@ final class MultiRecordArrayHandler extends AbstractHandler
      * @param LoggerInterface $logger
      * @param RequestInterface $request
      * @param ResponseInterface $response
-     * @param \Exception $exception
+     * @param Exception $exception
      * @param TransferStats $stats
      * @param array $options
      * @return void
@@ -37,22 +38,31 @@ final class MultiRecordArrayHandler extends AbstractHandler
         LoggerInterface $logger,
         RequestInterface $request,
         ?ResponseInterface $response,
-        ?\Exception $exception,
+        ?Exception $exception,
         ?TransferStats $stats,
         array $options
     ): void {
         $this->logRequest($logger, $request, $options);
-        $this->logResponse($logger, $response, $options);
-        $this->logReason($logger, $exception, $options);
-        $this->logStats($logger, $stats, $options);
-    }
 
-    private function logRequest(LoggerInterface $logger, RequestInterface $request, array $options): void
-    {
-        if ($request === null) {
-            return;
+        if ($stats !== null) {
+            $this->logStats($logger, $stats, $options);
         }
 
+        if ($response !== null) {
+            $this->logResponse($logger, $response, $options);
+        } else {
+            $this->logReason($logger, $exception, $options);
+        }
+    }
+
+    /**
+     * @param LoggerInterface $logger
+     * @param RequestInterface $request
+     * @param array $options
+     * @return void
+     */
+    private function logRequest(LoggerInterface $logger, RequestInterface $request, array $options): void
+    {
         $context['request']['method'] = $request->getMethod();
         $context['request']['headers'] = $request->getHeaders();
         $context['request']['uri'] = $request->getRequestTarget();
@@ -74,10 +84,6 @@ final class MultiRecordArrayHandler extends AbstractHandler
      */
     private function logResponse(LoggerInterface $logger, ?ResponseInterface $response, array $options): void
     {
-        if ($response === null) {
-            return;
-        }
-
         $context['response']['headers'] = $response->getHeaders();
         $context['response']['status_code'] = $response->getStatusCode();
         $context['response']['version'] = 'HTTP/' . $response->getProtocolVersion();
@@ -93,11 +99,11 @@ final class MultiRecordArrayHandler extends AbstractHandler
 
     /**
      * @param LoggerInterface $logger
-     * @param \Exception|null $exception
+     * @param Exception|null $exception
      * @param array $options
      * @return void
      */
-    private function logReason(LoggerInterface $logger, ?\Exception $exception, array $options): void
+    private function logReason(LoggerInterface $logger, ?Exception $exception, array $options): void
     {
         if ($exception === null) {
             return;
@@ -120,10 +126,6 @@ final class MultiRecordArrayHandler extends AbstractHandler
      */
     private function logStats(LoggerInterface $logger, ?TransferStats $stats, array $options): void
     {
-        if ($stats === null) {
-            return;
-        }
-
         $this->logLevelStrategy->getLevel($stats, $options);
         $logger->debug('Guzzle HTTP statistics', [
             'time' => $stats->getTransferTime(),

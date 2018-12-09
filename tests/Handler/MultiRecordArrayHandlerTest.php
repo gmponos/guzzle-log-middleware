@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware\Test\Handler;
 
+use GuzzleHttp\RequestOptions;
 use GuzzleLogMiddleware\Handler\MultiRecordArrayHandler;
 use GuzzleLogMiddleware\LogMiddleware;
 use GuzzleLogMiddleware\Test\AbstractLoggerMiddlewareTest;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\RequestOptions;
-use GuzzleHttp\TransferStats;
 use Psr\Log\LogLevel;
 
-final class ArrayHandlerTest extends AbstractLoggerMiddlewareTest
+final class MultiRecordArrayHandlerTest extends AbstractLoggerMiddlewareTest
 {
     /**
      * @var MultiRecordArrayHandler
@@ -29,26 +25,14 @@ final class ArrayHandlerTest extends AbstractLoggerMiddlewareTest
 
     /**
      * @test
-     * @dataProvider valueProvider
-     * @param mixed $value
      */
-    public function handlerWorksNormalForAllPossibleValues($value)
+    public function handlerWorksNormalForAllPossibleValues()
     {
         $handler = new MultiRecordArrayHandler();
-        $handler->log($this->logger, $value, []);
+        $handler->log($this->logger, $this->request, $this->response, $this->reason, $this->stats, []);
+        $this->assertCount(3, $this->logger->records);
         $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
         $this->logger->reset();
-    }
-
-    public function valueProvider(): array
-    {
-        return [
-            [new Request('get', 'www.test.com')],
-            [new Response()],
-            [new \Exception()],
-            [new RequestException('Not Found', new Request('get', 'www.test.com'))],
-            [new TransferStats(new Request('get', 'www.test.com'))],
-        ];
     }
 
     /**

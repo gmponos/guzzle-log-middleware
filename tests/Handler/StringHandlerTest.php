@@ -7,10 +7,6 @@ namespace GuzzleLogMiddleware\Test\Handler;
 use GuzzleLogMiddleware\Handler\StringHandler;
 use GuzzleLogMiddleware\LogMiddleware;
 use GuzzleLogMiddleware\Test\AbstractLoggerMiddlewareTest;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
-use GuzzleHttp\TransferStats;
 use Psr\Log\LogLevel;
 
 final class StringHandlerTest extends AbstractLoggerMiddlewareTest
@@ -28,33 +24,23 @@ final class StringHandlerTest extends AbstractLoggerMiddlewareTest
 
     /**
      * @test
-     * @dataProvider valueProvider
-     * @param mixed $value
      */
-    public function handlerWorksNormalForAllPossibleValues($value)
+    public function handlerWillLogAllPossibleValues()
     {
-        $this->handler->log($this->logger, $value);
+        $this->handler->log($this->logger, $this->request, $this->response, $this->reason, $this->stats, []);
+        $this->assertCount(3, $this->logger->records);
         $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[2]['level']);
         $this->logger->reset();
-    }
-
-    public function valueProvider(): array
-    {
-        return [
-            [new Request('get', 'www.test.com')],
-            [new Response()],
-            [new \Exception()],
-            [new RequestException('Not Found', new Request('get', 'www.test.com'))],
-            [new TransferStats(new Request('get', 'www.test.com'))],
-        ];
     }
 
     /**
      * @test
      */
-    public function handlerWithValueAsRequest()
+    public function handlerWillRecordRequest()
     {
-        $this->handler->log($this->logger, new Request('get', \GuzzleHttp\Psr7\uri_for('www.test.com')));
+        $this->handler->log($this->logger, $this->request, null, null, null, []);
         $this->assertCount(1, $this->logger->records);
         $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
         $this->assertStringStartsWith('Guzzle HTTP request:', $this->logger->records[0]['message']);
@@ -66,10 +52,10 @@ final class StringHandlerTest extends AbstractLoggerMiddlewareTest
      */
     public function handlerWithValueException()
     {
-        $this->handler->log($this->logger, new \Exception());
-        $this->assertCount(1, $this->logger->records);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
-        $this->assertSame('Guzzle HTTP exception', $this->logger->records[0]['message']);
+        $this->handler->log($this->logger, $this->request, null, $this->reason, null, []);
+        $this->assertCount(2, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertStringStartsWith('Guzzle HTTP exception: ', $this->logger->records[1]['message']);
     }
 
     /**
@@ -77,23 +63,10 @@ final class StringHandlerTest extends AbstractLoggerMiddlewareTest
      */
     public function handlerWithValueTransferStats()
     {
-        $this->handler->log($this->logger, new TransferStats(
-            new Request('get', 'www.test.com'),
-            new Response(),
-            0.01
-        ));
-        $this->assertCount(1, $this->logger->records);
-        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
-        $this->assertSame('Guzzle HTTP transfer time: 0.01 for uri: www.test.com', $this->logger->records[0]['message']);
-    }
-
-    /**
-     * @test
-     * @expectedException \GuzzleLogMiddleware\Handler\Exception\UnsupportedException
-     */
-    public function handlerWithValueThatDoesNotMatchMustThrowException()
-    {
-        $this->handler->log($this->logger, new \stdClass());
+        $this->handler->log($this->logger, $this->request, $this->response, null, $this->stats, []);
+        $this->assertCount(3, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertSame('Guzzle HTTP transfer time: 0.01 for uri: http://www.test.com/', $this->logger->records[1]['message']);
     }
 
     protected function createMiddleware(): LogMiddleware

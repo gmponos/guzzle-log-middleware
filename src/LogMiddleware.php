@@ -43,7 +43,7 @@ final class LogMiddleware
     private $logger;
 
     /**
-     * @var TransferStats
+     * @var TransferStats|null
      */
     private $stats = null;
 

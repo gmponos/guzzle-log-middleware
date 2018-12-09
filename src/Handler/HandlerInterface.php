@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware\Handler;
 
+use Exception;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -22,7 +23,7 @@ interface HandlerInterface
      * @param LoggerInterface $logger
      * @param RequestInterface $request
      * @param ResponseInterface $response
-     * @param \Exception $exception
+     * @param Exception $exception
      * @param TransferStats $stats
      * @param array $options
      * @return void
@@ -31,7 +32,7 @@ interface HandlerInterface
         LoggerInterface $logger,
         RequestInterface $request,
         ?ResponseInterface $response,
-        ?\Exception $exception,
+        ?Exception $exception,
         ?TransferStats $stats,
         array $options
     ): void;

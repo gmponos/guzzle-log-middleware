@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware\Test\Handler\LogLevelStrategy;
 
-use GuzzleLogMiddleware\Handler\MultiRecordArrayHandler;
-use GuzzleLogMiddleware\Handler\LogLevelStrategy\StatusCodeStrategy;
-use GuzzleLogMiddleware\LogMiddleware;
-use GuzzleLogMiddleware\Test\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\RequestOptions;
+use GuzzleLogMiddleware\Handler\LogLevelStrategy\StatusCodeStrategy;
+use GuzzleLogMiddleware\Handler\MultiRecordArrayHandler;
+use GuzzleLogMiddleware\LogMiddleware;
+use GuzzleLogMiddleware\Test\AbstractLoggerMiddlewareTest;
 use Psr\Log\LogLevel;
 
 final class StatusCodeStrategyTest extends AbstractLoggerMiddlewareTest

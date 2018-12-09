@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace GuzzleLogMiddleware\Test\Unit\Handler\LogLevelStrategy;
+namespace GuzzleLogMiddleware\Test\Handler\LogLevelStrategy;
 
-use GuzzleLogMiddleware\Handler\MultiRecordArrayHandler;
-use GuzzleLogMiddleware\Handler\LogLevelStrategy\ThresholdStrategy;
-use GuzzleLogMiddleware\LogMiddleware;
-use GuzzleLogMiddleware\Test\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use GuzzleLogMiddleware\Handler\LogLevelStrategy\ThresholdStrategy;
+use GuzzleLogMiddleware\Handler\MultiRecordArrayHandler;
+use GuzzleLogMiddleware\LogMiddleware;
+use GuzzleLogMiddleware\Test\AbstractLoggerMiddlewareTest;
 use Psr\Log\LogLevel;
 
 final class ThresholdStrategyTest extends AbstractLoggerMiddlewareTest
