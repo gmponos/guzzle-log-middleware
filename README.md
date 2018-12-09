@@ -71,7 +71,6 @@ So now let's say that we have the following handler.
 
 ``` php
 <?php
-
 namespace GuzzleLogMiddleware\Handler;
 
 use Psr\Http\Message\MessageInterface;
@@ -79,12 +78,15 @@ use Psr\Log\LoggerInterface;
 
 final class SimpleHandler implements HandlerInterface
 {
-    public function log(LoggerInterface $logger, $value, array $options = [])
-    {
-        if ($value instanceof MessageInterface) {
-            $logger->debug('Guzzle HTTP message' . \GuzzleHttp\Psr7\str($value));
-        }
-
+    public function log(
+        LoggerInterface $logger,
+        RequestInterface $request,
+        ?ResponseInterface $response,
+        ?Exception $exception,
+        ?TransferStats $stats,
+        array $options
+    ): void {
+        $logger->debug('Guzzle HTTP request: ' . \GuzzleHttp\Psr7\str($request));
         return;
     }
 }
@@ -104,7 +106,7 @@ $client = new GuzzleHttp\Client([
 ]);
 ```
 
-If no handler is passed the middleware will initialize it's own handler. At the moment the default one is `ArrayHandler`
+If no handler is passed the middleware will initialize it's own handler. At the moment the default one is `MultiRecordArrayHandler`
 
 ### Using options on each request
 

@@ -50,7 +50,9 @@ final class StringHandler extends AbstractHandler
         if ($response !== null) {
             $this->logResponse($logger, $response, $options);
         } else {
-            $this->logReason($logger, $exception, $options);
+            if ($exception !== null) {
+                $this->logReason($logger, $exception, $options);
+            }
         }
     }
 
@@ -102,10 +104,6 @@ final class StringHandler extends AbstractHandler
      */
     private function logReason(LoggerInterface $logger, ?Exception $value, array $options): void
     {
-        if ($value === null) {
-            return;
-        }
-
         $level = $this->logLevelStrategy->getLevel($value, $options);
         $logger->log($level, sprintf('Guzzle HTTP exception: %s', (string)$value));
     }

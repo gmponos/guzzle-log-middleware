@@ -97,5 +97,10 @@ abstract class AbstractLoggerMiddlewareTest extends TestCase
         );
     }
 
+    /**
+     * Factory method to create the middleware
+     *
+     * @return LogMiddleware
+     */
     abstract protected function createMiddleware(): LogMiddleware;
 }
