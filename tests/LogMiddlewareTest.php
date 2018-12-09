@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 
-namespace GuzzleLogMiddleware\Test\Unit\Middleware;
+namespace GuzzleLogMiddleware\Test;
 
-use GuzzleLogMiddleware\LogMiddleware;
-use GuzzleLogMiddleware\Test\Unit\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\RequestOptions;
+use GuzzleLogMiddleware\LogMiddleware;
 use Psr\Log\LogLevel;
 
 final class LogMiddlewareTest extends AbstractLoggerMiddlewareTest

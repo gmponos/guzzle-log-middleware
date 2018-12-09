@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware\Test\Unit\Handler\LogLevelStrategy;
 
-use GuzzleLogMiddleware\Handler\ArrayHandler;
+use GuzzleLogMiddleware\Handler\MultiRecordArrayHandler;
 use GuzzleLogMiddleware\Handler\LogLevelStrategy\ThresholdStrategy;
 use GuzzleLogMiddleware\LogMiddleware;
-use GuzzleLogMiddleware\Test\Unit\AbstractLoggerMiddlewareTest;
+use GuzzleLogMiddleware\Test\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -107,6 +107,6 @@ final class ThresholdStrategyTest extends AbstractLoggerMiddlewareTest
 
     protected function createMiddleware(): LogMiddleware
     {
-        return new LogMiddleware($this->logger, new ArrayHandler(new ThresholdStrategy()));
+        return new LogMiddleware($this->logger, new MultiRecordArrayHandler(new ThresholdStrategy()));
     }
 }

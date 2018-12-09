@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace GuzzleLogMiddleware\Test\Unit\Handler;
+namespace GuzzleLogMiddleware\Test\Handler;
 
 use GuzzleLogMiddleware\Handler\StringHandler;
 use GuzzleLogMiddleware\LogMiddleware;
-use GuzzleLogMiddleware\Test\Unit\AbstractLoggerMiddlewareTest;
+use GuzzleLogMiddleware\Test\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;

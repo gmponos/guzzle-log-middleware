@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace GuzzleLogMiddleware\Test\Unit\Handler\LogLevelStrategy;
+namespace GuzzleLogMiddleware\Test\Handler\LogLevelStrategy;
 
-use GuzzleLogMiddleware\Handler\ArrayHandler;
+use GuzzleLogMiddleware\Handler\MultiRecordArrayHandler;
 use GuzzleLogMiddleware\Handler\LogLevelStrategy\FixedStrategy;
 use GuzzleLogMiddleware\LogMiddleware;
-use GuzzleLogMiddleware\Test\Unit\AbstractLoggerMiddlewareTest;
+use GuzzleLogMiddleware\Test\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\Psr7\Request;
@@ -113,6 +113,6 @@ final class FixedStrategyTest extends AbstractLoggerMiddlewareTest
     protected function createMiddleware(): LogMiddleware
     {
         $strategy = new FixedStrategy(LogLevel::INFO, LogLevel::CRITICAL, LogLevel::DEBUG);
-        return new LogMiddleware($this->logger, new ArrayHandler($strategy));
+        return new LogMiddleware($this->logger, new MultiRecordArrayHandler($strategy));
     }
 }

@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace GuzzleLogMiddleware\Test\Unit\Handler;
+namespace GuzzleLogMiddleware\Test\Handler;
 
-use GuzzleLogMiddleware\Handler\ArrayHandler;
+use GuzzleLogMiddleware\Handler\MultiRecordArrayHandler;
 use GuzzleLogMiddleware\LogMiddleware;
-use GuzzleLogMiddleware\Test\Unit\AbstractLoggerMiddlewareTest;
+use GuzzleLogMiddleware\Test\AbstractLoggerMiddlewareTest;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
@@ -17,14 +17,14 @@ use Psr\Log\LogLevel;
 final class ArrayHandlerTest extends AbstractLoggerMiddlewareTest
 {
     /**
-     * @var ArrayHandler
+     * @var MultiRecordArrayHandler
      */
     private $handler;
 
     public function setUp()
     {
         parent::setUp();
-        $this->handler = new ArrayHandler();
+        $this->handler = new MultiRecordArrayHandler();
     }
 
     /**
@@ -34,7 +34,7 @@ final class ArrayHandlerTest extends AbstractLoggerMiddlewareTest
      */
     public function handlerWorksNormalForAllPossibleValues($value)
     {
-        $handler = new ArrayHandler();
+        $handler = new MultiRecordArrayHandler();
         $handler->log($this->logger, $value, []);
         $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
         $this->logger->reset();
