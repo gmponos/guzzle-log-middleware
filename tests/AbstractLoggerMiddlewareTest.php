@@ -2,18 +2,22 @@
 
 declare(strict_types=1);
 
-namespace GuzzleLogMiddleware\Test\Unit;
+namespace GuzzleLogMiddleware\Test;
 
-use Exception;
-use GuzzleLogMiddleware\LogMiddleware;
-use GuzzleLogMiddleware\Test\TestApp\HistoryLogger;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\TransferStats;
+use GuzzleLogMiddleware\LogMiddleware;
+use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Psr\Log\Test\TestLogger;
 
-abstract class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
+abstract class AbstractLoggerMiddlewareTest extends TestCase
 {
     /**
      * @var MockHandler
@@ -26,6 +30,26 @@ abstract class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
     protected $logger;
 
     /**
+     * @var RequestInterface
+     */
+    protected $request;
+
+    /**
+     * @var ResponseInterface
+     */
+    protected $response;
+
+    /**
+     * @var RequestException
+     */
+    protected $reason;
+
+    /**
+     * @var TransferStats
+     */
+    protected $stats;
+
+    /**
      * @inheritdoc
      */
     public function setUp()
@@ -33,6 +57,10 @@ abstract class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
         parent::setUp();
         $this->mockHandler = new MockHandler();
         $this->logger = new TestLogger();
+        $this->request = new Request('get', 'http://www.test.com/');
+        $this->response = new Response(404);
+        $this->reason = new RequestException('Not Found', $this->request, $this->response);
+        $this->stats = new TransferStats($this->request, $this->response, 0.01);
     }
 
     /**
@@ -40,7 +68,7 @@ abstract class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
      * @param array $headers
      * @param string $body
      * @param string $version
-     * @param Exception|null $reason
+     * @param string|null $reason
      * @return $this
      */
     protected function appendResponse(
@@ -48,7 +76,7 @@ abstract class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
         array $headers = [],
         string $body = '',
         string $version = '1.1',
-        ?Exception $reason = null
+        string $reason = null
     ) {
         $this->mockHandler->append(new Response($code, $headers, $body, $version, $reason));
         return $this;
@@ -69,5 +97,10 @@ abstract class AbstractLoggerMiddlewareTest extends \PHPUnit\Framework\TestCase
         );
     }
 
+    /**
+     * Factory method to create the middleware
+     *
+     * @return LogMiddleware
+     */
     abstract protected function createMiddleware(): LogMiddleware;
 }

@@ -2,53 +2,37 @@
 
 declare(strict_types=1);
 
-namespace GuzzleLogMiddleware\Test\Unit\Handler;
+namespace GuzzleLogMiddleware\Test\Handler;
 
-use GuzzleLogMiddleware\Handler\ArrayHandler;
-use GuzzleLogMiddleware\LogMiddleware;
-use GuzzleLogMiddleware\Test\Unit\AbstractLoggerMiddlewareTest;
-use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Psr7\Request;
-use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\RequestOptions;
-use GuzzleHttp\TransferStats;
+use GuzzleLogMiddleware\Handler\MultiRecordArrayHandler;
+use GuzzleLogMiddleware\LogMiddleware;
+use GuzzleLogMiddleware\Test\AbstractLoggerMiddlewareTest;
 use Psr\Log\LogLevel;
 
-final class ArrayHandlerTest extends AbstractLoggerMiddlewareTest
+final class MultiRecordArrayHandlerTest extends AbstractLoggerMiddlewareTest
 {
     /**
-     * @var ArrayHandler
+     * @var MultiRecordArrayHandler
      */
     private $handler;
 
     public function setUp()
     {
         parent::setUp();
-        $this->handler = new ArrayHandler();
+        $this->handler = new MultiRecordArrayHandler();
     }
 
     /**
      * @test
-     * @dataProvider valueProvider
-     * @param mixed $value
      */
-    public function handlerWorksNormalForAllPossibleValues($value)
+    public function handlerWorksNormalForAllPossibleValues()
     {
-        $handler = new ArrayHandler();
-        $handler->log($this->logger, $value, []);
+        $handler = new MultiRecordArrayHandler();
+        $handler->log($this->logger, $this->request, $this->response, $this->reason, $this->stats, []);
+        $this->assertCount(3, $this->logger->records);
         $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
         $this->logger->reset();
-    }
-
-    public function valueProvider(): array
-    {
-        return [
-            [new Request('get', 'www.test.com')],
-            [new Response()],
-            [new \Exception()],
-            [new RequestException('Not Found', new Request('get', 'www.test.com'))],
-            [new TransferStats(new Request('get', 'www.test.com'))],
-        ];
     }
 
     /**

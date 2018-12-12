@@ -7,7 +7,7 @@ namespace GuzzleLogMiddleware;
 use Closure;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\TransferStats;
-use GuzzleLogMiddleware\Handler\ArrayHandler;
+use GuzzleLogMiddleware\Handler\MultiRecordArrayHandler;
 use GuzzleLogMiddleware\Handler\HandlerInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -43,6 +43,11 @@ final class LogMiddleware
     private $logger;
 
     /**
+     * @var TransferStats|null
+     */
+    private $stats = null;
+
+    /**
      * Creates a callable middleware for logging requests and responses.
      *
      * @param LoggerInterface $logger
@@ -59,7 +64,7 @@ final class LogMiddleware
         $this->logger = $logger;
         $this->onFailureOnly = $onFailureOnly;
         $this->logStatistics = $logStatistics;
-        $this->handler = $handler === null ? new ArrayHandler() : $handler;
+        $this->handler = $handler === null ? new MultiRecordArrayHandler() : $handler;
     }
 
     /**
@@ -73,19 +78,17 @@ final class LogMiddleware
         return function (RequestInterface $request, array $options) use ($handler) {
             $this->setOptions($options);
 
-            if ($this->onFailureOnly === false) {
-                $this->handler->log($this->logger, $request, $options);
-                if ($this->logStatistics && !isset($options['on_stats'])) {
-                    $options['on_stats'] = function (TransferStats $stats) use ($options) {
-                        $this->handler->log($this->logger, $stats, $options);
-                    };
-                }
+            if ($this->logStatistics && !isset($options['on_stats'])) {
+                $options['on_stats'] = function (TransferStats $stats) {
+                    $this->stats = $stats;
+                };
             }
 
-            return $handler($request, $options)->then(
-                $this->handleSuccess($request, $options),
-                $this->handleFailure($request, $options)
-            );
+            return $handler($request, $options)
+                ->then(
+                    $this->handleSuccess($request, $options),
+                    $this->handleFailure($request, $options)
+                );
         };
     }
 
@@ -99,9 +102,9 @@ final class LogMiddleware
     private function handleSuccess(RequestInterface $request, array $options): callable
     {
         return function (ResponseInterface $response) use ($request, $options) {
-            // On exception only is true then it must not log the response since it was successful.
+            // if onFailureOnly is true then it must not log the response since it was successful.
             if ($this->onFailureOnly === false) {
-                $this->handler->log($this->logger, $response, $options);
+                $this->handler->log($this->logger, $request, $response, null, $this->stats, $options);
             }
 
             return $response;
@@ -118,17 +121,12 @@ final class LogMiddleware
     private function handleFailure(RequestInterface $request, array $options): callable
     {
         return function (\Exception $reason) use ($request, $options) {
-            if ($this->onFailureOnly === true) {
-                // This means that the request was not logged and since an exception happened we need to log the request too.
-                $this->handler->log($this->logger, $request, $options);
-            }
-
-            if ($reason instanceof RequestException && $reason->hasResponse()) {
-                $this->handler->log($this->logger, $reason->getResponse(), $options);
+            if ($reason instanceof RequestException && $reason->hasResponse() === true) {
+                $this->handler->log($this->logger, $request, $reason->getResponse(), $reason, $this->stats, $options);
                 return \GuzzleHttp\Promise\rejection_for($reason);
             }
 
-            $this->handler->log($this->logger, $reason, $options);
+            $this->handler->log($this->logger, $request, null, $reason, $this->stats, $options);
             return \GuzzleHttp\Promise\rejection_for($reason);
         };
     }
@@ -150,6 +148,7 @@ final class LogMiddleware
             'statistics' => $this->logStatistics,
         ], $options);
 
+        $this->stats = null;
         $this->onFailureOnly = $options['on_exception_only'];
         $this->logStatistics = $options['statistics'];
     }
