@@ -15,6 +15,8 @@ The middleware is functional with Guzzle 6.
 we are still on 0.x.x version. If you use the package for a project that is in production please lock this package in your composer
 to a specific version like `^0.3.0`.
 
+**Note** That hopefully 0.8.0 version will be the last unstable.
+
 ## Install
 
 Via Composer
