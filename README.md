@@ -42,8 +42,8 @@ $client = new GuzzleHttp\Client([
 ]);
 ```
 
-From now on each request and response you execute using the `$client` object will be logged.
-By default the Middleware logs every activity with `DEBUG` level.
+From now on each request and response you execute using `$client` object will be logged.
+By default the middleware logs every activity with level `DEBUG`.
 
 ### Advanced initialization
 
@@ -51,8 +51,8 @@ The signature of the `LogMiddleware` class is the following:
 
 ```php
 \GuzzleLogMiddleware\LogMiddleware(
-    Psr\Log\LoggerInterface $logger, 
-    GuzzleLogMiddleware\HandlerInterface $handler = null, 
+    \Psr\Log\LoggerInterface $logger, 
+    \GuzzleLogMiddleware\Handler\HandlerInterface $handler = null, 
     bool $onFailureOnly = false, 
     bool $logStatistics = false
 );
@@ -60,23 +60,25 @@ The signature of the `LogMiddleware` class is the following:
 
 - **logger** - The PSR-3 logger to use for logging.
 - **handler** - A HandlerInterface class that will be responsible for logging your request/response. Check Handlers sections.
-- **onFailureOnly** - By default the middleware is set to log every request and response. If you wish that to log 
-the requests and responses only when guzzle returns a rejection set this as true. Guzzle returns a rejection when 
-`http_errors` option is set to true, meaning that it will throw exception in cases a 4xx or 5xx response is received. 
-- **logStatistics** - If you set logStatistics as true and this as true then guzzle will also log statistics about the requests.
+- **onFailureOnly** - By default the middleware is set to log every request and response. If you wish to log 
+the requests and responses only when guzzle returns a rejection set this as true or when an exception occurred. 
+Guzzle returns a rejection when (http_errors)[http://docs.guzzlephp.org/en/stable/request-options.html#http-errors] option is set to true. 
+- **logStatistics** - If you this option as true then the middleware will also log statistics about the requests.
 
 ### Handlers
 
-In order to make the middleware more flexible we allow the developers to initialize the middleware and pass a handler 
-during the construction. This handler must implement a `HandlerInterface` and it will be responsible for logging. 
+In order to make the middleware more flexible we allow the developer to initialize it passing a handler. 
+A handler must implement a `HandlerInterface` and it will be responsible for logging. 
 
-So now let's say that we have the following handler.
+Let's say that we create the following handler.
 
-``` php
+```php
 <?php
 namespace GuzzleLogMiddleware\Handler;
 
-use Psr\Http\Message\MessageInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
+use GuzzleHttp\TransferStats;
 use Psr\Log\LoggerInterface;
 
 final class SimpleHandler implements HandlerInterface
@@ -85,7 +87,7 @@ final class SimpleHandler implements HandlerInterface
         LoggerInterface $logger,
         RequestInterface $request,
         ?ResponseInterface $response,
-        ?Exception $exception,
+        ?\Exception $exception,
         ?TransferStats $stats,
         array $options
     ): void {
@@ -98,6 +100,7 @@ final class SimpleHandler implements HandlerInterface
 We can pass the handler above during construction of the middleware.
 
 ```php
+<?php
 use GuzzleLogMiddleware\LogMiddleware;
 use GuzzleHttp\HandlerStack;
 
@@ -111,21 +114,13 @@ $client = new GuzzleHttp\Client([
 
 If no handler is passed the middleware will initialize it's own handler. At the moment the default one is `MultiRecordArrayHandler`
 
-### Using options on each request
+#### MultiRecordArrayHandler
 
-You can set on each request options about your log.
+#### StringHandler
 
-```php
-$client->get('/', [
-    'log' => [
-        'on_exception_only' => true,
-        'statistics' => true,
-    ]
-]);
-```
+### Log Level Strategies
 
-- ``on_exception_only`` Do not log anything unless if the response status code is above the threshold.
-- ``statistics`` if the `on_exception_only` option/variable is true and this is also true the middleware will log statistics about the HTTP call.
+A log level strategy can be used in order to define the level that the handler will use to log the Request/Response.
 
 ## Change log
 
