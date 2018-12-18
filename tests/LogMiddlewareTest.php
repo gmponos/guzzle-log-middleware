@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware\Test;
 
+use GuzzleHttp\Client;
 use GuzzleHttp\Exception\TransferException;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\RequestOptions;
 use GuzzleLogMiddleware\LogMiddleware;
 use Psr\Log\LogLevel;
@@ -129,6 +131,37 @@ final class LogMiddlewareTest extends AbstractLoggerMiddlewareTest
         $this->assertSame('Guzzle HTTP statistics', $this->logger->records[1]['message']);
         $this->assertSame(LogLevel::DEBUG, $this->logger->records[2]['level']);
         $this->assertSame('Guzzle HTTP response', $this->logger->records[2]['message']);
+    }
+
+    /**
+     * @test
+     * @dataProvider statusCodeProvider
+     * @param int $statusCode
+     */
+    public function logTransactionWithStatisticsTrueAndExceptionOnlyTrue(int $statusCode)
+    {
+        $this->appendResponse($statusCode);
+
+        $stack = HandlerStack::create($this->mockHandler);
+        $stack->unshift(new LogMiddleware($this->logger, null, true, true));
+        $client = new Client([
+            'handler' => $stack,
+        ]);
+
+        try {
+            $client->get('/');
+        } catch (\Exception $e) {
+            $this->assertCount(3, $this->logger->records);
+            $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+            $this->assertSame('Guzzle HTTP request', $this->logger->records[0]['message']);
+            $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+            $this->assertSame('Guzzle HTTP statistics', $this->logger->records[1]['message']);
+            $this->assertSame(LogLevel::DEBUG, $this->logger->records[2]['level']);
+            $this->assertSame('Guzzle HTTP response', $this->logger->records[2]['message']);
+            return;
+        }
+
+        $this->assertCount(0, $this->logger->records);
     }
 
     public function statusCodeProvider()
