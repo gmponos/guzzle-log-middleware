@@ -20,7 +20,9 @@ final class LogMiddlewareTest extends AbstractLoggerMiddlewareTest
     {
         $this->appendResponse(200, [], 'response_body')
             ->createClient()
-            ->get('/', [RequestOptions::BODY => 'request_body']);
+            ->get('/', [
+                RequestOptions::BODY => 'request_body',
+            ]);
 
         $this->assertCount(2, $this->logger->records);
         $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
