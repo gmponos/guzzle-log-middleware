@@ -14,10 +14,16 @@ use Psr\Log\LogLevel;
  */
 final class ThresholdStrategy implements LogLevelStrategyInterface
 {
+    public const INFORMATIONAL = '1xx';
+    public const SUCCESS = '2xx';
+    public const REDIRECTION = '3xx';
     public const CLIENT_ERRORS = '4xx';
     public const SERVER_ERRORS = '5xx';
 
     private $matchingStatusCodes = [
+        self::INFORMATIONAL => 1,
+        self::SUCCESS => 2,
+        self::REDIRECTION => 3,
         self::CLIENT_ERRORS => 4,
         self::SERVER_ERRORS => 5,
     ];
@@ -26,6 +32,9 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
      * @var array
      */
     private $thresholds = [
+        self::INFORMATIONAL => LogLevel::DEBUG,
+        self::SUCCESS => LogLevel::INFO,
+        self::REDIRECTION => LogLevel::NOTICE,
         self::CLIENT_ERRORS => LogLevel::ERROR,
         self::SERVER_ERRORS => LogLevel::CRITICAL,
     ];
@@ -41,7 +50,9 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
     private $defaultLevel;
 
     /**
-     * @param array $thresholds
+     * Developer can initialize this strategy passing an array of thresholds
+     *
+     * @param array $thresholds An array of thresholds.
      * @param string $defaultLevel
      * @param string $exceptionLevel
      */
@@ -52,10 +63,7 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
     ) {
         $this->exceptionLevel = $exceptionLevel;
         $this->defaultLevel = $defaultLevel;
-        $this->thresholds = array_merge([
-            '4xx' => LogLevel::ERROR,
-            '5xx' => LogLevel::CRITICAL,
-        ], $thresholds);
+        $this->thresholds = array_merge($this->thresholds, $thresholds);
     }
 
     /**
@@ -67,7 +75,6 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
      */
     public function getLevel($value, array $options): string
     {
-        $this->setOptions($options);
         if ($value instanceof \Exception) {
             return $this->exceptionLevel;
         }
@@ -77,26 +84,6 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
         }
 
         return $this->defaultLevel;
-    }
-
-    /**
-     * @param array $options
-     * @return void
-     */
-    private function setOptions(array $options): void
-    {
-        if (!isset($options['log'])) {
-            return;
-        }
-        $options = $options['log'];
-
-        $options = array_merge([
-            '4xx' => LogLevel::ERROR,
-            '5xx' => LogLevel::CRITICAL,
-        ], $options);
-
-        $this->thresholds['4xx'] = $options['4xx'];
-        $this->thresholds['5xx'] = $options['5xx'];
     }
 
     /**

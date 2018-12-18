@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware\Test\Handler;
 
+use GuzzleHttp\RequestOptions;
 use GuzzleLogMiddleware\Handler\StringHandler;
 use GuzzleLogMiddleware\LogMiddleware;
 use GuzzleLogMiddleware\Test\AbstractLoggerMiddlewareTest;
@@ -20,6 +21,34 @@ final class StringHandlerTest extends AbstractLoggerMiddlewareTest
     {
         parent::setUp();
         $this->handler = new StringHandler();
+    }
+
+    /**
+     * @test
+     */
+    public function logSuccessfulTransaction()
+    {
+        $this->appendResponse(200, [], 'response_body')
+            ->createClient()
+            ->get('/', [
+                RequestOptions::BODY => 'request_body',
+            ]);
+
+        $this->assertCount(2, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame("Guzzle HTTP request:
+GET / HTTP/1.1\r
+Host: \r
+User-Agent: GuzzleHttp/6.3.3 curl/7.55.1 PHP/7.1.14\r
+\r
+request_body", $this->logger->records[0]['message']);
+        $this->assertCount(0, $this->logger->records[0]['context']);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertSame("Guzzle HTTP response:
+HTTP/1.1 200 OK\r
+\r
+response_body", $this->logger->records[1]['message']);
+        $this->assertCount(0, $this->logger->records[1]['context']);
     }
 
     /**
