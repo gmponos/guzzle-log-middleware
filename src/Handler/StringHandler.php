@@ -27,9 +27,9 @@ final class StringHandler extends AbstractHandler
     /**
      * @param LoggerInterface $logger
      * @param RequestInterface $request
-     * @param ResponseInterface $response
-     * @param Exception $exception
-     * @param TransferStats $stats
+     * @param ResponseInterface|null $response
+     * @param Exception|null $exception
+     * @param TransferStats|null $stats
      * @param array $options
      * @return void
      */

@@ -9,13 +9,12 @@
 This is a middleware for [guzzle](https://github.com/guzzle/guzzle) that will help you automatically log every request 
 and response using a PSR-3 logger.
 
-The middleware is functional with Guzzle 6.
+The middleware is functional with version 6 of Guzzle.
 
 ### Important Notes
-- This package is still in version 0.x.x. According to [semantic versioning](https://semver.org/) major changes can occur while
+- This package is still in version 0.x.x. According to [semantic versioning](https://semver.org/#spec-item-4) major changes can occur while
 we are still on 0.x.x version. If you use the package for a project that is in production please lock this package in your composer
 to a specific version like `^0.3.0`.
-
 - Hopefully 0.8.0 version will be the last unstable. Please share your feedback or star the project if you like it.
 
 ## Install
@@ -61,16 +60,16 @@ The signature of the `LogMiddleware` class is the following:
 - **logger** - The PSR-3 logger to use for logging.
 - **handler** - A HandlerInterface class that will be responsible for logging your request/response. Check Handlers sections.
 - **onFailureOnly** - By default the middleware is set to log every request and response. If you wish to log 
-the requests and responses only when guzzle returns a rejection set this as true or when an exception occurred. 
-Guzzle returns a rejection when (http_errors)[http://docs.guzzlephp.org/en/stable/request-options.html#http-errors] option is set to true. 
-- **logStatistics** - If you this option as true then the middleware will also log statistics about the requests.
+the HTTP messages only when guzzle returns a rejection set this as true or when an exception occurred. 
+Guzzle returns a rejection when [http_errors](http://docs.guzzlephp.org/en/stable/request-options.html#http-errors) option is set to true. 
+- **logStatistics** - If you set this option as true then the middleware will also log statistics about the HTTP transaction.
 
 ### Handlers
 
-In order to make the middleware more flexible we allow the developer to initialize it passing a handler. 
-A handler must implement a `HandlerInterface` and it will be responsible for logging. 
+In order to make the middleware more flexible we allow the developer to initialize it with a handler. 
+A handler is the class that will be responsible for logging the HTTP message and it must implement a `HandlerInterface`.
 
-Let's say that we create the following handler.
+As an example let's say that we create the following handler:
 
 ```php
 <?php
@@ -81,6 +80,7 @@ use Psr\Http\Message\RequestInterface;
 use GuzzleHttp\TransferStats;
 use Psr\Log\LoggerInterface;
 
+/** A simple handler that logs only requests */
 final class SimpleHandler implements HandlerInterface
 {
     public function log(
@@ -112,14 +112,17 @@ $client = new GuzzleHttp\Client([
 ]);
 ```
 
-If no handler is passed the middleware will initialize it's own handler. At the moment the default one is `MultiRecordArrayHandler`
+From now on all Requests will be logged. Note that at the example above only requests are logged.
 
+**Important**
+
+If no handler is passed the middleware will initialize it's own handler. At the moment the default one is `MultiRecordArrayHandler`
 
 #### MultiRecordArrayHandler
 
 This is the default handler used from the middleware. This handler uses internally the `FixedStrategy` and logs all request
-and responses with level debug. This hanlder adds a separate log entry for each Request, Response, Exception or TransferStats.
-The information about each object are added as an array `context` to the log entry.
+and responses with level debug. This handler adds a separate log entry for each `Request`, `Response`, `Exception` or `TransferStats`.
+The information about each object are added as a `context` array to the log entry.
 
 #### StringHandler
 
@@ -128,6 +131,8 @@ with a custom strategy. This handler adds a separate log entry for each Request,
 The handler converts the objects to strings and the information about each object are added to the `message` of the log entry.
 
 ### Log Level Strategies
+
+Strategies are used to define the LogLevel that the handler will use to log each object.
 
 #### FixedStrategy
 
@@ -155,7 +160,7 @@ $client = new GuzzleHttp\Client([
 
 ### Using options on each request
 
- You can set on each request options about your log.
+You can set on each request options about your log.
  
  ```php
  $client->get('/', [
@@ -182,10 +187,8 @@ $ composer test
 ## Credits
 
 - [George Mponos](gmponos@gmail.com)
+- [Contributors](../../contributors)
 
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
-
-## Todo
- - Create more handlers to log request/responses
