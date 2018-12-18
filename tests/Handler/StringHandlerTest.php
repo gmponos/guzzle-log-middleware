@@ -36,12 +36,10 @@ final class StringHandlerTest extends AbstractLoggerMiddlewareTest
 
         $this->assertCount(2, $this->logger->records);
         $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
-        $this->assertSame("Guzzle HTTP request:
+        $this->assertStringStartsWith("Guzzle HTTP request:
 GET / HTTP/1.1\r
 Host: \r
-User-Agent: GuzzleHttp/6.3.3 curl/7.55.1 PHP/7.1.14\r
-\r
-request_body", $this->logger->records[0]['message']);
+User-Agent: GuzzleHttp/6.3.3 curl/7.55.1", $this->logger->records[0]['message']);
         $this->assertCount(0, $this->logger->records[0]['context']);
         $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
         $this->assertSame("Guzzle HTTP response:
