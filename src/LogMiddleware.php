@@ -78,6 +78,7 @@ final class LogMiddleware
         return function (RequestInterface $request, array $options) use ($handler) {
             $this->setOptions($options);
 
+            /** @todo check how statistics integrate with exception only */
             if ($this->logStatistics && !isset($options['on_stats'])) {
                 $options['on_stats'] = function (TransferStats $stats) {
                     $this->stats = $stats;

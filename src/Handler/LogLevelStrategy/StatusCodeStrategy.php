@@ -33,7 +33,7 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
      * @param string $defaultLevel
      * @param string $exceptionLevel
      */
-    public function __construct($defaultLevel = LogLevel::DEBUG, $exceptionLevel = LogLevel::CRITICAL)
+    public function __construct(string $defaultLevel = LogLevel::DEBUG, string $exceptionLevel = LogLevel::CRITICAL)
     {
         $this->exceptionLevel = $exceptionLevel;
         $this->defaultLevel = $defaultLevel;
@@ -48,7 +48,9 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
      */
     public function setLevel(int $statusCode, string $level): void
     {
-        // todo validate the level and status code.
+        if ($statusCode < 100 || $statusCode >= 600) {
+            throw new \InvalidArgumentException('Invalid status code passed');
+        }
         $this->statusCodeLevels[$statusCode] = $level;
     }
 
