@@ -114,13 +114,60 @@ $client = new GuzzleHttp\Client([
 
 If no handler is passed the middleware will initialize it's own handler. At the moment the default one is `MultiRecordArrayHandler`
 
+
 #### MultiRecordArrayHandler
+
+This is the default handler used from the middleware. This handler uses internally the `FixedStrategy` and logs all request
+and responses with level debug. This hanlder adds a separate log entry for each Request, Response, Exception or TransferStats.
+The information about each object are added as an array `context` to the log entry.
 
 #### StringHandler
 
+This handler uses internally the `FixedStrategy` and logs all request and responses with level debug. You can initialize this handler
+with a custom strategy. This handler adds a separate log entry for each Request, Response, Exception or TransferStats.
+The handler converts the objects to strings and the information about each object are added to the `message` of the log entry.
+
 ### Log Level Strategies
 
-A log level strategy can be used in order to define the level that the handler will use to log the Request/Response.
+#### FixedStrategy
+
+You can use this strategy to log each HTTP Message with a specific level.
+
+#### StatusCodeStrategy
+
+You can use this strategy to log each HTTP Response with a specific level depending on the status code of the Response.
+
+```php
+$strategy = new StatusCodeStrategy(
+    LogLevel::INFO, // Default level used for requests or for responses that status code are not set with a different level.
+    LogLevel::CRITICAL // Default level used for exceptions.
+);
+$strategy->setLevel(404, LogLevel::WARNING);
+$multiRecordArrayHandler = new MultiRecordArrayHandler($strategy);
+
+$logger = new Logger();  //A new PSR-3 Logger like Monolog
+$stack = HandlerStack::create(); // will create a stack stack with middlewares of guzzle already pushed inside of it.
+$stack->push(new LogMiddleware($logger, $multiRecordArrayHandler));
+$client = new GuzzleHttp\Client([
+    'handler' => $stack,
+]);
+``` 
+
+### Using options on each request
+
+ You can set on each request options about your log.
+ 
+ ```php
+ $client->get('/', [
+     'log' => [
+         'on_exception_only' => true,
+         'statistics' => true,
+     ]
+ ]);
+ ```
+
+- ``on_exception_only`` Do not log anything unless if the response status code is above the threshold.
+- ``statistics`` if the `on_exception_only` option/variable is true and this is also true the middleware will log statistics about the HTTP call.
 
 ## Change log
 
