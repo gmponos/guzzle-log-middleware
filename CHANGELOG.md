@@ -9,7 +9,7 @@ All Notable changes to `gmponos/guzzle_logger` will be documented in this file
 
 ## 0.8.0 - 2018-12-13
 
-### Changes 
+### Changes
 
 - Set as the default strategy in all handlers the `FixedStrategy`
 
@@ -17,7 +17,7 @@ All Notable changes to `gmponos/guzzle_logger` will be documented in this file
  
 - `LogLevelStrategy` class is removed and it has been separated to smaller classes.
 Check the `added` section below.
-- Changed the namespaces completely. The new Namespace is `GuzzleLogMiddleware` instead of `Gmponos\GuzzleLogger`.
+- Changed the namespaces completely. The new namespace is `GuzzleLogMiddleware` instead of `Gmponos\GuzzleLogger`.
 Check the README file for instructions.
 - Changed the signature of function `HandlerInterface::log`.
 - Changed `ArrayHandler` to `MultiRecordArrayHandler`  

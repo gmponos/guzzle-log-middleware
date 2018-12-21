@@ -49,9 +49,6 @@ abstract class AbstractLoggerMiddlewareTest extends TestCase
      */
     protected $stats;
 
-    /**
-     * @inheritdoc
-     */
     public function setUp()
     {
         parent::setUp();
