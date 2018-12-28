@@ -156,7 +156,7 @@ $stack->push(new LogMiddleware($logger, $multiRecordArrayHandler));
 $client = new GuzzleHttp\Client([
     'handler' => $stack,
 ]);
-``` 
+```
 
 ### Using options on each request
 
