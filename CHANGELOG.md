@@ -2,7 +2,7 @@
 
 All Notable changes to `gmponos/guzzle_logger` will be documented in this file
 
-## 1.0.0 - NEXT RELEASE
+## 1.0.0 - 2018-12-28
 
 ### Changes
 - Added more classes of status codes to `ThresholdStrategy`
