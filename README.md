@@ -11,12 +11,6 @@ and response using a PSR-3 logger.
 
 The middleware is functional with version 6 of Guzzle.
 
-### Important Notes
-- This package is still in version 0.x.x. According to [semantic versioning](https://semver.org/#spec-item-4) major changes can occur while
-we are still on 0.x.x version. If you use the package for a project that is in production please lock this package in your composer
-to a specific version like `^0.3.0`.
-- Hopefully 0.8.0 version will be the last unstable. Please share your feedback or star the project if you like it.
-
 ## Install
 
 Via Composer
