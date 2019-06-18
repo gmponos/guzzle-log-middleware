@@ -2,6 +2,11 @@
 
 All Notable changes to `gmponos/guzzle_logger` will be documented in this file
 
+## 1.0.1 - 2019-06-18
+
+### Changes
+- Fixes [#24](https://github.com/gmponos/guzzle-log-middleware/issues/24). Body MUST rewind on huge responses.
+
 ## 1.0.0 - 2018-12-28
 
 ### Changes

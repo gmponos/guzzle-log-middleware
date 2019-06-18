@@ -150,7 +150,9 @@ final class MultiRecordArrayHandler extends AbstractHandler
         }
 
         if ($stream->getSize() >= 3500) {
-            return $stream->read(200) . ' (truncated...)';
+            $summary = $stream->read(200) . ' (truncated...)';
+            $stream->rewind();
+            return $summary;
         }
 
         $body = $stream->getContents();
