@@ -155,7 +155,7 @@ final class MultiRecordArrayHandler extends AbstractHandler
             return $summary;
         }
 
-        $body = $stream->getContents();
+        $body = $stream->__toString();
         $isJson = preg_grep('/application\/[\w\.\+]*(json)/', $message->getHeader('Content-Type'));
         if (!empty($isJson)) {
             $body = json_decode($body, true);
