@@ -32,7 +32,7 @@ final class MultiRecordArrayHandler extends AbstractHandler
      * @param int $truncateSize If the body of the request/response is greater than the size of this integer the body will be truncated
      * @param int $summarySize The size to use for the summary of a truncated body
      */
-    public function __construct(LogLevelStrategyInterface $logLevelStrategy = null, int $truncateSize = 3500, int $summarySize = 120)
+    public function __construct(LogLevelStrategyInterface $logLevelStrategy = null, int $truncateSize = 3500, int $summarySize = 200)
     {
         $this->logLevelStrategy = $logLevelStrategy === null ? $this->getDefaultStrategy() : $logLevelStrategy;
         $this->truncateSize = $truncateSize;
