@@ -17,7 +17,7 @@ final class MultiRecordArrayHandlerTest extends AbstractLoggerMiddlewareTest
      */
     private $handler;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
         $this->handler = new MultiRecordArrayHandler();
