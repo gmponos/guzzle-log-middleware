@@ -18,11 +18,25 @@ use Psr\Log\LoggerInterface;
 final class MultiRecordArrayHandler extends AbstractHandler
 {
     /**
-     * @param LogLevelStrategyInterface|null $logLevelStrategy
+     * @var int
      */
-    public function __construct(LogLevelStrategyInterface $logLevelStrategy = null)
+    private $truncateSize;
+
+    /**
+     * @var int
+     */
+    private $summarySize;
+
+    /**
+     * @param LogLevelStrategyInterface|null $logLevelStrategy
+     * @param int $truncateSize If the body of the request/response is greater than the size of this integer the body will be truncated
+     * @param int $summarySize The size to use for the summary of a truncated body
+     */
+    public function __construct(LogLevelStrategyInterface $logLevelStrategy = null, int $truncateSize = 3500, int $summarySize = 200)
     {
         $this->logLevelStrategy = $logLevelStrategy === null ? $this->getDefaultStrategy() : $logLevelStrategy;
+        $this->truncateSize = $truncateSize;
+        $this->summarySize = $summarySize;
     }
 
     /**
@@ -149,8 +163,8 @@ final class MultiRecordArrayHandler extends AbstractHandler
             return 'Body contains sensitive information therefore it is not included.';
         }
 
-        if ($stream->getSize() >= 3500) {
-            $summary = $stream->read(200) . ' (truncated...)';
+        if ($stream->getSize() >= $this->truncateSize) {
+            $summary = $stream->read($this->summarySize) . ' (truncated...)';
             $stream->rewind();
             return $summary;
         }
