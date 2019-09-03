@@ -2,6 +2,11 @@
 
 All Notable changes to `gmponos/guzzle_logger` will be documented in this file
 
+## 1.1.0 - 2019-09-03
+
+### Added
+- Added parameters in MultiRecordArrayHandler in order to customize the size truncated [#25](https://github.com/gmponos/guzzle-log-middleware/pull/25)
+
 ## 1.0.1 - 2019-06-18
 
 ### Changes
