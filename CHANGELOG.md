@@ -6,6 +6,7 @@ All Notable changes to `gmponos/guzzle_logger` will be documented in this file
 
 ### Added
 - Added parameters in MultiRecordArrayHandler in order to customize the size truncated [#25](https://github.com/gmponos/guzzle-log-middleware/pull/25)
+- MultiRecordArrayHandler will parse form requests as and log them as array [#27](https://github.com/gmponos/guzzle-log-middleware/pull/27)  
 
 ## 1.0.1 - 2019-06-18
 
