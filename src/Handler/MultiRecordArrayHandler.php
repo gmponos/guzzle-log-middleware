@@ -170,9 +170,20 @@ final class MultiRecordArrayHandler extends AbstractHandler
         }
 
         $body = $stream->__toString();
-        $isJson = preg_grep('/application\/[\w\.\+]*(json)/', $message->getHeader('Content-Type'));
+        $contentType = $message->getHeader('Content-Type');
+
+        $isJson = preg_grep('/application\/[\w\.\+]*(json)/', $contentType);
         if (!empty($isJson)) {
-            $body = json_decode($body, true);
+            $result = json_decode($body, true);
+            $stream->rewind();
+            return $result;
+        }
+
+        $isForm = preg_grep('/application\/x-www-form-urlencoded/', $contentType);
+        if (!empty($isForm)) {
+            $result = \GuzzleHttp\Psr7\parse_query($body);
+            $stream->rewind();
+            return $result;
         }
 
         $stream->rewind();

@@ -83,6 +83,36 @@ final class MultiRecordArrayHandlerTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
+    public function logTransactionWithFormRequest()
+    {
+        $this
+            ->appendResponse(200)
+            ->createClient([
+                RequestOptions::FORM_PARAMS => [
+                    'one_param' => 'test',
+                    'second_param' => 'test2',
+                ],
+            ])
+            ->get('/');
+
+        $this->assertCount(2, $this->logger->records);
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[0]['level']);
+        $this->assertSame('Guzzle HTTP request', $this->logger->records[0]['message']);
+        $this->assertSame(
+            [
+                'one_param' => 'test',
+                'second_param' => 'test2',
+            ],
+            $this->logger->records[0]['context']['request']['body']
+        );
+        $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
+        $this->assertSame('Guzzle HTTP response', $this->logger->records[1]['message']);
+        $this->assertArrayNotHasKey('body', $this->logger->records[1]['context']['response']);
+    }
+
+    /**
+     * @test
+     */
     public function logTransactionWithJsonApiResponse()
     {
         $this->appendResponse(200, ['Content-Type' => 'application/vnd.api+json'], '{"status": true, "client": 13000}')
