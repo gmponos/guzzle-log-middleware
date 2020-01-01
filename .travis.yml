@@ -10,7 +10,7 @@ before_script:
 
 script:
     - php vendor/bin/phpunit --coverage-clover=clover.xml
-    - php vendor/bin/phpstan analyse -l 4 src tests
+    - php vendor/bin/phpstan analyse -l max src tests
     - composer phpcs
 
 after_success:
