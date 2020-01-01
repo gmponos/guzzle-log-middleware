@@ -40,8 +40,7 @@ final class StringHandler extends AbstractHandler
         ?Exception $exception,
         ?TransferStats $stats,
         array $options
-    ): void
-    {
+    ): void {
         $this->logRequest($logger, $request, $options);
 
         if ($stats !== null) {
@@ -107,7 +106,7 @@ final class StringHandler extends AbstractHandler
     {
         $level = $this->logLevelStrategy->getLevel($exception, $options);
         $logger->log($level, sprintf('Guzzle HTTP exception: %s', $exception->getMessage()), [
-            'exception' => $exception
+            'exception' => $exception,
         ]);
     }
 
