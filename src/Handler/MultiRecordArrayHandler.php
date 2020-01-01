@@ -92,11 +92,11 @@ final class MultiRecordArrayHandler extends AbstractHandler
 
     /**
      * @param LoggerInterface $logger
-     * @param ResponseInterface|null $response
+     * @param ResponseInterface $response
      * @param array $options
      * @return void
      */
-    private function logResponse(LoggerInterface $logger, ?ResponseInterface $response, array $options): void
+    private function logResponse(LoggerInterface $logger, ResponseInterface $response, array $options): void
     {
         $context['response']['headers'] = $response->getHeaders();
         $context['response']['status_code'] = $response->getStatusCode();
@@ -134,11 +134,11 @@ final class MultiRecordArrayHandler extends AbstractHandler
 
     /**
      * @param LoggerInterface $logger
-     * @param TransferStats|null $stats
+     * @param TransferStats $stats
      * @param array $options
      * @return void
      */
-    private function logStats(LoggerInterface $logger, ?TransferStats $stats, array $options): void
+    private function logStats(LoggerInterface $logger, TransferStats $stats, array $options): void
     {
         $this->logLevelStrategy->getLevel($stats, $options);
         $logger->debug('Guzzle HTTP statistics', [
