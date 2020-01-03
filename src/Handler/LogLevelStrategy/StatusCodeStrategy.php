@@ -41,10 +41,6 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
 
     /**
      * Sets a logging level per status code.
-     *
-     * @param int $statusCode
-     * @param string $level
-     * @return void
      */
     public function setLevel(int $statusCode, string $level): void
     {
@@ -54,13 +50,6 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
         $this->statusCodeLevels[$statusCode] = $level;
     }
 
-    /**
-     * Returns the log level for a response.
-     *
-     * @param RequestInterface|ResponseInterface|TransferStats|\Exception $value
-     * @param array $options
-     * @return string LogLevel
-     */
     public function getLevel($value, array $options): string
     {
         $this->setOptions($options);
@@ -75,10 +64,6 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
         return $this->defaultLevel;
     }
 
-    /**
-     * @param array $options
-     * @return void
-     */
     private function setOptions(array $options): void
     {
         if (!isset($options['log'])) {

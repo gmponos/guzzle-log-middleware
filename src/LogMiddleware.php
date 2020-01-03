@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware;
 
-use Closure;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\TransferStats;
 use GuzzleLogMiddleware\Handler\MultiRecordArrayHandler;
 use GuzzleLogMiddleware\Handler\HandlerInterface;
+use Prophecy\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -50,8 +50,6 @@ final class LogMiddleware
     /**
      * Creates a callable middleware for logging requests and responses.
      *
-     * @param LoggerInterface $logger
-     * @param HandlerInterface|null $handler
      * @param bool $onFailureOnly The request and the response will be logged only in cases there is considered a failure.
      * @param bool $logStatistics If this is true an extra row will be added that will contain some HTTP statistics.
      */
@@ -69,13 +67,10 @@ final class LogMiddleware
 
     /**
      * Called when the middleware is handled by the client.
-     *
-     * @param callable $handler
-     * @return callable
      */
     public function __invoke(callable $handler): callable
     {
-        return function (RequestInterface $request, array $options) use ($handler) {
+        return function (RequestInterface $request, array $options) use ($handler): PromiseInterface {
             $this->setOptions($options);
 
             if ($this->logStatistics && !isset($options['on_stats'])) {
@@ -94,10 +89,6 @@ final class LogMiddleware
 
     /**
      * Returns a function which is handled when a request was successful.
-     *
-     * @param RequestInterface $request
-     * @param array $options
-     * @return Closure
      */
     private function handleSuccess(RequestInterface $request, array $options): callable
     {
@@ -113,10 +104,6 @@ final class LogMiddleware
 
     /**
      * Returns a function which is handled when a request was rejected.
-     *
-     * @param RequestInterface $request
-     * @param array $options
-     * @return Closure
      */
     private function handleFailure(RequestInterface $request, array $options): callable
     {
@@ -131,10 +118,6 @@ final class LogMiddleware
         };
     }
 
-    /**
-     * @param array $options
-     * @return void
-     */
     private function setOptions(array $options): void
     {
         if (!isset($options['log'])) {

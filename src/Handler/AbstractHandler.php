@@ -17,9 +17,6 @@ abstract class AbstractHandler implements HandlerInterface
      */
     protected $logLevelStrategy;
 
-    /**
-     * @return LogLevelStrategyInterface
-     */
     protected function getDefaultStrategy(): LogLevelStrategyInterface
     {
         return new FixedStrategy();

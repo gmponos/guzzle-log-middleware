@@ -39,15 +39,6 @@ final class MultiRecordArrayHandler extends AbstractHandler
         $this->summarySize = $summarySize;
     }
 
-    /**
-     * @param LoggerInterface $logger
-     * @param RequestInterface $request
-     * @param ResponseInterface|null $response
-     * @param Exception|null $exception
-     * @param TransferStats|null $stats
-     * @param array $options
-     * @return void
-     */
     public function log(
         LoggerInterface $logger,
         RequestInterface $request,

@@ -16,23 +16,11 @@ use Psr\Log\LoggerInterface;
  */
 final class StringHandler extends AbstractHandler
 {
-    /**
-     * @param LogLevelStrategyInterface|null $logLevelStrategy
-     */
     public function __construct(LogLevelStrategyInterface $logLevelStrategy = null)
     {
         $this->logLevelStrategy = $logLevelStrategy === null ? $this->getDefaultStrategy() : $logLevelStrategy;
     }
 
-    /**
-     * @param LoggerInterface $logger
-     * @param RequestInterface $request
-     * @param ResponseInterface|null $response
-     * @param Exception|null $exception
-     * @param TransferStats|null $stats
-     * @param array $options
-     * @return void
-     */
     public function log(
         LoggerInterface $logger,
         RequestInterface $request,
@@ -49,10 +37,11 @@ final class StringHandler extends AbstractHandler
 
         if ($response !== null) {
             $this->logResponse($logger, $response, $options);
-        } else {
-            if ($exception !== null) {
-                $this->logReason($logger, $exception, $options);
-            }
+            return;
+        }
+
+        if ($exception !== null) {
+            $this->logReason($logger, $exception, $options);
         }
     }
 

@@ -35,11 +35,6 @@ final class FixedStrategy implements LogLevelStrategyInterface
      */
     private $statsLevel;
 
-    /**
-     * @param string $defaultLevel
-     * @param string|null $exceptionLevel
-     * @param string|null $statsLevel
-     */
     public function __construct(
         string $defaultLevel = LogLevel::DEBUG,
         string $exceptionLevel = null,

@@ -66,13 +66,6 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
         $this->thresholds = array_merge($this->thresholds, $thresholds);
     }
 
-    /**
-     * Returns the log level for a response.
-     *
-     * @param RequestInterface|ResponseInterface|TransferStats|\Exception $value
-     * @param array $options
-     * @return string LogLevel
-     */
     public function getLevel($value, array $options): string
     {
         if ($value instanceof \Exception) {
@@ -86,10 +79,6 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
         return $this->defaultLevel;
     }
 
-    /**
-     * @param ResponseInterface $response
-     * @return string
-     */
     private function getResponseLevel(ResponseInterface $response): string
     {
         $code = $response->getStatusCode();
