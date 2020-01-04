@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace GuzzleLogMiddleware;
 
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\TransferStats;
 use GuzzleLogMiddleware\Handler\MultiRecordArrayHandler;
 use GuzzleLogMiddleware\Handler\HandlerInterface;
-use Prophecy\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;

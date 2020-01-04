@@ -60,12 +60,6 @@ final class MultiRecordArrayHandler extends AbstractHandler
         }
     }
 
-    /**
-     * @param LoggerInterface $logger
-     * @param RequestInterface $request
-     * @param array $options
-     * @return void
-     */
     private function logRequest(LoggerInterface $logger, RequestInterface $request, array $options): void
     {
         $context['request']['method'] = $request->getMethod();

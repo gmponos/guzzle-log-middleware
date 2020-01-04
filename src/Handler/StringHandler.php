@@ -45,12 +45,6 @@ final class StringHandler extends AbstractHandler
         }
     }
 
-    /**
-     * @param LoggerInterface $logger
-     * @param RequestInterface $value
-     * @param array $options
-     * @return void
-     */
     private function logRequest(LoggerInterface $logger, RequestInterface $value, array $options): void
     {
         // we do not allow to record the message if the body is not seekable.
@@ -65,12 +59,6 @@ final class StringHandler extends AbstractHandler
         $logger->log($level, 'Guzzle HTTP request:' . "\n" . $str);
     }
 
-    /**
-     * @param LoggerInterface $logger
-     * @param ResponseInterface $value
-     * @param array $options
-     * @return void
-     */
     private function logResponse(LoggerInterface $logger, ResponseInterface $value, array $options): void
     {
         // we do not allow to record the message if the body is not seekable.
@@ -85,12 +73,6 @@ final class StringHandler extends AbstractHandler
         $logger->log($level, 'Guzzle HTTP response:' . "\n" . $str);
     }
 
-    /**
-     * @param LoggerInterface $logger
-     * @param Exception $exception
-     * @param array $options
-     * @return void
-     */
     private function logReason(LoggerInterface $logger, Exception $exception, array $options): void
     {
         $level = $this->logLevelStrategy->getLevel($exception, $options);
@@ -99,12 +81,6 @@ final class StringHandler extends AbstractHandler
         ]);
     }
 
-    /**
-     * @param LoggerInterface $logger
-     * @param TransferStats $value
-     * @param array $options
-     * @return void
-     */
     private function logStats(LoggerInterface $logger, TransferStats $value, array $options): void
     {
         $level = $this->logLevelStrategy->getLevel($value, $options);
