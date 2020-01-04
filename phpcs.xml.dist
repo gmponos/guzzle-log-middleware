@@ -8,6 +8,7 @@
     <rule ref="./vendor/webthink/codesniffer/src/Webthink/ruleset.xml">
         <exclude name="Generic.Files.LineLength.TooLong" />
         <exclude name="Generic.Strings.UnnecessaryStringConcat" />
+        <exclude name="PEAR.Commenting.FunctionComment" />
         <exclude name="Webthink.Formatting.UseInAlphabeticalOrder.UseInAlphabeticalOrder" />
     </rule>
     <rule ref="Generic.CodeAnalysis.EmptyStatement">
