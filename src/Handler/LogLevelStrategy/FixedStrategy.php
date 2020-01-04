@@ -48,7 +48,7 @@ final class FixedStrategy implements LogLevelStrategyInterface
     /**
      * Returns the log level.
      *
-     * @param MessageInterface|\Exception|TransferStats $value
+     * @param MessageInterface|\Throwable|TransferStats $value
      * @param array $options
      * @return string
      */
@@ -58,7 +58,7 @@ final class FixedStrategy implements LogLevelStrategyInterface
             return $this->defaultLevel;
         }
 
-        if ($value instanceof \Exception) {
+        if ($value instanceof \Throwable) {
             return $this->exceptionLevel;
         }
 

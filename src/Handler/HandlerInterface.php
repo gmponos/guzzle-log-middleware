@@ -23,7 +23,7 @@ interface HandlerInterface
         LoggerInterface $logger,
         RequestInterface $request,
         ?ResponseInterface $response,
-        ?Exception $exception,
+        ?\Throwable $exception,
         ?TransferStats $stats,
         array $options
     ): void;

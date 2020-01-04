@@ -30,7 +30,7 @@ interface LogLevelStrategyInterface
     /**
      * Returns the log level.
      *
-     * @param MessageInterface|\Exception|TransferStats $value
+     * @param MessageInterface|\Throwable|TransferStats $value
      * @param array $options
      * @return string The LogLevel
      */

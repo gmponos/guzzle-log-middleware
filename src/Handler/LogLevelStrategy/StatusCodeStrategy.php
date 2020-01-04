@@ -49,7 +49,7 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
     public function getLevel($value, array $options): string
     {
         $this->setOptions($options);
-        if ($value instanceof \Exception) {
+        if ($value instanceof \Throwable) {
             return $this->exceptionLevel;
         }
 

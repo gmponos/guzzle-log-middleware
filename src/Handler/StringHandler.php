@@ -25,7 +25,7 @@ final class StringHandler extends AbstractHandler
         LoggerInterface $logger,
         RequestInterface $request,
         ?ResponseInterface $response,
-        ?Exception $exception,
+        ?Throwable $exception,
         ?TransferStats $stats,
         array $options
     ): void {

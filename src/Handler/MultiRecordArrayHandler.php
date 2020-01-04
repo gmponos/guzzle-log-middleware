@@ -43,7 +43,7 @@ final class MultiRecordArrayHandler extends AbstractHandler
         LoggerInterface $logger,
         RequestInterface $request,
         ?ResponseInterface $response,
-        ?Exception $exception,
+        ?Throwable $exception,
         ?TransferStats $stats,
         array $options
     ): void {
@@ -98,11 +98,11 @@ final class MultiRecordArrayHandler extends AbstractHandler
 
     /**
      * @param LoggerInterface $logger
-     * @param Exception|null $exception
+     * @param \Throwable|null $exception
      * @param array $options
      * @return void
      */
-    private function logReason(LoggerInterface $logger, ?Exception $exception, array $options): void
+    private function logReason(LoggerInterface $logger, ?\Throwable $exception, array $options): void
     {
         if ($exception === null) {
             return;

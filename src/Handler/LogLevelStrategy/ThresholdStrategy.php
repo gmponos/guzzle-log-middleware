@@ -68,7 +68,7 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
 
     public function getLevel($value, array $options): string
     {
-        if ($value instanceof \Exception) {
+        if ($value instanceof \Throwable) {
             return $this->exceptionLevel;
         }
 
