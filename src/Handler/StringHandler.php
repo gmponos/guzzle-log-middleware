@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware\Handler;
 
-use Exception;
 use GuzzleHttp\TransferStats;
 use GuzzleLogMiddleware\Handler\LogLevelStrategy\LogLevelStrategyInterface;
 use Psr\Http\Message\RequestInterface;
@@ -25,7 +24,7 @@ final class StringHandler extends AbstractHandler
         LoggerInterface $logger,
         RequestInterface $request,
         ?ResponseInterface $response,
-        ?Throwable $exception,
+        ?\Throwable $exception,
         ?TransferStats $stats,
         array $options
     ): void {
@@ -73,7 +72,7 @@ final class StringHandler extends AbstractHandler
         $logger->log($level, 'Guzzle HTTP response:' . "\n" . $str);
     }
 
-    private function logReason(LoggerInterface $logger, Exception $exception, array $options): void
+    private function logReason(LoggerInterface $logger, \Throwable $exception, array $options): void
     {
         $level = $this->logLevelStrategy->getLevel($exception, $options);
         $logger->log($level, sprintf('Guzzle HTTP exception: %s', $exception->getMessage()), [

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware\Handler;
 
-use Exception;
 use GuzzleHttp\TransferStats;
 use GuzzleLogMiddleware\Handler\LogLevelStrategy\LogLevelStrategyInterface;
 use Psr\Http\Message\MessageInterface;
@@ -43,7 +42,7 @@ final class MultiRecordArrayHandler extends AbstractHandler
         LoggerInterface $logger,
         RequestInterface $request,
         ?ResponseInterface $response,
-        ?Throwable $exception,
+        ?\Throwable $exception,
         ?TransferStats $stats,
         array $options
     ): void {
