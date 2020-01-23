@@ -15,7 +15,7 @@ use Psr\Log\LoggerInterface;
 /**
  * @author George Mponos <gmponos@gmail.com>
  */
-final class MultiRecordArrayHandler extends AbstractHandler
+class MultiRecordArrayHandler extends AbstractHandler
 {
     /**
      * @var int

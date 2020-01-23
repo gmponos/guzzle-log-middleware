@@ -14,7 +14,7 @@ use Psr\Log\LoggerInterface;
 /**
  * @author George Mponos <gmponos@gmail.com>
  */
-final class StringHandler extends AbstractHandler
+class StringHandler extends AbstractHandler
 {
     public function __construct(LogLevelStrategyInterface $logLevelStrategy = null)
     {
