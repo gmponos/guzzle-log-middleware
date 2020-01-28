@@ -137,7 +137,7 @@ class MultiRecordArrayHandler extends AbstractHandler
      * @param array $options
      * @return string|array
      */
-    private function formatBody(MessageInterface $message, array $options)
+    protected function formatBody(MessageInterface $message, array $options)
     {
         $stream = $message->getBody();
         if ($stream->isSeekable() === false || $stream->isReadable() === false) {
