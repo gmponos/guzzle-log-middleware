@@ -26,7 +26,7 @@ final class MultiRecordArrayHandlerTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function handlerWorksNormalForAllPossibleValues()
+    public function handlerWorksNormalForAllPossibleValues(): void
     {
         $handler = new MultiRecordArrayHandler();
         $handler->log($this->logger, $this->request, $this->response, $this->reason, $this->stats, []);
@@ -38,7 +38,7 @@ final class MultiRecordArrayHandlerTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function doNotLogRequestOrResponseBodyBecauseOfSensitiveData()
+    public function doNotLogRequestOrResponseBodyBecauseOfSensitiveData(): void
     {
         $this->appendResponse(200, [], 'sensitive_data')
             ->createClient([
@@ -60,7 +60,7 @@ final class MultiRecordArrayHandlerTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logTransactionWithJsonResponse()
+    public function logTransactionWithJsonResponse(): void
     {
         $this->appendResponse(200, ['Content-Type' => 'application/json'], '{"status": true, "client": 13000}')
             ->createClient(['exceptions' => false])
@@ -83,7 +83,7 @@ final class MultiRecordArrayHandlerTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logTransactionWithFormRequest()
+    public function logTransactionWithFormRequest(): void
     {
         $this
             ->appendResponse(200)
@@ -113,7 +113,7 @@ final class MultiRecordArrayHandlerTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logTransactionWithJsonApiResponse()
+    public function logTransactionWithJsonApiResponse(): void
     {
         $this->appendResponse(200, ['Content-Type' => 'application/vnd.api+json'], '{"status": true, "client": 13000}')
             ->createClient(['exceptions' => false])
@@ -136,7 +136,7 @@ final class MultiRecordArrayHandlerTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logTransactionWithHugeResponseBody()
+    public function logTransactionWithHugeResponseBody(): void
     {
         $body =
             'Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..Very big body..' .
