@@ -1,6 +1,28 @@
+includes:
+    - vendor/phpstan/phpstan-phpunit/extension.neon
+
 parameters:
     level: 8
     checkMissingIterableValueType: false
     paths:
         - src
         - tests
+
+rules:
+    - PHPStan\Rules\BooleansInConditions\BooleanInBooleanAndRule
+    - PHPStan\Rules\BooleansInConditions\BooleanInBooleanNotRule
+    - PHPStan\Rules\BooleansInConditions\BooleanInBooleanOrRule
+    - PHPStan\Rules\BooleansInConditions\BooleanInElseIfConditionRule
+    - PHPStan\Rules\BooleansInConditions\BooleanInIfConditionRule
+    - PHPStan\Rules\BooleansInConditions\BooleanInTernaryOperatorRule
+    - PHPStan\Rules\Functions\MissingFunctionParameterTypehintRule
+    - PHPStan\Rules\Methods\MissingMethodParameterTypehintRule
+    - PHPStan\Rules\Methods\WrongCaseOfInheritedMethodRule
+    - PHPStan\Rules\SwitchConditions\MatchingTypeInSwitchCaseConditionRule
+    - PHPStan\Rules\VariableVariables\VariableMethodCallRule
+    - PHPStan\Rules\VariableVariables\VariableStaticMethodCallRule
+    - PHPStan\Rules\VariableVariables\VariableVariablesRule
+
+services:
+    -
+        class: PHPStan\Rules\BooleansInConditions\BooleanRuleHelper
