@@ -1,6 +1,12 @@
 {
     "name": "gmponos/guzzle_logger",
     "description": "A Guzzle middleware to log request and responses automatically",
+    "keywords": [
+        "psr3",
+        "guzzle",
+        "log",
+        "logging"
+    ],
     "license": "MIT",
     "homepage": "https://github.com/gmponos/guzzle-log-middleware",
     "authors": [
@@ -26,10 +32,10 @@
         "psr/log": "^1.1"
     },
     "require-dev": {
-        "phpstan/phpstan": "^0.12.29",
+        "phpstan/phpstan": "~0.12.30",
         "phpstan/phpstan-phpunit": "^0.12.11",
         "phpstan/phpstan-strict-rules": "^0.12.2",
-        "phpunit/phpunit": "^8.5",
+        "phpunit/phpunit": "~8.5.8",
         "webthink/codesniffer": "2.*"
     },
     "suggest": {
