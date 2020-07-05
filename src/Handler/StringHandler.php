@@ -23,10 +23,10 @@ final class StringHandler extends AbstractHandler
     public function log(
         LoggerInterface $logger,
         RequestInterface $request,
-        ?ResponseInterface $response,
-        ?\Throwable $exception,
-        ?TransferStats $stats,
-        array $options
+        ?ResponseInterface $response = null,
+        ?\Throwable $exception = null,
+        ?TransferStats $stats = null,
+        array $options = []
     ): void {
         $this->logRequest($logger, $request, $options);
 

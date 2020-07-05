@@ -57,7 +57,6 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
      *
      * @param array $thresholds An array of thresholds.
      * @param string $defaultLevel The that will be used for the requests and as a default one.
-     * @param string $exceptionLevel
      */
     public function __construct(
         array $thresholds = [],

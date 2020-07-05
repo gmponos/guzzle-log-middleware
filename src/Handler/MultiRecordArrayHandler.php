@@ -27,12 +27,14 @@ final class MultiRecordArrayHandler extends AbstractHandler
     private $summarySize;
 
     /**
-     * @param LogLevelStrategyInterface|null $logLevelStrategy
      * @param int $truncateSize If the body of the request/response is greater than the size of this integer the body will be truncated
      * @param int $summarySize The size to use for the summary of a truncated body
      */
-    public function __construct(LogLevelStrategyInterface $logLevelStrategy = null, int $truncateSize = 3500, int $summarySize = 200)
-    {
+    public function __construct(
+        LogLevelStrategyInterface $logLevelStrategy = null,
+        int $truncateSize = 3500,
+        int $summarySize = 200
+    ) {
         $this->logLevelStrategy = $logLevelStrategy === null ? $this->getDefaultStrategy() : $logLevelStrategy;
         $this->truncateSize = $truncateSize;
         $this->summarySize = $summarySize;
@@ -41,10 +43,10 @@ final class MultiRecordArrayHandler extends AbstractHandler
     public function log(
         LoggerInterface $logger,
         RequestInterface $request,
-        ?ResponseInterface $response,
-        ?\Throwable $exception,
-        ?TransferStats $stats,
-        array $options
+        ?ResponseInterface $response = null,
+        ?\Throwable $exception = null,
+        ?TransferStats $stats = null,
+        array $options = []
     ): void {
         $this->logRequest($logger, $request, $options);
 
@@ -74,12 +76,6 @@ final class MultiRecordArrayHandler extends AbstractHandler
         $logger->log($level, 'Guzzle HTTP request', $context);
     }
 
-    /**
-     * @param LoggerInterface $logger
-     * @param ResponseInterface $response
-     * @param array $options
-     * @return void
-     */
     private function logResponse(LoggerInterface $logger, ResponseInterface $response, array $options): void
     {
         $context['response']['headers'] = $response->getHeaders();
@@ -95,12 +91,6 @@ final class MultiRecordArrayHandler extends AbstractHandler
         $logger->log($level, 'Guzzle HTTP response', $context);
     }
 
-    /**
-     * @param LoggerInterface $logger
-     * @param \Throwable|null $exception
-     * @param array $options
-     * @return void
-     */
     private function logReason(LoggerInterface $logger, ?\Throwable $exception, array $options): void
     {
         if ($exception === null) {
@@ -116,12 +106,6 @@ final class MultiRecordArrayHandler extends AbstractHandler
         $logger->log($level, 'Guzzle HTTP exception', $context);
     }
 
-    /**
-     * @param LoggerInterface $logger
-     * @param TransferStats $stats
-     * @param array $options
-     * @return void
-     */
     private function logStats(LoggerInterface $logger, TransferStats $stats, array $options): void
     {
         $this->logLevelStrategy->getLevel($stats, $options);
@@ -132,8 +116,6 @@ final class MultiRecordArrayHandler extends AbstractHandler
     }
 
     /**
-     * @param MessageInterface $message
-     * @param array $options
      * @return string|array
      */
     private function formatBody(MessageInterface $message, array $options)

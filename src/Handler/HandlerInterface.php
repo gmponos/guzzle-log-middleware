@@ -12,7 +12,7 @@ use Psr\Log\LoggerInterface;
 
 /**
  * Classes that will implement this interface are responsible
- * to log the MessageInterface|\Exception|TransferStats that are
+ * to log the MessageInterface|\Throwable|TransferStats that are
  * passed as values.
  *
  * @author George Mponos <gmponos@gmail.com>
@@ -22,9 +22,9 @@ interface HandlerInterface
     public function log(
         LoggerInterface $logger,
         RequestInterface $request,
-        ?ResponseInterface $response,
-        ?\Throwable $exception,
-        ?TransferStats $stats,
-        array $options
+        ?ResponseInterface $response = null,
+        ?\Throwable $exception = null,
+        ?TransferStats $stats = null,
+        array $options = []
     ): void;
 }

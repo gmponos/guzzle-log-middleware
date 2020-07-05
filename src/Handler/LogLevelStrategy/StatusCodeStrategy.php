@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware\Handler\LogLevelStrategy;
 
-use GuzzleHttp\TransferStats;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LogLevel;
 
