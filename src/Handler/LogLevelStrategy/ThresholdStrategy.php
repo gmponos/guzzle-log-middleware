@@ -57,7 +57,6 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
      *
      * @param array $thresholds An array of thresholds.
      * @param string $defaultLevel The that will be used for the requests and as a default one.
-     * @param string $exceptionLevel
      */
     public function __construct(
         array $thresholds = [],
@@ -71,7 +70,7 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
 
     public function getLevel($value, array $options): string
     {
-        if ($value instanceof \Exception) {
+        if ($value instanceof \Throwable) {
             return $this->exceptionLevel;
         }
 
