@@ -4,9 +4,12 @@ includes:
 parameters:
     level: 8
     checkMissingIterableValueType: false
+    reportUnmatchedIgnoredErrors: false
     paths:
         - src
         - tests
+    ignoreErrors:
+        - '#Parameter \#3 \$transferTime of class GuzzleHttp\\TransferStats constructor expects null, float given.#'
 
 rules:
     - PHPStan\Rules\BooleansInConditions\BooleanInBooleanAndRule

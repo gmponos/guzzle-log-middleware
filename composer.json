@@ -36,14 +36,14 @@
         "phpstan/phpstan-phpunit": "^0.12.11",
         "phpstan/phpstan-strict-rules": "^0.12.2",
         "phpunit/phpunit": "^8.5.8 || ^9.2.5",
-        "webthink/codesniffer": "^2.1.1"
+        "squizlabs/php_codesniffer": "^3.5.5"
     },
     "suggest": {
         "monolog/monolog": "A PSR-3 logger to send your logs to files, sockets and various web services"
     },
     "scripts": {
         "test": "php vendor/bin/phpunit",
-        "phpcs": "php vendor/bin/phpcs ./src ./tests",
+        "phpcs": "php vendor/bin/phpcs ./src ./tests -n",
         "phpcbf": "php vendor/bin/phpcbf ./src ./tests"
     },
     "extra": {
