@@ -71,13 +71,8 @@ final class MultiRecordArrayHandlerTest extends AbstractLoggerMiddlewareTest
         $this->assertSame('Guzzle HTTP request', $this->logger->records[0]['message']);
         $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
         $this->assertSame('Guzzle HTTP response', $this->logger->records[1]['message']);
-        $this->assertContains(
-            [
-                'status' => true,
-                'client' => 13000,
-            ],
-            $this->logger->records[1]['context']['response']['body']
-        );
+        $this->assertTrue($this->logger->records[1]['context']['response']['body']['status']);
+        $this->assertSame(13000, $this->logger->records[1]['context']['response']['body']['client']);
     }
 
     /**
@@ -124,13 +119,8 @@ final class MultiRecordArrayHandlerTest extends AbstractLoggerMiddlewareTest
         $this->assertSame('Guzzle HTTP request', $this->logger->records[0]['message']);
         $this->assertSame(LogLevel::DEBUG, $this->logger->records[1]['level']);
         $this->assertSame('Guzzle HTTP response', $this->logger->records[1]['message']);
-        $this->assertContains(
-            [
-                'status' => true,
-                'client' => 13000,
-            ],
-            $this->logger->records[1]['context']['response']['body']
-        );
+        $this->assertTrue($this->logger->records[1]['context']['response']['body']['status']);
+        $this->assertSame(13000, $this->logger->records[1]['context']['response']['body']['client']);
     }
 
     /**
