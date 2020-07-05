@@ -10,6 +10,7 @@ use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 /**
  * @author George Mponos <gmponos@gmail.com>
@@ -44,7 +45,7 @@ final class MultiRecordArrayHandler extends AbstractHandler
         LoggerInterface $logger,
         RequestInterface $request,
         ?ResponseInterface $response = null,
-        ?\Throwable $exception = null,
+        ?Throwable $exception = null,
         ?TransferStats $stats = null,
         array $options = []
     ): void {
@@ -91,7 +92,7 @@ final class MultiRecordArrayHandler extends AbstractHandler
         $logger->log($level, 'Guzzle HTTP response', $context);
     }
 
-    private function logReason(LoggerInterface $logger, ?\Throwable $exception, array $options): void
+    private function logReason(LoggerInterface $logger, ?Throwable $exception, array $options): void
     {
         if ($exception === null) {
             return;

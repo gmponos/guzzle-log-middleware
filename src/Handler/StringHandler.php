@@ -9,6 +9,7 @@ use GuzzleLogMiddleware\Handler\LogLevelStrategy\LogLevelStrategyInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 /**
  * @author George Mponos <gmponos@gmail.com>
@@ -24,7 +25,7 @@ final class StringHandler extends AbstractHandler
         LoggerInterface $logger,
         RequestInterface $request,
         ?ResponseInterface $response = null,
-        ?\Throwable $exception = null,
+        ?Throwable $exception = null,
         ?TransferStats $stats = null,
         array $options = []
     ): void {
@@ -72,7 +73,7 @@ final class StringHandler extends AbstractHandler
         $logger->log($level, 'Guzzle HTTP response:' . "\n" . $str);
     }
 
-    private function logReason(LoggerInterface $logger, \Throwable $exception, array $options): void
+    private function logReason(LoggerInterface $logger, Throwable $exception, array $options): void
     {
         $level = $this->logLevelStrategy->getLevel($exception, $options);
         $logger->log($level, sprintf('Guzzle HTTP exception: %s', $exception->getMessage()), [
