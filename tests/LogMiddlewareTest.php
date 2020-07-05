@@ -16,7 +16,7 @@ final class LogMiddlewareTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logSuccessfulTransaction()
+    public function logSuccessfulTransaction(): void
     {
         $this->appendResponse(200, [], 'response_body')
             ->createClient()
@@ -36,7 +36,7 @@ final class LogMiddlewareTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function doNotLogOnSuccessfulTransactionWhenOnFailureOnlyIsTrue()
+    public function doNotLogOnSuccessfulTransactionWhenOnFailureOnlyIsTrue(): void
     {
         $this
             ->appendResponse(200)
@@ -72,7 +72,7 @@ final class LogMiddlewareTest extends AbstractLoggerMiddlewareTest
      * @dataProvider statusCodeProvider
      * @param int $statusCode
      */
-    public function logTransactionWithWhenHttpErrorsIsFalse(int $statusCode)
+    public function logTransactionWithWhenHttpErrorsIsFalse(int $statusCode): void
     {
         $this->appendResponse($statusCode)
             ->createClient([
@@ -92,7 +92,7 @@ final class LogMiddlewareTest extends AbstractLoggerMiddlewareTest
      * @dataProvider statusCodeProvider
      * @param int $statusCode
      */
-    public function logTransactionWithWhenHttpErrorsIsTrue(int $statusCode)
+    public function logTransactionWithWhenHttpErrorsIsTrue(int $statusCode): void
     {
         try {
             $this->appendResponse($statusCode)
@@ -115,7 +115,7 @@ final class LogMiddlewareTest extends AbstractLoggerMiddlewareTest
      * @dataProvider statusCodeProvider
      * @param int $statusCode
      */
-    public function logTransactionWithStatistics(int $statusCode)
+    public function logTransactionWithStatistics(int $statusCode): void
     {
         $this->appendResponse($statusCode)
             ->createClient([
@@ -138,9 +138,8 @@ final class LogMiddlewareTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      * @dataProvider statusCodeProvider
-     * @param int $statusCode
      */
-    public function logTransactionWithStatisticsTrueAndExceptionOnlyTrue(int $statusCode)
+    public function logTransactionWithStatisticsTrueAndExceptionOnlyTrue(int $statusCode): void
     {
         $this->appendResponse($statusCode);
 
@@ -166,7 +165,7 @@ final class LogMiddlewareTest extends AbstractLoggerMiddlewareTest
         $this->assertCount(0, $this->logger->records);
     }
 
-    public function statusCodeProvider()
+    public function statusCodeProvider(): array
     {
         return [
             [200],
@@ -183,7 +182,7 @@ final class LogMiddlewareTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logTransactionWhenTransferExceptionOccurs()
+    public function logTransactionWhenTransferExceptionOccurs(): void
     {
         try {
             $this->mockHandler->append(new TransferException());

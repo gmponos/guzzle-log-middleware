@@ -60,30 +60,18 @@ abstract class AbstractLoggerMiddlewareTest extends TestCase
         $this->stats = new TransferStats($this->request, $this->response, 0.01);
     }
 
-    /**
-     * @param int $code
-     * @param array $headers
-     * @param string $body
-     * @param string $version
-     * @param string|null $reason
-     * @return $this
-     */
     protected function appendResponse(
         int $code = 200,
         array $headers = [],
         string $body = '',
         string $version = '1.1',
         string $reason = null
-    ) {
+    ): self {
         $this->mockHandler->append(new Response($code, $headers, $body, $version, $reason));
         return $this;
     }
 
-    /**
-     * @param array $options
-     * @return Client
-     */
-    protected function createClient(array $options = [])
+    protected function createClient(array $options = []): Client
     {
         $stack = HandlerStack::create($this->mockHandler);
         $stack->unshift($this->createMiddleware());
@@ -96,8 +84,6 @@ abstract class AbstractLoggerMiddlewareTest extends TestCase
 
     /**
      * Factory method to create the middleware
-     *
-     * @return LogMiddleware
      */
     abstract protected function createMiddleware(): LogMiddleware;
 }

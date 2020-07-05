@@ -20,6 +20,9 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
     public const CLIENT_ERRORS = '4xx';
     public const SERVER_ERRORS = '5xx';
 
+    /**
+     * @var array<string, int>
+     */
     private $matchingStatusCodes = [
         self::INFORMATIONAL => 1,
         self::SUCCESS => 2,

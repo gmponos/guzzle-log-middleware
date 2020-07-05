@@ -22,7 +22,7 @@ final class FixedStrategyTest extends AbstractLoggerMiddlewareTest
      * @dataProvider valueProvider
      * @param mixed $value
      */
-    public function fixedDebugLevelForAllValues($value)
+    public function fixedDebugLevelForAllValues($value): void
     {
         $strategy = new FixedStrategy();
         $this->assertSame('debug', $strategy->getLevel($value, []));
@@ -41,9 +41,8 @@ final class FixedStrategyTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      * @dataProvider statusCodeProvider
-     * @param int $statusCode
      */
-    public function executeRequestWithVariousResponseStatusCodesAndHttpErrorToFalse(int $statusCode)
+    public function executeRequestWithVariousResponseStatusCodesAndHttpErrorToFalse(int $statusCode): void
     {
         $this->appendResponse($statusCode)
             ->createClient([
@@ -58,7 +57,7 @@ final class FixedStrategyTest extends AbstractLoggerMiddlewareTest
         $this->assertSame('Guzzle HTTP response', $this->logger->records[1]['message']);
     }
 
-    public function statusCodeProvider()
+    public function statusCodeProvider(): array
     {
         return [
             [200],
@@ -75,7 +74,7 @@ final class FixedStrategyTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logTransactionWhenRequestExceptionOccurs()
+    public function logTransactionWhenRequestExceptionOccurs(): void
     {
         try {
             $this->mockHandler->append(
@@ -95,7 +94,7 @@ final class FixedStrategyTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logTransactionWhenTransferExceptionOccurs()
+    public function logTransactionWhenTransferExceptionOccurs(): void
     {
         try {
             $this->mockHandler->append(new TransferException());

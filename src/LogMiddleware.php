@@ -67,6 +67,8 @@ final class LogMiddleware
 
     /**
      * Called when the middleware is handled by the client.
+     *
+     * @return callable(RequestInterface, array): PromiseInterface
      */
     public function __invoke(callable $handler): callable
     {

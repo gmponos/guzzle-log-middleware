@@ -29,6 +29,10 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
      */
     private $defaultLevel;
 
+    /**
+     * @phpstan-param LogLevel::* $defaultLevel
+     * @phpstan-param LogLevel::* $exceptionLevel
+     */
     public function __construct(string $defaultLevel = LogLevel::DEBUG, string $exceptionLevel = LogLevel::CRITICAL)
     {
         $this->exceptionLevel = $exceptionLevel;

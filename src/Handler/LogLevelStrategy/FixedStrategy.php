@@ -17,6 +17,7 @@ final class FixedStrategy implements LogLevelStrategyInterface
     /**
      * The default LogLevel that it will used for the non-exceptions.
      *
+     * @phpstan-var LogLevel::*
      * @var string
      */
     private $defaultLevel;
@@ -24,6 +25,7 @@ final class FixedStrategy implements LogLevelStrategyInterface
     /**
      * The log Level in cases of exceptions.
      *
+     * @phpstan-var LogLevel::*
      * @var string
      */
     private $exceptionLevel;
@@ -31,10 +33,16 @@ final class FixedStrategy implements LogLevelStrategyInterface
     /**
      * The log level of the statistics
      *
+     * @phpstan-var LogLevel::*
      * @var string
      */
     private $statsLevel;
 
+    /**
+     * @phpstan-param LogLevel::* $defaultLevel
+     * @phpstan-param LogLevel::*|null $exceptionLevel
+     * @phpstan-param LogLevel::*|null $statsLevel
+     */
     public function __construct(
         string $defaultLevel = LogLevel::DEBUG,
         string $exceptionLevel = null,
@@ -50,7 +58,6 @@ final class FixedStrategy implements LogLevelStrategyInterface
      *
      * @param MessageInterface|\Throwable|TransferStats $value
      * @param array $options
-     * @return string
      */
     public function getLevel($value, array $options): string
     {

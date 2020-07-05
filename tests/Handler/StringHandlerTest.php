@@ -26,7 +26,7 @@ final class StringHandlerTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logSuccessfulTransaction()
+    public function logSuccessfulTransaction(): void
     {
         $this->appendResponse(200, [], 'response_body')
             ->createClient()
@@ -52,7 +52,7 @@ response_body", $this->logger->records[1]['message']);
     /**
      * @test
      */
-    public function handlerWillLogAllPossibleValues()
+    public function handlerWillLogAllPossibleValues(): void
     {
         $this->handler->log($this->logger, $this->request, $this->response, $this->reason, $this->stats, []);
         $this->assertCount(3, $this->logger->records);
@@ -65,7 +65,7 @@ response_body", $this->logger->records[1]['message']);
     /**
      * @test
      */
-    public function handlerWillRecordRequest()
+    public function handlerWillRecordRequest(): void
     {
         $this->handler->log($this->logger, $this->request, null, null, null, []);
         $this->assertCount(1, $this->logger->records);
@@ -77,7 +77,7 @@ response_body", $this->logger->records[1]['message']);
     /**
      * @test
      */
-    public function handlerWithValueException()
+    public function handlerWithValueException(): void
     {
         $this->handler->log($this->logger, $this->request, null, $this->reason, null, []);
         $this->assertCount(2, $this->logger->records);
@@ -88,7 +88,7 @@ response_body", $this->logger->records[1]['message']);
     /**
      * @test
      */
-    public function handlerWithValueTransferStats()
+    public function handlerWithValueTransferStats(): void
     {
         $this->handler->log($this->logger, $this->request, $this->response, null, $this->stats, []);
         $this->assertCount(3, $this->logger->records);
