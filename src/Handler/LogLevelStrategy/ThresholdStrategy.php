@@ -20,6 +20,9 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
     public const CLIENT_ERRORS = '4xx';
     public const SERVER_ERRORS = '5xx';
 
+    /**
+     * @var array<string, int>
+     */
     private $matchingStatusCodes = [
         self::INFORMATIONAL => 1,
         self::SUCCESS => 2,
@@ -54,7 +57,6 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
      *
      * @param array $thresholds An array of thresholds.
      * @param string $defaultLevel The that will be used for the requests and as a default one.
-     * @param string $exceptionLevel
      */
     public function __construct(
         array $thresholds = [],
@@ -68,7 +70,7 @@ final class ThresholdStrategy implements LogLevelStrategyInterface
 
     public function getLevel($value, array $options): string
     {
-        if ($value instanceof \Exception) {
+        if ($value instanceof \Throwable) {
             return $this->exceptionLevel;
         }
 

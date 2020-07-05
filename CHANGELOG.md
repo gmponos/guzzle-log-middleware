@@ -2,6 +2,23 @@
 
 All Notable changes to `gmponos/guzzle_logger` will be documented in this file
 
+## 2.0.0 - 2020-07-05
+
+### Changed
+- [BC] Changed the signature of `HandlerInterface::log` to allow Throwables. Now the signature is
+```php
+HandlerInterface::log(
+    LoggerInterface $logger,
+    RequestInterface $request,
+    ?ResponseInterface $response = null,
+    ?Throwable $exception = null,
+    ?TransferStats $stats = null,
+    array $options = []
+)
+```
+
+- Allow guzzle 7
+
 ## 1.1.0 - 2019-09-03
 
 ### Added

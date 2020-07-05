@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware\Handler\LogLevelStrategy;
 
-use GuzzleHttp\TransferStats;
-use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Log\LogLevel;
 
@@ -29,6 +27,10 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
      */
     private $defaultLevel;
 
+    /**
+     * @phpstan-param LogLevel::* $defaultLevel
+     * @phpstan-param LogLevel::* $exceptionLevel
+     */
     public function __construct(string $defaultLevel = LogLevel::DEBUG, string $exceptionLevel = LogLevel::CRITICAL)
     {
         $this->exceptionLevel = $exceptionLevel;
@@ -49,7 +51,7 @@ final class StatusCodeStrategy implements LogLevelStrategyInterface
     public function getLevel($value, array $options): string
     {
         $this->setOptions($options);
-        if ($value instanceof \Exception) {
+        if ($value instanceof \Throwable) {
             return $this->exceptionLevel;
         }
 

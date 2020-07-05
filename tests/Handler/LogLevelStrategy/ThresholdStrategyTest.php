@@ -22,7 +22,7 @@ final class ThresholdStrategyTest extends AbstractLoggerMiddlewareTest
      * @param mixed $value
      * @param string $expected
      */
-    public function fixedDebugLevelForAllValues($value, string $expected)
+    public function fixedDebugLevelForAllValues($value, string $expected): void
     {
         $strategy = new ThresholdStrategy([
             ThresholdStrategy::INFORMATIONAL => LogLevel::DEBUG,
@@ -54,7 +54,7 @@ final class ThresholdStrategyTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function strategyWorksCorrectlyWhenHttpErrorsIsSetToFalse()
+    public function strategyWorksCorrectlyWhenHttpErrorsIsSetToFalse(): void
     {
         $client = $this
             ->appendResponse(200)
@@ -81,7 +81,7 @@ final class ThresholdStrategyTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function strategyWorksCorrectlyWhenExceptionsOnlyIsSetDuringRequest()
+    public function strategyWorksCorrectlyWhenExceptionsOnlyIsSetDuringRequest(): void
     {
         try {
             $this
@@ -110,7 +110,7 @@ final class ThresholdStrategyTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logTransactionWith4xxCode()
+    public function logTransactionWith4xxCode(): void
     {
         try {
             $this->appendResponse(404)->createClient()->get('/');
@@ -127,7 +127,7 @@ final class ThresholdStrategyTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logTransactionWith5xxCode()
+    public function logTransactionWith5xxCode(): void
     {
         try {
             $this->appendResponse(500)->createClient()->get('/');
@@ -145,7 +145,7 @@ final class ThresholdStrategyTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logTwoTransactionOneWith4xxAndOneWith5xxCode()
+    public function logTwoTransactionOneWith4xxAndOneWith5xxCode(): void
     {
         $client = $this
             ->appendResponse(404)

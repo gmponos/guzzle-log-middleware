@@ -80,10 +80,10 @@ final class SimpleHandler implements HandlerInterface
     public function log(
         LoggerInterface $logger,
         RequestInterface $request,
-        ?ResponseInterface $response,
-        ?\Exception $exception,
-        ?TransferStats $stats,
-        array $options
+        ?ResponseInterface $response = null,
+        ?\Throwable $exception = null,
+        ?TransferStats $stats = null,
+        array $options = []
     ): void {
         $logger->debug('Guzzle HTTP request: ' . \GuzzleHttp\Psr7\str($request));
         return;

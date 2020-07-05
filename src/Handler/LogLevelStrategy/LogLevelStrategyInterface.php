@@ -30,9 +30,7 @@ interface LogLevelStrategyInterface
     /**
      * Returns the log level.
      *
-     * @param MessageInterface|\Exception|TransferStats $value
-     * @param array $options
-     * @return string The LogLevel
+     * @param MessageInterface|\Throwable|TransferStats $value
      */
     public function getLevel($value, array $options): string;
 }

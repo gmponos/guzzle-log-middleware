@@ -28,7 +28,7 @@ final class StatusCodeStrategyTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logTransactionWithNoCustomLevels()
+    public function logTransactionWithNoCustomLevels(): void
     {
         $this->appendResponse(401)
             ->createClient([
@@ -46,7 +46,7 @@ final class StatusCodeStrategyTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logTransactionWhenTransferExceptionOccurs()
+    public function logTransactionWhenTransferExceptionOccurs(): void
     {
         try {
             $this->mockHandler->append(new TransferException());
@@ -64,7 +64,7 @@ final class StatusCodeStrategyTest extends AbstractLoggerMiddlewareTest
     /**
      * @test
      */
-    public function logTransactionWithCustomLevel()
+    public function logTransactionWithCustomLevel(): void
     {
         $this->appendResponse(300)
             ->createClient([
