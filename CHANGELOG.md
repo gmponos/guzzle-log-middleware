@@ -17,6 +17,8 @@ HandlerInterface::log(
 )
 ```
 
+- Allow guzzle 7
+
 ## 1.1.0 - 2019-09-03
 
 ### Added
