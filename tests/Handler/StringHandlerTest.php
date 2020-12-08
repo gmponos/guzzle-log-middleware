@@ -17,7 +17,7 @@ final class StringHandlerTest extends AbstractLoggerMiddlewareTest
      */
     private $handler;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->handler = new StringHandler();

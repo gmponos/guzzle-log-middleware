@@ -49,7 +49,7 @@ abstract class AbstractLoggerMiddlewareTest extends TestCase
      */
     protected $stats;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
         $this->mockHandler = new MockHandler();
