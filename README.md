@@ -18,7 +18,7 @@ The middleware is functional with version 6 of Guzzle.
 Via Composer
 
 ``` bash
-$ composer require gmponos/guzzle_logger
+$ composer require alexsaab/guzzle_logger
 ```
 
 ## Usage
