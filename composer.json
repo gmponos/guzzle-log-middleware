@@ -1,5 +1,5 @@
 {
-    "name": "gmponos/guzzle_logger",
+    "name": "alexsaab/guzzle_logger",
     "description": "A Guzzle middleware to log request and responses automatically",
     "keywords": [
         "psr3",
