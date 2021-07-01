@@ -6,6 +6,8 @@
 [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/gmponos/monolog-slack/blob/master/LICENSE.md)
 [![PHPPackages Rank](http://phppackages.org/p/gmponos/guzzle_logger/badge/rank.svg)](http://phppackages.org/p/gmponos/guzzle_logger)
 
+This if a fork of original library located at https://github.com/gmponos/guzzle-log-middleware
+
 This is a middleware for [guzzle](https://github.com/guzzle/guzzle) that will help you automatically log every request 
 and response using a PSR-3 logger.
 
@@ -16,7 +18,7 @@ The middleware is functional with version 6 of Guzzle.
 Via Composer
 
 ``` bash
-$ composer require gmponos/guzzle_logger
+$ composer require alexsaab/guzzle_logger
 ```
 
 ## Usage
