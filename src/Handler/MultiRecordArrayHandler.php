@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware\Handler;
 
+use GuzzleHttp\Psr7\Query;
 use GuzzleHttp\TransferStats;
 use GuzzleLogMiddleware\Handler\LogLevelStrategy\LogLevelStrategyInterface;
 use Psr\Http\Message\MessageInterface;
@@ -148,7 +149,7 @@ final class MultiRecordArrayHandler extends AbstractHandler
 
         $isForm = preg_grep('/application\/x-www-form-urlencoded/', $contentType);
         if (!empty($isForm)) {
-            $result = \GuzzleHttp\Psr7\parse_query($body);
+            $result = Query::parse($body);
             $stream->rewind();
             return $result;
         }
