@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace GuzzleLogMiddleware\Test\Handler;
 
 use GuzzleHttp\Exception\TransferException;
