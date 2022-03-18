@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace GuzzleLogMiddleware\Handler;
 
+use GuzzleHttp\Psr7\Message;
 use GuzzleHttp\TransferStats;
 use GuzzleLogMiddleware\Handler\LogLevelStrategy\LogLevelStrategyInterface;
 use Psr\Http\Message\RequestInterface;
@@ -53,7 +54,7 @@ final class StringHandler extends AbstractHandler
             return;
         }
 
-        $str = \GuzzleHttp\Psr7\str($value);
+        $str = Message::toString($value);
 
         $level = $this->logLevelStrategy->getLevel($value, $options);
         $logger->log($level, 'Guzzle HTTP request:' . "\n" . $str);
@@ -67,7 +68,7 @@ final class StringHandler extends AbstractHandler
             return;
         }
 
-        $str = \GuzzleHttp\Psr7\str($value);
+        $str = Message::toString($value);
 
         $level = $this->logLevelStrategy->getLevel($value, $options);
         $logger->log($level, 'Guzzle HTTP response:' . "\n" . $str);
