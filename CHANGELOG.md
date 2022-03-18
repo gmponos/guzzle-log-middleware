@@ -1,6 +1,13 @@
 # Changelog
 
 All Notable changes to `gmponos/guzzle_logger` will be documented in this file
+## 2.1.0 - 2021-03-18
+
+That was a long layoff
+
+## Changes
+- Allow PHP 8
+- Fix a deprecation on MultiRecordArrayHandler regarding query
 
 ## 2.0.0 - 2020-07-05
 
