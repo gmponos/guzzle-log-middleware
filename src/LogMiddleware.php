@@ -112,11 +112,11 @@ final class LogMiddleware
         return function (\Exception $reason) use ($request, $options) {
             if ($reason instanceof RequestException && $reason->hasResponse() === true) {
                 $this->handler->log($this->logger, $request, $reason->getResponse(), $reason, $this->stats, $options);
-                return new \GuzzleHttp\Promise\RejectedPromise($reason);
+                return \GuzzleHttp\Promise\Create::rejectionFor($reason);
             }
 
             $this->handler->log($this->logger, $request, null, $reason, $this->stats, $options);
-            return new \GuzzleHttp\Promise\RejectedPromise($reason);
+            return \GuzzleHttp\Promise\Create::rejectionFor($reason);
         };
     }
 
