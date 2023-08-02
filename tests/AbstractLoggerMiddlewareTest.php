@@ -15,7 +15,7 @@ use GuzzleLogMiddleware\LogMiddleware;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Log\Test\TestLogger;
+use ColinODell\PsrTestLogger\TestLogger;
 
 abstract class AbstractLoggerMiddlewareTest extends TestCase
 {
