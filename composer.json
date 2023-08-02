@@ -33,6 +33,7 @@
         "psr/log": "^1.1 || ^2.0 || ^3.0"
     },
     "require-dev": {
+        "colinodell/psr-testlogger": "^1.2",
         "phpstan/phpstan": "~0.12.32",
         "phpstan/phpstan-phpunit": "^0.12.11",
         "phpstan/phpstan-strict-rules": "^0.12.2",
