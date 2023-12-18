@@ -109,14 +109,14 @@ final class LogMiddleware
      */
     private function handleFailure(RequestInterface $request, array $options): callable
     {
-        return function (\Exception $reason) use ($request, $options) {
+        return function ($reason) use ($request, $options) {
             if ($reason instanceof RequestException && $reason->hasResponse() === true) {
                 $this->handler->log($this->logger, $request, $reason->getResponse(), $reason, $this->stats, $options);
-                return \GuzzleHttp\Promise\rejection_for($reason);
+                return \GuzzleHttp\Promise\Create::rejectionFor($reason);
             }
 
             $this->handler->log($this->logger, $request, null, $reason, $this->stats, $options);
-            return \GuzzleHttp\Promise\rejection_for($reason);
+            return \GuzzleHttp\Promise\Create::rejectionFor($reason);
         };
     }
 
