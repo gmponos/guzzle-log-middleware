@@ -33,7 +33,7 @@ final class MultiRecordArrayHandler extends AbstractHandler
      * @param int $summarySize The size to use for the summary of a truncated body
      */
     public function __construct(
-        LogLevelStrategyInterface $logLevelStrategy = null,
+        ?LogLevelStrategyInterface $logLevelStrategy = null,
         int $truncateSize = 3500,
         int $summarySize = 200
     ) {
